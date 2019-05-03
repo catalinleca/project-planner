@@ -3,15 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.17",
+    "@fortawesome/free-solid-svg-icons": "^5.8.1",
+    "@fortawesome/react-fontawesome": "^0.1.4",
     "@material-ui/core": "^3.9.3",
     "@types/jest": "24.0.11",
     "@types/node": "11.13.4",
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
+    "@types/react-redux": "^7.0.8",
+    "@types/react-router-dom": "^4.3.2",
+    "classnames": "^2.2.6",
+    "connected-react-router": "^6.4.0",
+    "immutable": "^4.0.0-rc.12",
+    "jss-compose": "^5.0.0",
+    "jss-extend": "^6.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-jss": "^8.6.1",
+    "react-redux": "^7.0.3",
+    "react-redux-saga": "git+https://github.com/foodforarabbit/react-redux-saga.git",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
+    "react-sizeme": "^2.6.4",
     "redux-saga": "^1.0.2",
+    "reselect": "^4.0.0",
     "typescript": "3.4.3"
   },
   "scripts": {
@@ -28,5 +44,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@types/classnames": "^2.2.7",
+    "@types/react-jss": "^8.6.3"
+  }
 }
