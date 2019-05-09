@@ -1,6 +1,7 @@
 import * as React from 'react';
 import '../../App.css';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import {
   FontAwesomeIcon
@@ -19,10 +20,11 @@ import {
   ListItem,
   ListItemIcon,
   Theme,
-  ListItemText,
+  ListItemText, Button,
 } from '@material-ui/core'
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import {FirstAction} from "../../store/action";
 
 const drawerWidth = 240;
 
@@ -88,14 +90,20 @@ const styles = (theme: Theme): StyleRules => ({
   },
 });
 
-interface IAppProps {
+interface IAppComponentProps {
   classes: any,
   theme: any,
 }
 
-type AppProps = IAppProps & WithStyles<keyof ReturnType<typeof styles>>;
+interface IAppProps {
+  firstAction: any,
+  state: any,
+}
 
-class App extends React.Component<AppProps> {
+
+type AppProps = IAppComponentProps & IAppProps & WithStyles<keyof ReturnType<typeof styles>>;
+
+class App extends React.Component<AppProps, any> {
   state = {
     open: false,
   };
@@ -107,6 +115,17 @@ class App extends React.Component<AppProps> {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
+
+  public buttonHandler = () => {
+    const {
+      state,
+      firstAction
+    } = this.props;
+
+    console.log('the state: ', state);
+
+    firstAction();
+  }
 
   public customIcon = (iconName: IconProp) => (
     <FontAwesomeIcon
@@ -206,12 +225,28 @@ class App extends React.Component<AppProps> {
             viverra maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
             ultrices sagittis orci a.
           </Typography>
+          <Button
+            onClick={this.buttonHandler}
+          >
+            Gica
+          </Button>
         </main>
       </div>
     );
   }
 }
 
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    firstAction: dispatch(new FirstAction('sugi pulica'))
+  };
+}
+
+const mapStateToProps = (state: any) => {
+  return state.toJS();
+}
+
 export default compose<React.ComponentClass<any>>(
   withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
 )(App);

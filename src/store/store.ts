@@ -2,6 +2,7 @@ import {createStore, applyMiddleware, compose, Store} from "redux";
 import Immutable, { fromJS } from 'immutable';
 import {routerMiddleware} from "connected-react-router";
 import createSagaMiddleware from 'redux-saga';
+import {reducers} from './reducer';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -19,7 +20,6 @@ export type PTStore = Store & {
 export default function configureStore({
   initialState = {},
   history,
-  reducers
 } = {} as any) {
   const middlewares = [
     sagaMiddleware,
