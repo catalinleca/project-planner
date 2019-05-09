@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   quotes: {}
 }
 
-export const reducers = (state: any = INITIAL_STATE, action: any) => {
+export const reducer = (state: any = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case ActionTypes.FIRST_ACTION:
       console.log('action: ', action);
@@ -15,6 +15,9 @@ export const reducers = (state: any = INITIAL_STATE, action: any) => {
       newState.quotes = action.payload.data;
 
       return newState;
+    case ActionTypes.FIRST_ACTION_SUCCEEDED:
+      console.log('oleee ole ole oa');
+      return state;
     default:
       return state;
   }

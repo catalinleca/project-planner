@@ -8,15 +8,21 @@ import {library} from "@fortawesome/fontawesome-svg-core";
 import {faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "./containers/AppWrapper/AppWrapper";
 import configureStore from './store/store';
-import {reducers} from './store/reducer';
+import {reducer} from './store/reducer';
 library.add(faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight)
 
 const initialState: object = {};
 const history = createHistory()
-const store = configureStore({
-  initialState,
+// const store = configureStore({
+//   initialState,
+//   history,
+// })
+
+const store = configureStore(
   history,
-})
+  initialState,
+)
+
 
 const app = (
   <AppWrapper

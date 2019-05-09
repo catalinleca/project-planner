@@ -1,6 +1,9 @@
 import * as React from 'react';
 import '../../App.css';
-import { compose } from 'redux';
+import {
+  compose,
+  Dispatch,
+} from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import {
@@ -122,9 +125,8 @@ class App extends React.Component<AppProps, any> {
       firstAction
     } = this.props;
 
-    console.log('the state: ', state);
-
     firstAction();
+
   }
 
   public customIcon = (iconName: IconProp) => (
@@ -238,15 +240,18 @@ class App extends React.Component<AppProps, any> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    firstAction: dispatch(new FirstAction('sugi pulica'))
+    firstAction: () => {
+      dispatch(FirstAction('sugi cuc'))
+    },
+    dispatch
   };
 }
 
 const mapStateToProps = (state: any) => {
-  return state.toJS();
+  return state;
 }
 
 export default compose<React.ComponentClass<any>>(
-  withStyles(styles, { withTheme: true }),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(styles, { withTheme: true })
 )(App);
