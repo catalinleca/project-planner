@@ -15,6 +15,7 @@ import {
   CssBaseline,
   AppBar,
   Toolbar,
+  Grid,
   IconButton,
   Typography,
   Drawer,
@@ -28,6 +29,9 @@ import {
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {FirstAction} from "../../store/action";
+import Module from "../../store/Module";
+import {createStructuredSelector} from "reselect";
+import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 
 const drawerWidth = 240;
 
@@ -108,6 +112,8 @@ interface IAppComponentProps {
 interface IAppProps {
   firstAction: any,
   state: any,
+  projects: any,
+  projectTitle: any
 }
 
 
@@ -143,11 +149,14 @@ class App extends React.Component<AppProps, any> {
   )
 
   render() {
-    const { classes, theme } = this.props;
+    const { classes, theme, projects, projectTitle } = this.props;
 
 
+    console.log('projects: ', projects);
+    console.log('projectTitle: ', projectTitle);
     return (
       <div className={classes.root}>
+        <Module/>
         <CssBaseline />
         <AppBar
           position="fixed"
@@ -254,8 +263,10 @@ const mapDispatchToProps = (dispatch: React.Dispatch<IAction>) => {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log('this: ', state);
-  return state;
+ return createStructuredSelector({
+   projects: makeSelectProjects(),
+   projectTitle: makeSelectProjectTitle()
+ })(state)
 }
 
 export default compose<React.ComponentClass<any>>(

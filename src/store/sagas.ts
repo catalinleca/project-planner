@@ -4,7 +4,6 @@ import { Map, List, fromJS } from 'immutable'
 import axios from 'axios';
 
 export function *sagaWatcher() {
-  console.log('redux-saga is running');
   yield takeEvery(ActionTypes.FIRST_ACTION, setSomething)
 }
 
