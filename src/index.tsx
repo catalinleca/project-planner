@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "./containers/AppWrapper/AppWrapper";
@@ -12,16 +12,16 @@ import {reducer} from './store/reducer';
 library.add(faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight)
 
 const initialState: object = {};
-const history = createHistory()
-// const store = configureStore({
-//   initialState,
-//   history,
-// })
-
-const store = configureStore(
-  history,
+const history = createBrowserHistory()
+const store = configureStore({
   initialState,
-)
+  history,
+})
+
+// const store = configureStore(
+//   history,
+//   initialState,
+// )
 
 
 const app = (

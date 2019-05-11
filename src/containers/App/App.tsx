@@ -31,6 +31,13 @@ import {FirstAction} from "../../store/action";
 
 const drawerWidth = 240;
 
+
+interface IAction {
+  type: string;
+  payload?: any;
+  callback?: (...args: any[]) => void;
+}
+
 const styles = (theme: Theme): StyleRules => ({
   root: {
     display: 'flex',
@@ -238,16 +245,16 @@ class App extends React.Component<AppProps, any> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: React.Dispatch<IAction>) => {
   return {
     firstAction: () => {
-      dispatch(FirstAction('sugi cuc'))
-    },
-    dispatch
+      dispatch(FirstAction())
+    }
   };
 }
 
 const mapStateToProps = (state: any) => {
+  console.log('this: ', state);
   return state;
 }
 

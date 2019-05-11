@@ -1,23 +1,36 @@
 // @ts-ignore
 import {ActionTypes} from "./action";
+import {fromJS} from "immutable";
+import {IMap} from "../interfaces/IMap/IMap";
 
-const INITIAL_STATE = {
-  quotes: {}
+interface ISpecification {
+  quotes: any;
+  projects: any;
+  selectedQuote: number;
+  selectedProject: number;
 }
 
-export const reducer = (state: any = INITIAL_STATE, action: any) => {
+const INITIAL_STATE = fromJS({
+  quotes: [],
+  projects: {},
+  selectedQuote: null,
+  selectedProject: null,
+});
+
+export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case ActionTypes.FIRST_ACTION:
-      console.log('action: ', action);
-      console.log('state: ', state);
-
-      const newState = {...state};
-      newState.quotes = action.payload.data;
-
-      return newState;
-    case ActionTypes.FIRST_ACTION_SUCCEEDED:
-      console.log('oleee ole ole oa');
+      console.log('FIRST_ACTION in reducer: ');
       return state;
+    case ActionTypes.FIRST_ACTION_SUCCEEDED:
+      const {
+        payload
+      } = action;
+
+      console.log('FIRST_ACTION_SUCCEEDED: ', payload);
+
+
+      return state.set('projects', payload);
     default:
       return state;
   }
