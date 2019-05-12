@@ -3,7 +3,7 @@ import {
   Theme,
   ListItemIcon,
   withStyles,
-  WithStyles, Typography, Grid,
+  WithStyles, Typography, Grid, ListItemText,
 } from '@material-ui/core';
 import {
   StyleRules
@@ -23,15 +23,91 @@ import {
 import {
   isObject,
 } from 'lodash';
+import { isWidthDown } from '@material-ui/core/withWidth';
+import styledj from 'styled-jss';
+import classnames from 'classnames';
+
+export const HEADER_HEIGHT_UNIT_MULTIPLIER = 7;
+export const SM_HEADER_HEIGHT_UNIT_MULTIPLIER = 8;
+export const SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 30;
+export const MD_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 12;
+export const SM_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 0;
+export const ANIMATION_SPEED = 0.5;
 
 const styles = (theme: Theme): StyleRules => ({
-  root: {}
+  menuItem: {
+    justifyContent: 'center',
+    height: theme.spacing.unit * 6,
+    paddingLeft: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit,
+  },
+  listItemTextColor: {
+    color: theme.palette.primary.contrastText,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  listItemIcon: {
+    width: 'auto',
+    height: 'auto',
+    opacity: 0.8,
+    margin: 0,
+    color: theme.palette.primary.main
+  },
+  listItemIconWidth: {
+    width: theme.spacing.unit * 2.5,
+    display: 'flex',
+    justifyContent: 'center',
+  },
 });
+
+const ListItemTextInterceptor = (props) => {
+  const {
+    // pull inputRef out of props that <Input> passes in
+    responsive, // eslint-disable-line no-unused-vars, react/prop-types
+    widthBreakpoint,
+    ...rest
+  } = props;
+
+  return <ListItemText {...rest} />;
+};
+
+
+const ResponsiveListItemText = styledj(ListItemTextInterceptor)(({theme, widthBreakpoint, responsive}) => {
+  return {
+    transition: `all ${ANIMATION_SPEED}s`,
+    marginLeft: theme.spacing.unit,
+    opacity: 1,
+    height: 'auto',
+    flex: 'auto',
+    width: '100%',
+    ...responsive
+      ? {
+        ...isWidthDown('sm', widthBreakpoint)
+          ? {
+            opacity: 0,
+            width: 0,
+            height: 0,
+            margin: 0,
+            padding: 0,
+            flex: '0 1 0',
+          }
+          : {
+            padding: `0 ${theme.spacing.unit * 2}px`,
+          }
+      }
+      : {
+        opacity: 1,
+      }
+  };
+});
+
 
 interface ICustomMenuItemComponentProps {
   to: string;
   iconProps: FontAwesomeIconProps;
   label: string;
+  width: any
 }
 
 //from state
@@ -45,7 +121,9 @@ class CustomMenuItem extends React.Component<CustomMenuItemType, {}> {
     const {
       to,
       iconProps,
-      label
+      label,
+      width: widthBreakpoint,
+      classes
     } = this.props;
 
     let linkProps = { };
@@ -58,14 +136,25 @@ class CustomMenuItem extends React.Component<CustomMenuItemType, {}> {
     return (
       <ListItem
         button={true}
+        disableGutters={true}
         {...linkProps}
+        classes={{ root: classes.menuItem }}
       >
-        <ListItemIcon>
-          <FontAwesomeIcon {...iconProps}/>
-        </ListItemIcon>
-        <Typography>
-          {label}
-        </Typography>
+        <Grid className={classes.listItemIconWidth}>
+          <ListItemIcon>
+            <Grid className={classnames(classes.listItemTextColor, classes.listItemIcon)}>
+              <FontAwesomeIcon {...iconProps}/>
+            </Grid>
+          </ListItemIcon>
+        </Grid>
+        <ResponsiveListItemText
+          widthBreakpoint={widthBreakpoint}
+          primary={label}
+          primaryTypographyProps={{
+            variant: 'body1',
+          }}
+          responsive={true}
+        />
       </ListItem>
     );
   }

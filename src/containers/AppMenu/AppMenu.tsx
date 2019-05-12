@@ -26,12 +26,14 @@ import {
   Theme,
   ListItemText, Button,
 } from '@material-ui/core'
+import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {FirstAction} from "../../store/action";
-import Module from "../../store/Module";
 import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
+import { default as styledj } from 'styled-jss';
+import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 
 const drawerWidth = 240;
 
@@ -102,7 +104,138 @@ const styles = (theme: Theme): StyleRules => ({
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
   },
+  drawerPaper: {
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+    background: 'none',
+    border: 'none',
+    overflow: 'hidden;',
+    flex: '1 0 0px',
+  },
 });
+
+export const HEADER_HEIGHT_UNIT_MULTIPLIER = 7;
+export const SM_HEADER_HEIGHT_UNIT_MULTIPLIER = 8;
+export const SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 30;
+export const MD_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 12;
+export const SM_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER = 0;
+export const ANIMATION_SPEED = 0.5;
+
+
+const AppBarInterceptor = (props) => {
+  const {
+    widthBreakpoint,
+    ...rest
+  } = props;
+
+  return <AppBar {...rest} />;
+};
+
+
+const AppBarWrapper = styledj(AppBarInterceptor)(({theme, widthBreakpoint}) => ({
+  maxHeight: `${theme.spacing.unit * HEADER_HEIGHT_UNIT_MULTIPLIER}px`,
+  transition: `padding-left ${ANIMATION_SPEED}s`,
+  width: '100%',
+  paddingLeft: `${theme.spacing.unit * SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+
+  ...isWidthDown('sm', widthBreakpoint)
+  && {
+    paddingLeft: `${theme.spacing.unit * MD_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+  ...isWidthDown('xs', widthBreakpoint)
+  && {
+    paddingLeft: `${theme.spacing.unit * SM_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+  ...isWidthUp('xs', widthBreakpoint)
+  && {
+    maxHeight: `${theme.spacing.unit * SM_HEADER_HEIGHT_UNIT_MULTIPLIER}px`,
+  },
+}));
+const DrawerInterceptor = (props) => {
+  const {
+    widthBreakpoint,
+    ...rest
+  } = props;
+
+  return <Drawer {...rest} />;
+};
+
+const ResponsiveDrawer = styledj(DrawerInterceptor)(({theme, widthBreakpoint}) => ({
+  boxShadow: `${[theme.shadows[12], theme.shadows[12]].join(',')}`,
+  zIndex: `${theme.zIndex.drawer}`,
+  borderRight: `${theme.palette.primary[900]}`,
+  overflow: 'auto',
+  overflowX: 'hidden',
+  transition: `width ${ANIMATION_SPEED}s`,
+  width: `${theme.spacing.unit * SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  ...isWidthDown('sm', widthBreakpoint)
+  && {
+    width: `${theme.spacing.unit * MD_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+  ...isWidthDown('xs', widthBreakpoint)
+  && {
+    width: `${theme.spacing.unit * SM_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+  display: 'flex',
+  flexFlow: 'column nowrap',
+  position: 'absolute',
+  height: '100%',
+}));
+
+const ResponsiveContentContainer = styledj('div')(({theme, widthBreakpoint}) => ({
+  height: '100%',
+  position: 'absolute',
+  left: 0,
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexFlow: 'row nowrap',
+  transition: `padding-left ${ANIMATION_SPEED}s`,
+  width: '100%',
+  paddingLeft: `${theme.spacing.unit * SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+
+  ...isWidthDown('sm', widthBreakpoint)
+  && {
+    paddingLeft: `${theme.spacing.unit * MD_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+
+
+  ...isWidthDown('xs', widthBreakpoint)
+  && {
+    paddingLeft: `${theme.spacing.unit * SM_SIDEBAR_THEME_SPACING_UNIT_MULTIPLIER}px`,
+  },
+}));
+
+const MobileMenu = styledj('div')(({theme, widthBreakpoint, menuOpen}) => ({
+  transition: `all ${ANIMATION_SPEED}s`,
+  display: 'none',
+  minWidth: 0,
+  paddingTop: `${theme.spacing.unit * HEADER_HEIGHT_UNIT_MULTIPLIER}px`,
+  ...isWidthDown('xs', widthBreakpoint)
+  && {
+    display: 'flex',
+    width: 0,
+    flex: menuOpen ? '1 0 auto' : '0 1 0',
+  },
+  ...isWidthUp('xs', widthBreakpoint)
+  && {
+    paddingTop: `${theme.spacing.unit * SM_HEADER_HEIGHT_UNIT_MULTIPLIER}px`,
+  },
+}));
+
+const ContentWrapper = styledj('div')(({theme, widthBreakpoint, menuOpen}) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  transition: `all ${ANIMATION_SPEED}s`,
+  overflow: 'auto',
+  flex: 1,
+  ...isWidthDown('xs', widthBreakpoint)
+  && {
+    width: 0,
+    flex: menuOpen ? 0 : 1,
+  },
+}));
+
 
 interface IAppMenuComponentProps {
   classes: any;
@@ -119,20 +252,24 @@ interface IAppMenuProps extends IAppMenuComponentProps{
 }
 
 
-type AppMenuProps = IAppMenuComponentProps & IAppMenuProps & WithStyles<keyof ReturnType<typeof styles>>;
+type AppMenuProps = IAppMenuComponentProps & WithWidth & IAppMenuProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class AppMenu extends React.Component<AppMenuProps> {
   state = {
-    open: false,
+    isOpen: true,
   };
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({ isOpen: true });
   };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    this.setState({ isOpen: false });
   };
+
+  public toggleMenu = () =>  {
+    this.setState({ isOpen: !this.state.isOpen });
+  }
 
   public buttonHandler = () => {
     const {
@@ -151,62 +288,61 @@ class AppMenu extends React.Component<AppMenuProps> {
   )
 
   render() {
-    const { classes, theme, projects, projectTitle, menuItems } = this.props;
+    const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint } = this.props;
 
+    const {isOpen} = this.state;
 
     console.log('projects: ', projects);
     console.log('projectTitle: ', projectTitle);
     return (
       <div className={classes.root}>
-        <Module/>
         <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classNames(classes.appBar, {
-            [classes.appBarShift]: this.state.open,
-          })}
+        <AppBarWrapper
+          widthBreakpoint={widthBreakpoint}
         >
-          <Toolbar disableGutters={!this.state.open}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, {
-                [classes.hide]: this.state.open,
-              })}
-            >
-              {this.customIcon('bars')}
-            </IconButton>
-            <Typography variant="h6" color="inherit" noWrap>
-              Mini variant drawer
-            </Typography>
+          <Toolbar>
+            {/*{HeaderContents}*/}
+            {
+              isWidthDown('xs', widthBreakpoint) &&
+              <IconButton onClick={this.toggleMenu} aria-label='Toggle Application Menu'>
+                  <FontAwesomeIcon icon='bars' />
+              </IconButton>
+            }
           </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          className={classNames(classes.drawer, {
-            [classes.drawerOpen]: this.state.open,
-            [classes.drawerClose]: !this.state.open,
-          })}
+        </AppBarWrapper>
+        <ResponsiveDrawer
+          widthBreakpoint={widthBreakpoint}
+          variant='permanent'
           classes={{
-            paper: classNames({
-              [classes.drawerOpen]: this.state.open,
-              [classes.drawerClose]: !this.state.open,
-            }),
+            paper: classes.drawerPaper,
           }}
-          open={this.state.open}
+          anchor='left'
         >
-          <div className={classes.toolbar}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'rtl' ? this.customIcon('chevron-right') : this.customIcon('chevron-left')}
-            </IconButton>
-          </div>
-          <Divider />
           <List>
             {menuItems}
           </List>
-          <Divider />
-        </Drawer>
+        </ResponsiveDrawer>
+        <ResponsiveContentContainer
+          widthBreakpoint={widthBreakpoint}
+        >
+          <MobileMenu
+            menuOpen={isOpen}
+            widthBreakpoint={widthBreakpoint}
+            style={{
+              background: `linear-gradient(180deg, ${theme.palette.primary[500]} 0%, ${theme.palette.primary[700]} 25% )`,
+            }}
+          >
+            <List>
+              {menuItems}
+            </List>
+          </MobileMenu>
+          <ContentWrapper
+            menuOpen={isOpen}
+            widthBreakpoint={widthBreakpoint}
+          >
+            {this.props.children}
+          </ContentWrapper>
+        </ResponsiveContentContainer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Button
@@ -238,6 +374,7 @@ const mapStateToProps = (state: any) => {
 }
 
 export default compose<React.ComponentClass<any>>(
-  connect(mapStateToProps, mapDispatchToProps),
-  withStyles(styles, { withTheme: true })
+  withWidth(),
+  withStyles(styles, { withTheme: true }),
+  connect(mapStateToProps, mapDispatchToProps)
 )(AppMenu);

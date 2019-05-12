@@ -11,7 +11,8 @@ import {
 import {StyleRules} from "@material-ui/core/styles";
 import AppMenu from "../AppMenu/AppMenu";
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
-
+import Module from "../../store/Module";
+import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -32,28 +33,34 @@ interface IAppProps {
 }
 
 
-type AppProps = IAppComponentProps & IAppProps & WithStyles<keyof ReturnType<typeof styles>>;
+type AppProps = IAppComponentProps & WithWidth & IAppProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-const App: React.FC<AppProps> = () => {
+const App: React.FC<AppProps> = (props) => {
+
+  const { width } = props;
   const menuItems = <React.Fragment>
     <CustomMenuItem
       to='/'
       iconProps={{icon: 'inbox'}}
-      label='home'
+      label='Home'
+      width={width}
     />
     <CustomMenuItem
       to='/projects'
       iconProps={{icon: 'envelope'}}
-      label='home'
+      label='Projects'
+      width={width}
     />
     <CustomMenuItem
       to='/users'
       iconProps={{icon: 'trash'}}
-      label='home'
+      label='Users'
+      width={width}
     />
   </React.Fragment>
   return (
     <React.Fragment>
+      <Module/>
       <AppMenu
         menuItems={menuItems}
       >
@@ -64,5 +71,6 @@ const App: React.FC<AppProps> = () => {
 
 
 export default compose<React.ComponentClass<any>>(
+  withWidth(),
   withStyles(styles, {withTheme: true})
 )(App);
