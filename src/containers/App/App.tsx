@@ -13,6 +13,12 @@ import AppMenu from "../AppMenu/AppMenu";
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import Module from "../../store/Module";
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
+import {
+  Route,
+  Switch,
+} from 'react-router-dom';
+import {PROJECT_DETAILS} from "../../constants";
+import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -57,6 +63,12 @@ const App: React.FC<AppProps> = (props) => {
       label='Users'
       width={width}
     />
+    <CustomMenuItem
+      to={PROJECT_DETAILS}
+      iconProps={{icon: 'bars'}}
+      label='Project Details'
+      width={width}
+    />
   </React.Fragment>
   return (
     <React.Fragment>
@@ -64,6 +76,7 @@ const App: React.FC<AppProps> = (props) => {
       <AppMenu
         menuItems={menuItems}
       >
+          <Route path={PROJECT_DETAILS} component={ProjectDetailsPage} />
       </AppMenu>
     </React.Fragment>
   );

@@ -113,6 +113,57 @@ const styles = (theme: Theme): StyleRules => ({
     overflow: 'hidden;',
     flex: '1 0 0px',
   },
+
+
+
+  flex: {
+    flex: 1,
+  },
+  hideMobile: {
+    transition: `all ${ANIMATION_SPEED}s`,
+    opacity: 1,
+    [theme.breakpoints.up('md')]: {
+      opacity: 0,
+    },
+  },
+  showMobile: {
+    transition: `all ${ANIMATION_SPEED}s`,
+    opacity: 0,
+    [theme.breakpoints.up('md')]: {
+      opacity: 1,
+    },
+  },
+  drawerHeader: {
+    ...theme.mixins.toolbar,
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  content2: {
+    backgroundColor: theme.palette.background.default,
+    width: '100%',
+    flex: '1 0 auto',
+    position: 'relative',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    flexDirection: 'column'
+  },
+  footerWrapper: {
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    overflow: 'auto',
+    overflowX: 'hidden',
+    height: '100%',
+    marginTop: theme.spacing.unit * HEADER_HEIGHT_UNIT_MULTIPLIER,
+    [theme.breakpoints.up('sm')]: {
+      marginTop: theme.spacing.unit * SM_HEADER_HEIGHT_UNIT_MULTIPLIER,
+    },
+  },
+  footer: {
+    borderTop: '1px solid #cdcdcd',
+    backgroundColor: '#fafafa',
+    width: '100%',
+    bottom: 0,
+  },
 });
 
 export const HEADER_HEIGHT_UNIT_MULTIPLIER = 7;
@@ -299,6 +350,7 @@ class AppMenu extends React.Component<AppMenuProps> {
         <CssBaseline />
         <AppBarWrapper
           widthBreakpoint={widthBreakpoint}
+          style={{backgroundColor: 'white'}}
         >
           <Toolbar>
             {/*{HeaderContents}*/}
@@ -340,19 +392,22 @@ class AppMenu extends React.Component<AppMenuProps> {
             menuOpen={isOpen}
             widthBreakpoint={widthBreakpoint}
           >
-            {this.props.children}
+            <div
+              className={classNames('footerWrapper', classes.footerWrapper)}
+            >
+              <div className={classes.content}>
+                { this.props.children }
+              </div>
+            </div>
           </ContentWrapper>
         </ResponsiveContentContainer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={this.buttonHandler}
-          >
-            Gica
-          </Button>
-        </main>
+          {/*<Button*/}
+          {/*  variant='contained'*/}
+          {/*  color='primary'*/}
+          {/*  onClick={this.buttonHandler}*/}
+          {/*>*/}
+          {/*  Gica*/}
+          {/*</Button>*/}
       </div>
     );
   }
