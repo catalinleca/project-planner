@@ -13,6 +13,7 @@ import {
   compose,
 } from 'redux';
 import WidgetDetailStyle from "../../components/WidgetDetailStyle/WidgetDetailStyle";
+import TaskComponent from "../../containers/TaskComponent/TaskComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -91,11 +92,12 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
             >
               <Grid
                 // ProjectInfo
+                // leaderii scrumu pzdms
                 item={true}
                 container={true}
                 direction='column'
                 xs={12}
-                sm={6}
+                sm={8}
                 className={classes.widgetStyle}
               >
                 <Paper
@@ -117,7 +119,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                   >
                     <Grid
                       container={true}
-                      direction='row'
+                      direction='column'
                     >
                       <Grid>PLM</Grid>
                       <Grid>PLM</Grid>
@@ -125,6 +127,76 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                       <Grid>PLM</Grid>
                       <Grid>PLM</Grid>
                     </Grid>
+                  </WidgetDetailStyle>
+                </Paper>
+              </Grid>
+              <Grid
+                // Due Date tasks
+                // My user page like in jira
+                item={true}
+                container={true}
+                direction='column'
+                xs={12}
+                sm={4}
+                className={classes.widgetStyle}
+              >
+                <Paper
+                  elevation={0}
+                  classes={{
+                    root: classes.widgetStylePaper
+                  }}
+                >
+                  <WidgetDetailStyle
+                    header={
+                      <Grid container={true}>
+                        <Grid container={true} item={true} xs={true} alignItems='center'>
+                          <Typography variant='h6'>
+                            Due Dates
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    }
+                  >
+                    <Grid
+                      container={true}
+                      direction='column'
+                    >
+                      <Grid>PLT</Grid>
+                      <Grid>PLT</Grid>
+                      <Grid>PLT</Grid>
+                      <Grid>PLT</Grid>
+                      <Grid>PLT</Grid>
+                    </Grid>
+                  </WidgetDetailStyle>
+                </Paper>
+              </Grid>
+              <Grid
+                // Tasks
+                item={true}
+                container={true}
+                direction='column'
+                xs={12}
+                className={classes.widgetStyle}
+              >
+                <Paper
+                  elevation={0}
+                  classes={{
+                    root: classes.widgetStylePaper
+                  }}
+                >
+                  <WidgetDetailStyle
+                    header={
+                      <Grid container={true}>
+                        <Grid container={true} item={true} xs={true} alignItems='center'>
+                          <Typography variant='h6'>
+                            Tasks
+
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    }
+                  >
+                    <TaskComponent/>
                   </WidgetDetailStyle>
                 </Paper>
               </Grid>
