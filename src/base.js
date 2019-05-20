@@ -1,17 +1,27 @@
 import Rebase from 're-base';
 import firebase from 'firebase';
 
-const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_DOMAIN,
-    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
-    appId: process.env.REACT_APP_FIRBASE_APP_ID
+export const firebaseConfig = {
+    apiKey: "AIzaSyDLjoaU9S17STr3CpdYbTAi3p34A5wWVjs",
+    authDomain: "tracker-d183f.firebaseapp.com",
+    databaseURL: "https://tracker-d183f.firebaseio.com",
+    projectId: "tracker-d183f",
+    storageBucket: "tracker-d183f.appspot.com",
+    messagingSenderId: "589668992589",
+    appId: "1:589668992589:web:bc525fbed8c9615e"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
-const base = Rebase.createClass(app.database());
+export const userConfig = {
+    userProfile: 'users',
+    enableLogging: false
+}
 
-export { base };
+firebase.initializeApp(firebaseConfig);
+firebase.firestore().settings({timestampsInSnapshots: true});
+
+export default firebase;
+
+// const app = firebase.initializeApp(firebaseConfig);
+// const base = Rebase.createClass(app.database());
+//
+// export { base };

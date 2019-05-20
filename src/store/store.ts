@@ -3,7 +3,12 @@ import Immutable, { fromJS } from 'immutable';
 import {routerMiddleware} from "connected-react-router";
 import createSagaMiddleware from 'redux-saga';
 import {reducer} from './reducer';
-import rootSaga, {sagaWatcher} from "./sagas";
+import rootSaga from "./sagas";
+import { reduxFirestore, getFirestore } from 'redux-firestore';
+import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
+import firebase from '../base';
+import { firebaseConfig } from "../base";
+import { userConfig } from "../base";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -33,6 +38,14 @@ export type PTStore = Store & {
 //   return store;
 // }
 
+function* helloSaga(getFirebase) {
+  try {
+    yield getFirebase().push('/some/path', { nice: 'work!' })
+  } catch(err) {
+    console.log('Error in saga!:', err)
+  }
+}
+
 export default function configureStore({
   initialState = {},
   history,
@@ -46,6 +59,8 @@ export default function configureStore({
 
   const enhancers = [
     applyMiddleware(...middlewares),
+    reduxFirestore(firebase),
+    reactReduxFirebase(firebase, userConfig)
   ];
 
   const composeEnhancers =
@@ -62,7 +77,7 @@ export default function configureStore({
     composeEnhancers(...enhancers)
   );
 
-  store.runSaga = sagaMiddleware.run(rootSaga);
+  store.runSaga = sagaMiddleware.run(rootSaga, {getFirestore, getFirebase});
   store.injectedReducers = {
     ...reducer,
   }

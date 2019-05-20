@@ -5,9 +5,10 @@ export enum ActionTypes {
 	FIRST_ACTION_SUCCEEDED = 'FIRST_ACTION_SUCCEEDED'
 }
 //
-export const FirstAction = () => ({
-	type: ActionTypes.FIRST_ACTION,
-})
+export const FirstAction = () => {
+
+	return ({	type: ActionTypes.FIRST_ACTION })
+}
 
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
