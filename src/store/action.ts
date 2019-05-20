@@ -2,9 +2,11 @@ import {IAction} from "../interfaces";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
-	FIRST_ACTION_SUCCEEDED = 'FIRST_ACTION_SUCCEEDED'
+	FIRST_ACTION_SUCCEEDED = 'FIRST_ACTION_SUCCEEDED',
+	MY_API_CALL = 'MY_API_CALL',
 }
 //
+
 export const FirstAction = () => {
 
 	return ({	type: ActionTypes.FIRST_ACTION })
@@ -14,6 +16,11 @@ export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
 	payload
 })
+
+export const MyApiCallAction = (payload: any) => ({
+	type: ActionTypes.MY_API_CALL,
+})
+
 // export class FirstAction implements IAction {
 // 	public readonly type = ActionTypes.FIRST_ACTION;
 //

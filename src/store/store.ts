@@ -77,7 +77,7 @@ export default function configureStore({
     composeEnhancers(...enhancers)
   );
 
-  store.runSaga = sagaMiddleware.run(rootSaga, {getFirestore, getFirebase});
+  store.runSaga = sagaMiddleware.run(rootSaga);
   store.injectedReducers = {
     ...reducer,
   }

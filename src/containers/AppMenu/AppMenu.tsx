@@ -422,6 +422,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<IAction>) => {
   };
 }
 
+
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
     projects: makeSelectProjects(),
