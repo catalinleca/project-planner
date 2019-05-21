@@ -4,8 +4,23 @@ export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
 	FIRST_ACTION_SUCCEEDED = 'FIRST_ACTION_SUCCEEDED',
 	MY_API_CALL = 'MY_API_CALL',
+	CREATE_PROJECT = 'CREATE_PROJECT',
 }
 //
+
+export const createProject = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const firestore = getFirestore();
+	firestore.collection('projects').add({
+		...project,
+		firstName: 'da',
+		nameId: 123
+	}).then( () => {
+		dispatch({ type: ActionTypes.CREATE_PROJECT })
+	}).catch( err => {
+		console.log('trolol');
+	})
+}
 
 export const FirstAction = () => {
 

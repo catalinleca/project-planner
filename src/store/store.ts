@@ -9,6 +9,8 @@ import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
 import firebase from '../base';
 import { firebaseConfig } from "../base";
 import { userConfig } from "../base";
+import thunk from 'redux-thunk';
+
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -52,6 +54,7 @@ export default function configureStore({
 } = {} as any) {
   const middlewares = [
     sagaMiddleware,
+    thunk.withExtraArgument({getFirebase, getFirestore}),
     routerMiddleware(history)
   ]
 
