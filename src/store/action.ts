@@ -1,4 +1,4 @@
-import {IAction} from "../interfaces";
+import {IAction} from "../utils/interfaces";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',

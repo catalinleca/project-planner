@@ -1,7 +1,7 @@
 // @ts-ignore
 import {ActionTypes} from "./action";
 import {fromJS} from "immutable";
-import {IMap} from "../interfaces/IMap/IMap";
+import {IMap} from "../utils/interfaces/IMap/IMap";
 
 export interface ISpecification {
   quotes: any;

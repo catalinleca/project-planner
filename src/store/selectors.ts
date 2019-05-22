@@ -8,7 +8,7 @@ import {
 } from 'reselect';
 import {
   IMap,
-} from '../interfaces';
+} from '../utils/interfaces';
 
 let initTime;
 

@@ -23,7 +23,7 @@ import saga from './sagas';
 import {
   IAction,
   IMap,
-} from '../interfaces';
+} from '../utils/interfaces';
 // import {
 //   safeStringify,
 // } from 'ats-utils/src';

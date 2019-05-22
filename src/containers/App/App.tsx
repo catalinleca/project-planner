@@ -17,7 +17,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {PROJECT_DETAILS} from "../../constants";
+import {PROJECT_DETAILS} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 
 const styles = (theme: Theme): StyleRules => ({
