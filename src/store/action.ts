@@ -8,6 +8,42 @@ export enum ActionTypes {
 }
 //
 
+
+export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	console.log('ba du te dreq');
+
+	// firestore.collection('projects').add({
+	// 	name: 'First Real Test Name Project',
+	// 	createdBy: 453,
+	// 	createdDate: new Date(),
+	// 	leadSource: [
+	// 		'Jimmy lead 1',
+	// 		'Jimmy lead 2',
+	// 	],
+	// 	modifiedBy: null,
+	// 	modifiedDate: null,
+	// 	projectPhase: 'beginning',
+	// 	status: 'In Development',
+	// 	keyContacts: [ 342, 122, 12 ],
+	// 	dueData: '17-09-2019',
+	// 	sprint: 1,
+	firestore.collection('users').add({
+		firstName: 'John',
+		lastName: 'Jhin',
+		email: 'john.jhin@mail.com',
+		mobilePhone: '333 444 2211',
+		userHash: 'JJ',
+		username: 'JJ123',
+		tasks: [1,2,3,4]
+	}).then( resp => {
+		console.log(resp);
+	}).catch( err => {
+		console.log(err);
+	})
+
+}
 export const createProject = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const firestore = getFirestore();

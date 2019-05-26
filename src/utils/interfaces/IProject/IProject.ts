@@ -3,14 +3,16 @@ export interface IProject {
   name: string;
   createdBy: object;
   createdDate: string;
-  doneby: object;
-  leadSource: object[];
-  location: object;
+  leadSource: object[]; // vedem daca doar stringuri sau useri
   modifiedBy: object;
   modifiedDate: object;
   projectPhase: object;
   // tags: List<object>;
-  status: number;
+  status: any;
   keyContacts: object;
-  collaborators: any;
+  collaborators: any; // userii
+  dueData: any;
+  sprint: number;
+
+  tasks: any; // possible
 }

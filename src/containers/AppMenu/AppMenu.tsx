@@ -29,7 +29,7 @@ import {
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {createProject, FirstAction} from "../../store/action";
+import {createProject, doTheThingAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
@@ -297,6 +297,7 @@ interface IAppMenuComponentProps {
 interface IAppMenuProps extends IAppMenuComponentProps{
   firstAction: any;
   createProject: any;
+  doTheThing: any;
   state: any;
   projects: any;
   projectTitle: any;
@@ -327,13 +328,16 @@ class AppMenu extends React.Component<AppMenuProps> {
     const {
       state,
       firstAction,
-      createProject
+      createProject,
+      doTheThing
     } = this.props;
 
-    createProject({
-      title: 'dadada',
-      content: 'blahbalhba'
-    })
+    // createProject({
+    //   title: 'dadada',
+    //   content: 'blahbalhba'
+    // })
+
+    doTheThing();
 
   }
 
@@ -422,7 +426,8 @@ class AppMenu extends React.Component<AppMenuProps> {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     firstAction: () => { dispatch(FirstAction()) },
-    createProject: (project) => { dispatch(createProject(project)) }
+    createProject: (project) => { dispatch(createProject(project)) },
+    doTheThing: (project) => { dispatch(doTheThingAction()) }
   };
 }
 
