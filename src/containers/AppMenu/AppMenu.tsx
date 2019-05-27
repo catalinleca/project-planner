@@ -351,9 +351,9 @@ class AppMenu extends React.Component<AppMenuProps> {
     const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint } = this.props;
 
     const {isOpen} = this.state;
-
-    console.log('projects: ', projects);
-    console.log('projectTitle: ', projectTitle);
+    //
+    // console.log('projects: ', projects);
+    // console.log('projectTitle: ', projectTitle);
     return (
       <div className={classes.root}>
         <CssBaseline />

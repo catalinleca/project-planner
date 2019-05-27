@@ -1,12 +1,15 @@
 import {IAction} from "../utils/interfaces";
+import {fromJS} from "immutable";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
 	FIRST_ACTION_SUCCEEDED = 'FIRST_ACTION_SUCCEEDED',
 	MY_API_CALL = 'MY_API_CALL',
 	CREATE_PROJECT = 'CREATE_PROJECT',
+	GET_PROJECTS = 'GET_PROJECTS',
 }
 //
+
 
 
 export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
@@ -58,6 +61,21 @@ export const createProject = (project) => (dispatch, getState, {getFirebase, get
 	})
 }
 
+export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	firestore.collection('projects').get()
+		.then( resp => {
+			const data = resp.docs.map( doc => doc.data())
+			const immutableData = fromJS(data);
+			dispatch({
+				type: ActionTypes.GET_PROJECTS,
+				payload: immutableData
+			})
+		})
+		.catch( err => console.log(err))
+}
+
 export const FirstAction = () => {
 
 	return ({	type: ActionTypes.FIRST_ACTION })
@@ -71,17 +89,3 @@ export const FirstActionSucceeded = (payload: any) => ({
 export const MyApiCallAction = (payload: any) => ({
 	type: ActionTypes.MY_API_CALL,
 })
-
-// export class FirstAction implements IAction {
-// 	public readonly type = ActionTypes.FIRST_ACTION;
-//
-// 	constructor(
-// 		public payload?: any
-// 	) {}
-// }
-//
-// export class FirstActionSucceeded implements IAction {
-// 	public readonly type = ActionTypes.FIRST_ACTION_SUCCEEDED;
-// }
-//
-// type Actions = FirstAction | FirstActionSucceeded

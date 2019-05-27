@@ -4,14 +4,14 @@ import {fromJS} from "immutable";
 import {IMap} from "../utils/interfaces/IMap/IMap";
 
 export interface ISpecification {
-  quotes: any;
+  users: any;
   projects: any;
   selectedQuote: number;
   selectedProject: number;
 }
 
 const INITIAL_STATE = fromJS({
-  quotes: [],
+  users: [],
   projects: {},
   selectedQuote: null,
   selectedProject: null,
@@ -19,8 +19,8 @@ const INITIAL_STATE = fromJS({
 
 export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any) => {
   switch (action.type) {
-    case ActionTypes.FIRST_ACTION:
-      return state;
+    case ActionTypes.GET_PROJECTS:
+      return state.set('projects', action.payload);
     case ActionTypes.FIRST_ACTION_SUCCEEDED:
       const {
         payload
