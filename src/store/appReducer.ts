@@ -1,11 +1,12 @@
 // @ts-ignore
 import {ActionTypes} from "./action";
 import {fromJS} from "immutable";
-import {IMap} from "../interfaces/IMap/IMap";
+import {IMap} from "../interfaces";
 
 export interface ISpecification {
   quotes: any;
   projects: any;
+  firestore: any;
   selectedQuote: number;
   selectedProject: number;
 }
@@ -13,11 +14,12 @@ export interface ISpecification {
 const INITIAL_STATE = fromJS({
   quotes: [],
   projects: {},
+  firestore: {},
   selectedQuote: null,
   selectedProject: null,
 });
 
-export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any) => {
+export const appReducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case ActionTypes.FIRST_ACTION:
       return state;
@@ -33,4 +35,4 @@ export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any
 }
 
 
-export default reducer;
+export default appReducer;

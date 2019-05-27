@@ -13,7 +13,9 @@ export const firebaseConfig = {
 
 export const userConfig = {
     userProfile: 'users',
-    enableLogging: false
+    enableLogging: false,
+    useFirestoreForProfile: true
+
 }
 
 firebase.initializeApp(firebaseConfig);

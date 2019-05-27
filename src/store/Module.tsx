@@ -1,6 +1,6 @@
 /*
  * AccountModule
- * Put this component somewhere in your tree to include project reducer / sagas
+ * Put this component somewhere in your tree to include project appReducer / sagas
  *
  */
 
@@ -17,7 +17,7 @@ import {
 import {
   compose
 } from 'redux';
-import reducer, { ISpecification } from './reducer';
+import appReducer, { ISpecification } from './appReducer';
 import saga from './sagas';
 
 import {

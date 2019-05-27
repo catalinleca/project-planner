@@ -43,7 +43,6 @@ class AppWrapper extends React.Component<AppWrapperProps> {
         component: ConnectedRouter,
         props: {
           history,
-          // context: ReactReduxContext,
         },
       },
       {
@@ -56,7 +55,6 @@ class AppWrapper extends React.Component<AppWrapperProps> {
         component: Provider,
         props: {
           store,
-          // context: ReactReduxContext,
         },
       },
       {

@@ -32,6 +32,7 @@ export const selectReducerState = () => (state: any) => {
 export const makeSelectProjects = () => createSelector(
   selectReducerState(),
   (state: any) => {
+    console.log(state);
     return state.get('projects')  || OrderedSet<number>();
   }
 );

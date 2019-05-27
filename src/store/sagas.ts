@@ -29,7 +29,7 @@ export function *setSomething(action: any) {
   // let newMap = fromJS(obj);
 
   const obj = {
-    name: "Los Angeles",
+    name: "Los Vegas",
     state: "CA",
     country: "USA"
   }

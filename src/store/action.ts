@@ -8,12 +8,12 @@ export enum ActionTypes {
 }
 //
 
-export const createProject = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const createProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
 		...project,
-		firstName: 'da',
+		firstName: 'of courses',
 		nameId: 123
 	}).then( () => {
 		dispatch({ type: ActionTypes.CREATE_PROJECT })
@@ -23,7 +23,6 @@ export const createProject = (project) => (dispatch, getState, {getFirebase, get
 }
 
 export const FirstAction = () => {
-
 	return ({	type: ActionTypes.FIRST_ACTION })
 }
 

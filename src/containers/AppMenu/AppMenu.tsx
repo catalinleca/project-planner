@@ -5,6 +5,7 @@ import {
   Dispatch,
 } from 'redux';
 import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
 import classNames from 'classnames';
 import {
   FontAwesomeIcon
@@ -29,7 +30,7 @@ import {
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {createProject, FirstAction} from "../../store/action";
+import {createProjectAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
@@ -331,7 +332,7 @@ class AppMenu extends React.Component<AppMenuProps> {
     } = this.props;
 
     createProject({
-      title: 'dadada',
+      title: 'tu sugi pulas',
       content: 'blahbalhba'
     })
 
@@ -342,6 +343,10 @@ class AppMenu extends React.Component<AppMenuProps> {
       icon={iconName}
     />
   )
+
+  componentDidMount() {
+    console.log('projects: ', this.props)
+  }
 
   render() {
     const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint } = this.props;
@@ -419,23 +424,34 @@ class AppMenu extends React.Component<AppMenuProps> {
   }
 }
 
+const mapStateToProps = (state) => {
+  console.log('in mapStateToProps: ', state);
+  return {
+    state
+  }
+}
+
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
+    dispatch,
     firstAction: () => { dispatch(FirstAction()) },
-    createProject: (project) => { dispatch(createProject(project)) }
+    createProject: (project) => { dispatch(createProjectAction(project)) }
   };
 }
 
 
-const mapStateToProps = (state: any) => {
-  return createStructuredSelector({
-    projects: makeSelectProjects(),
-    projectTitle: makeSelectProjectTitle()
-  })(state)
-}
+// const mapStateToProps = (state: any) => {
+//   return createStructuredSelector({
+//     projects: makeSelectProjects(),
+//     projectTitle: makeSelectProjectTitle()
+//   })(state)
+// }
 
 export default compose<React.ComponentClass<any>>(
   withWidth(),
   withStyles(styles, { withTheme: true }),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect([
+    { collection: 'projects'}
+  ])
 )(AppMenu);

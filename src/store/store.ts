@@ -1,8 +1,8 @@
 import {createStore, applyMiddleware, compose, Store} from "redux";
 import Immutable, { fromJS } from 'immutable';
-import {routerMiddleware} from "connected-react-router";
+// import {routerMiddleware} from "connected-react-router";
 import createSagaMiddleware from 'redux-saga';
-import {reducer} from './reducer';
+import {appReducer} from './appReducer';
 import rootSaga from "./sagas";
 import { reduxFirestore, getFirestore } from 'redux-firestore';
 import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
@@ -10,7 +10,8 @@ import firebase from '../base';
 import { firebaseConfig } from "../base";
 import { userConfig } from "../base";
 import thunk from 'redux-thunk';
-
+import { combineReducers } from "redux";
+import { firestoreReducer } from "redux-firestore";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -31,7 +32,7 @@ export type PTStore = Store & {
 //
 //   const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 //
-//   const store = createStore(reducer, data, composeEnhancers(
+//   const store = createStore(appReducer, data, composeEnhancers(
 //     applyMiddleware(...middleware)
 //   ));
 //
@@ -55,7 +56,7 @@ export default function configureStore({
   const middlewares = [
     sagaMiddleware,
     thunk.withExtraArgument({getFirebase, getFirestore}),
-    routerMiddleware(history)
+    // routerMiddleware(history)
   ]
 
   // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -74,15 +75,20 @@ export default function configureStore({
         shouldHotReload: false,
       }) : compose;
 
+  const reducers = combineReducers({
+    appReducer: appReducer,
+    firestore: firestoreReducer
+  })
+
   const store: PTStore = createStore(
-    reducer,
-    fromJS(initialState),
+    reducers,
+    initialState,
     composeEnhancers(...enhancers)
   );
 
   store.runSaga = sagaMiddleware.run(rootSaga);
   store.injectedReducers = {
-    ...reducer,
+    ...appReducer,
   }
   store.injectedSagas = {}; // Saga registry
 
