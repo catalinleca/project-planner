@@ -12,6 +12,7 @@ export default class {
     public projectPhase: object,
     // public // tags: List<object>,
     public status: number,
-    public keyContacts: object
+    public keyContacts: object,
+    public trackStatus: string,
   ) { }
 }

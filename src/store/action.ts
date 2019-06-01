@@ -32,6 +32,7 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	// 	keyContacts: [ 342, 122, 12 ],
 	// 	dueData: '17-09-2019',
 	// 	sprint: 1,
+	// 	trackStatus: 'tracked'
 	firestore.collection('users').add({
 		firstName: 'John',
 		lastName: 'Jhin',

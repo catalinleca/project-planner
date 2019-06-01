@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createGenerateClassName, JssProvider, jss } from 'react-jss';
 import jssCompose from 'jss-compose';
 import jssExtend from 'jss-extend';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter, Link} from 'react-router-dom';
 import {
   withSize,
 } from 'react-sizeme';
@@ -16,7 +16,7 @@ const generateClassName = createGenerateClassName();
 jss.use(jssCompose(), jssExtend());
 
 interface IAppWrapperProps {
-  children?: JSX.Element;
+  children?: any;
   ptStore?: object;
   history?: object;
   size: {

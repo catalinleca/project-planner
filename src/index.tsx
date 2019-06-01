@@ -28,6 +28,7 @@ const app = (
   <AppWrapper
     ptStore={store}
   >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <App />
   </AppWrapper>
 )
