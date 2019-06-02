@@ -1,11 +1,12 @@
-import {createStore, applyMiddleware, compose, Store} from "redux";
+import {createStore, applyMiddleware, compose, Store, combineReducers} from "redux";
 import Immutable, { fromJS } from 'immutable';
 import {routerMiddleware} from "connected-react-router";
 import createSagaMiddleware from 'redux-saga';
 import {reducer} from './reducer';
 import rootSaga from "./sagas";
-import { reduxFirestore, getFirestore } from 'redux-firestore';
-import { reactReduxFirebase, getFirebase } from 'react-redux-firebase';
+import { reduxFirestore, getFirestore, firestoreReducer } from 'redux-firestore';
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { reactReduxFirebase } from 'react-redux-firebase';
 import firebase from '../base';
 import { firebaseConfig } from "../base";
 import { userConfig } from "../base";
@@ -54,7 +55,7 @@ export default function configureStore({
 } = {} as any) {
   const middlewares = [
     sagaMiddleware,
-    thunk.withExtraArgument({getFirebase, getFirestore}),
+    thunk.withExtraArgument({ getFirestore}),
     routerMiddleware(history)
   ]
 
@@ -63,8 +64,9 @@ export default function configureStore({
   const enhancers = [
     applyMiddleware(...middlewares),
     reduxFirestore(firebase),
-    reactReduxFirebase(firebase, userConfig)
+    // reactReduxFirebase(firebase, userConfig)
   ];
+
 
   const composeEnhancers =
     typeof window === 'object' &&
@@ -74,15 +76,20 @@ export default function configureStore({
         shouldHotReload: false,
       }) : compose;
 
+  const combinedReducers = combineReducers({
+    ptReducer: reducer,
+    firestore: firestoreReducer
+  })
+
   const store: PTStore = createStore(
-    reducer,
-    fromJS(initialState),
+    combinedReducers,
+    // fromJS(initialState),
     composeEnhancers(...enhancers)
   );
 
   store.runSaga = sagaMiddleware.run(rootSaga);
   store.injectedReducers = {
-    ...reducer,
+    ...combinedReducers,
   }
   store.injectedSagas = {}; // Saga registry
 

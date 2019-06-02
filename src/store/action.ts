@@ -1,5 +1,6 @@
 import {IAction} from "../utils/interfaces";
 import {fromJS} from "immutable";
+import {getFirestore} from "redux-firestore";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -7,6 +8,7 @@ export enum ActionTypes {
 	MY_API_CALL = 'MY_API_CALL',
 	CREATE_PROJECT = 'CREATE_PROJECT',
 	GET_PROJECTS = 'GET_PROJECTS',
+	DELTE_PROJECT = 'DELTE_PROJECT',
 }
 //
 
@@ -46,6 +48,13 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	}).catch( err => {
 		console.log(err);
 	})
+
+}
+
+export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	firestore.collection('projects').doc(id).delete()
 
 }
 export const createProject = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {

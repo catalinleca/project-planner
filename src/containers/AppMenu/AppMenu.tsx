@@ -434,8 +434,8 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
-    projects: makeSelectProjects(),
-    projectTitle: makeSelectProjectTitle()
+    // projects: makeSelectProjects(),
+    // projectTitle: makeSelectProjectTitle()
   })(state)
 }
 

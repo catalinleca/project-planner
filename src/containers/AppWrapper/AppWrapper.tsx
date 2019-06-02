@@ -11,6 +11,8 @@ import {
 } from 'react-sizeme';
 import ThemeProvider from '../ThemeProvider/ThemeProvider';
 import StoreContext from '../../contexts/StoreContext/StoreContext'
+import {ReactReduxFirebaseProvider} from "react-redux-firebase";
+import { rrfProps } from '../../index';
 
 const generateClassName = createGenerateClassName();
 jss.use(jssCompose(), jssExtend());
@@ -78,6 +80,12 @@ class AppWrapper extends React.Component<AppWrapperProps> {
           jss,
         },
       },
+      {
+        component: ReactReduxFirebaseProvider,
+        props: {
+          ...rrfProps
+        }
+      }
       // {
       //   component: AtsApiContext.Provider,
       //   props: {

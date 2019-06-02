@@ -13,7 +13,7 @@ import {
 } from 'redux';
 import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import {createProject, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
+import {createProject, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import {createStructuredSelector} from "reselect";
 import MaterialTable from 'material-table';
@@ -32,6 +32,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import {firestoreConnect} from "react-redux-firebase";
 
 const tableIcons = {
   Add: AddBox,
@@ -63,6 +64,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IProjectListPageComponentProps {
   projects: any;
+  deleteProject(id: number): void
 }
 
 //from state
@@ -109,38 +111,51 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     } = this.props;
 
     console.log('=============')
-    const data = projects.map(project => {
-      // console.log('project: ', project.toJS())
-      return Map().withMutations(item => {
-        this.columns.forEach(columnType => {
-          const filedName = columnType['field']
-          // console.log('filedName: ', filedName);
-          // console.log('project.get(filedName): ', project.get(filedName));
-          item.set(filedName, project.get(filedName))
-          // console.log('item: ', item);
-        })
-      })
-    });
-
-    //
-    // const john = projects.toJS().map( project => {
-    //   let item = {};
-    //   this.columns.map ( columnType => {
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = project[fieldName]
+    console.log(
+      projects
+    )
+    // const data = projects.map(project => {
+    //   // console.log('project: ', project.toJS())
+    //   return Map().withMutations(item => {
+    //     this.columns.forEach(columnType => {
+    //       const filedName = columnType['field']
+    //       // console.log('filedName: ', filedName);
+    //       // console.log('project.get(filedName): ', project.get(filedName));
+    //       item.set(filedName, project.get(filedName))
+    //       // console.log('item: ', item);
+    //     })
     //   })
-    //   return item;
-    // })
-    // console.log(john);
+    // });
+
     //
-    console.log(data.toJS())
-    return data.toJS();
+    const john = projects.map( project => {
+      let item = {};
+      this.columns.map ( columnType => {
+        const fieldName = columnType['field']
+        item[fieldName] = project[fieldName]
+      })
+      item['id'] = project['id'];
+      return item;
+    })
+    console.log(john);
+
+    // console.log(data.toJS())
+    // return data.toJS();
+    return john;
   }
 
-  componentDidMount() {
-    this.props.getProjects();
-  }
+  // componentDidMount() {
+  //   this.props.getProjects();
+  // }
 
+  public onDeleteHandler = (e,rowData) => {
+    const {
+      deleteProject
+    } = this.props;
+
+    deleteProject(rowData.id)
+
+  }
 
   render() {
     const {
@@ -156,50 +171,60 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     console.log(this.props.projects);
 
     return (
-      <MaterialTable
-        title="All Projects"
-        columns={this.columns}
-        data={this.getData()}
-        editable={{
-          onRowDelete: oldData =>
-            new Promise(resolve => {
-              setTimeout(() => {
-                resolve();
-                const dataPlm = [...data];
-                dataPlm.splice(dataPlm.indexOf(oldData), 1);
-                this.setState({...this.state, dataPlm});
-              }, 600);
-            }),
-        }}
-        actions={[
-          {
-            icon: 'bookmark',
-            tooltip: 'Save Project',
-            onClick: () => {
-              console.log('trag la buci lu ma-ta');
-            }
-          }
-        ]}
-      />
+      <React.Fragment>
+        {
+          projects &&
+          <MaterialTable
+              title="All Projects"
+              columns={this.columns}
+              data={this.getData()}
+              actions={[
+                {
+                  icon: 'bookmark',
+                  tooltip: 'Save Project',
+                  onClick: () => {
+                    console.log('trag la buci lu ma-ta');
+                  }
+                },
+                {
+                  icon: 'delete',
+                  tooltip: 'Delete Project',
+                  onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
+                }
+              ]}
+          />
+        }
+      </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = (state: any) => {
-  return createStructuredSelector({
-    projects: makeSelectProjects(),
-  })(state)
+  console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
+  // return createStructuredSelector({
+  //   // projects: makeSelectProjects(),
+  // })(state)
+
+  return {
+    projects: state.firestore.ordered.projects,
+  }
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     getProjects: () => {
       dispatch(GetProjectsAction())
+    },
+    deleteProject: (id) => {
+      dispatch(DeleteProjectAction(id))
     }
   };
 }
 
 export default compose<React.ComponentClass<IProjectListPageComponentProps>>(
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect([
+    { collection: 'projects'}
+  ])
 )(ProjectListPage);
