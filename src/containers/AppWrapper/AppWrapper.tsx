@@ -5,18 +5,20 @@ import { Provider } from 'react-redux';
 import { createGenerateClassName, JssProvider, jss } from 'react-jss';
 import jssCompose from 'jss-compose';
 import jssExtend from 'jss-extend';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter, Link} from 'react-router-dom';
 import {
   withSize,
 } from 'react-sizeme';
 import ThemeProvider from '../ThemeProvider/ThemeProvider';
 import StoreContext from '../../contexts/StoreContext/StoreContext'
+import {ReactReduxFirebaseProvider} from "react-redux-firebase";
+import { rrfProps } from '../../index';
 
 const generateClassName = createGenerateClassName();
 jss.use(jssCompose(), jssExtend());
 
 interface IAppWrapperProps {
-  children?: JSX.Element;
+  children?: any;
   ptStore?: object;
   history?: object;
   size: {
@@ -78,6 +80,12 @@ class AppWrapper extends React.Component<AppWrapperProps> {
           jss,
         },
       },
+      {
+        component: ReactReduxFirebaseProvider,
+        props: {
+          ...rrfProps
+        }
+      }
       // {
       //   component: AtsApiContext.Provider,
       //   props: {

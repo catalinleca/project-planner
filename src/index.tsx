@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
-import { createBrowserHistory } from 'history';
+import {createBrowserHistory} from 'history';
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars} from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "./containers/AppWrapper/AppWrapper";
 import configureStore from './store/store';
 import {reducer} from './store/reducer';
+import firebase from './base';
+import userConfig from './base';
+import {createFirestoreInstance} from "redux-firestore";
+
 library.add(faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars)
 
 const initialState: object = {};
@@ -23,12 +27,19 @@ const store = configureStore({
 //   initialState,
 // )
 
+export const rrfProps = {
+  firebase,
+  config: userConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance
+}
 
 const app = (
   <AppWrapper
     ptStore={store}
   >
-    <App />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <App/>
   </AppWrapper>
 )
 

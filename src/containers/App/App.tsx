@@ -17,8 +17,9 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {PROJECT_DETAILS} from "../../constants";
+import {PROJECT_DETAILS, PROJECT_LIST} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
+import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -52,7 +53,7 @@ const App: React.FC<AppProps> = (props) => {
       width={width}
     />
     <CustomMenuItem
-      to='/projects'
+      to={PROJECT_LIST}
       iconProps={{icon: 'envelope'}}
       label='Projects'
       width={width}
@@ -77,6 +78,7 @@ const App: React.FC<AppProps> = (props) => {
         menuItems={menuItems}
       >
           <Route path={PROJECT_DETAILS} component={ProjectDetailsPage} />
+          <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
       </AppMenu>
     </React.Fragment>
   );

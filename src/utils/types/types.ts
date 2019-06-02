@@ -1,0 +1,1 @@
+export type TaskStatus = 'to-do' | 'in-progress' | 'completed' | 'rejected' | 'accepted';

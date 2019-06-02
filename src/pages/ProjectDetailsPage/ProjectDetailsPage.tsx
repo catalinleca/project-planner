@@ -14,6 +14,7 @@ import {
 } from 'redux';
 import WidgetDetailStyle from "../../components/WidgetDetailStyle/WidgetDetailStyle";
 import TaskComponent from "../../containers/TaskComponent/TaskComponent";
+import ProjectInfoSection from "../../containers/ProjectInfoSection/ProjectInfoSection";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -117,16 +118,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                       </Grid>
                     }
                   >
-                    <Grid
-                      container={true}
-                      direction='column'
-                    >
-                      <Grid>PLM</Grid>
-                      <Grid>PLM</Grid>
-                      <Grid>PLM</Grid>
-                      <Grid>PLM</Grid>
-                      <Grid>PLM</Grid>
-                    </Grid>
+                    <ProjectInfoSection/>
                   </WidgetDetailStyle>
                 </Paper>
               </Grid>

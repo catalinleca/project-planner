@@ -29,7 +29,7 @@ import {
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {FirstAction} from "../../store/action";
+import {createProject, doTheThingAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
@@ -296,6 +296,8 @@ interface IAppMenuComponentProps {
 
 interface IAppMenuProps extends IAppMenuComponentProps{
   firstAction: any;
+  createProject: any;
+  doTheThing: any;
   state: any;
   projects: any;
   projectTitle: any;
@@ -325,10 +327,17 @@ class AppMenu extends React.Component<AppMenuProps> {
   public buttonHandler = () => {
     const {
       state,
-      firstAction
+      firstAction,
+      createProject,
+      doTheThing
     } = this.props;
 
-    firstAction();
+    // createProject({
+    //   title: 'dadada',
+    //   content: 'blahbalhba'
+    // })
+
+    doTheThing();
 
   }
 
@@ -342,9 +351,9 @@ class AppMenu extends React.Component<AppMenuProps> {
     const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint } = this.props;
 
     const {isOpen} = this.state;
-
-    console.log('projects: ', projects);
-    console.log('projectTitle: ', projectTitle);
+    //
+    // console.log('projects: ', projects);
+    // console.log('projectTitle: ', projectTitle);
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -414,18 +423,19 @@ class AppMenu extends React.Component<AppMenuProps> {
   }
 }
 
-const mapDispatchToProps = (dispatch: React.Dispatch<IAction>) => {
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
-    firstAction: () => {
-      dispatch(FirstAction())
-    }
+    firstAction: () => { dispatch(FirstAction()) },
+    createProject: (project) => { dispatch(createProject(project)) },
+    doTheThing: (project) => { dispatch(doTheThingAction()) }
   };
 }
 
+
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
-    projects: makeSelectProjects(),
-    projectTitle: makeSelectProjectTitle()
+    // projects: makeSelectProjects(),
+    // projectTitle: makeSelectProjectTitle()
   })(state)
 }
 
