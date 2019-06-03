@@ -20,6 +20,7 @@ import {
 import {PROJECT_DETAILS, PROJECT_LIST} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
+import CreateNewProject from "../CreateNewProject/CreateNewProject";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -42,6 +43,9 @@ interface IAppProps {
 
 type AppProps = IAppComponentProps & WithWidth & IAppProps & WithStyles<keyof ReturnType<typeof styles>>;
 
+const submit = (values) => {
+  console.log(values);
+}
 const App: React.FC<AppProps> = (props) => {
 
   const { width } = props;
@@ -77,8 +81,13 @@ const App: React.FC<AppProps> = (props) => {
       <AppMenu
         menuItems={menuItems}
       >
+        <Switch>
           <Route path={PROJECT_DETAILS} component={ProjectDetailsPage} />
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
+        </Switch>
+        <CreateNewProject
+          onSubmit={submit}
+        />
       </AppMenu>
     </React.Fragment>
   );

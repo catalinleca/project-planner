@@ -36,13 +36,13 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	// 	sprint: 1,
 	// 	trackStatus: 'tracked'
 	firestore.collection('users').add({
-		firstName: 'John',
-		lastName: 'Jhin',
-		email: 'john.jhin@mail.com',
-		mobilePhone: '333 444 2211',
-		userHash: 'JJ',
-		username: 'JJ123',
-		tasks: [1,2,3,4]
+		firstName: 'Peter',
+		lastName: 'Paul',
+		email: 'Peter.paul@mail.com',
+		mobilePhone: '123 444 123',
+		userHash: 'PP',
+		username: 'PP22',
+		tasks: [1,4]
 	}).then( resp => {
 		console.log(resp);
 	}).catch( err => {

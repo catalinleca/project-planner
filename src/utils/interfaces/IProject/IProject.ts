@@ -9,10 +9,15 @@ export interface IProject {
   projectPhase: object;
   // tags: List<object>;
   status: any;
-  keyContacts: object;
-  collaborators: any; // userii
+  keyContacts: object[];
   dueData: any;
   sprint: number;
 
   tasks: any; // possible
 }
+
+// name
+// lead sources
+// due date
+// key contacts
+// tasks
