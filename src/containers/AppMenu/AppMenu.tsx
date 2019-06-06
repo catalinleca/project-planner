@@ -29,7 +29,7 @@ import {
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
-import {createProject, doTheThingAction, FirstAction} from "../../store/action";
+import {CreateProjectAction, doTheThingAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
@@ -426,7 +426,7 @@ class AppMenu extends React.Component<AppMenuProps> {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     firstAction: () => { dispatch(FirstAction()) },
-    createProject: (project) => { dispatch(createProject(project)) },
+    createProject: (project) => { dispatch(CreateProjectAction(project)) },
     doTheThing: (project) => { dispatch(doTheThingAction()) }
   };
 }

@@ -13,7 +13,7 @@ import {
 } from 'redux';
 import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import {createProject, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
+import {CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import {createStructuredSelector} from "reselect";
 import MaterialTable from 'material-table';

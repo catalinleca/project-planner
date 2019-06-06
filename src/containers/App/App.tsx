@@ -85,9 +85,7 @@ const App: React.FC<AppProps> = (props) => {
           <Route path={PROJECT_DETAILS} component={ProjectDetailsPage} />
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
         </Switch>
-        <CreateNewProject
-          onSubmit={submit}
-        />
+        <CreateNewProject/>
       </AppMenu>
     </React.Fragment>
   );

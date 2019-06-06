@@ -13,3 +13,17 @@ export interface ITask {
   taskStatus: TaskStatus;
   projectID: number;
 }
+
+export const taskBase = {
+  id: null,
+  completeDate: null,
+  dueDate: null,
+  createdDate: null,
+  criteria: null,
+  tag: null,
+  task: null,
+  createdBy: null,
+  assignedTo: null,
+  taskStatus: null,
+  projectID: null,
+}

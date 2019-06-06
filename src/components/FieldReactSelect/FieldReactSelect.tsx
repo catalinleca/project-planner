@@ -34,12 +34,11 @@ const FieldReactSelect: React.FC<any> = (props) => {
   return (
       <ReactSelect
         {...props}
-        // value={props.input.value}
-        // onChange={(value) => props.input.onChange(value)}
-        // onBlur={() => props.input.onBlur(props.input.value)}
-        // options={props.options}
-        // placeholder={props.placeholder}
-        fa-l singur in pizda ma-tii
+        value={props.input.value}
+        onChange={(value) => props.input.onChange(value)}
+        onBlur={() => props.input.onBlur(props.input.value)}
+        options={props.options}
+        placeholder={props.placeholder}
       />
   );
 }

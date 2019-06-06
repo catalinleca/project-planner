@@ -11,3 +11,16 @@ export interface IUser {
 
   tasks: any; // possible, we ll see
 }
+
+export const userBase = {
+  id: null,
+  email: null,
+  firstName: null,
+  jobTitle: null,
+  lastName: null,
+  mobilePhone: null,
+  userhash: null,
+  username: null,
+  verified: null,
+  tasks: null
+}

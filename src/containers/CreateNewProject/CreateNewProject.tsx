@@ -4,7 +4,18 @@ import {
   withStyles,
   WithStyles,
   Grid,
-  SwipeableDrawer, Button, TextField, FormControl, Select, InputLabel, Input, MenuItem, ListItemText, Checkbox
+  SwipeableDrawer,
+  Button,
+  TextField,
+  FormControl,
+  Select,
+  InputLabel,
+  Input,
+  MenuItem,
+  ListItemText,
+  Checkbox,
+  Stepper,
+  Step, StepLabel, StepContent
 } from '@material-ui/core';
 import {
   StyleRules
@@ -25,6 +36,8 @@ import {connect} from "react-redux";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import ReactSelect from 'react-select';
 import FieldReactSelect from "../../components/FieldReactSelect/FieldReactSelect";
+import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
+import {CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -34,7 +47,7 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ICreateNewProjectComponentProps {
-  onSubmit: any;
+  // onSubmit?: any;
 }
 
 //from state
@@ -45,28 +58,76 @@ type CreateNewProjectType = ICreateNewProjectProps & InjectedFormProps & WithSty
 
 interface IStateProps {
   open: boolean;
-  selectedValues: any
+  selectedValues: any;
+  activeStep: number;
 }
+
+
 
 class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   public state: IStateProps = {
     open: false,
-    selectedValues: []
+    selectedValues: [],
+    activeStep: 0
+  }
+
+  public submit = (values) => {
+    console.log(values);
+    const newValues = {
+      ...values,
+      dueDate: new Date(values.dueDate),
+      leadSources: values.leadSources.map( leadSource => leadSource.id)
+    }
+    console.log(newValues);
+    this.props.createProject(newValues);
   }
 
   public handleSelectChange = (users?: IUser) => {
-    // console.log(e.target.value[0])
     console.log(users);
    this.setState({
      selectedValues: users
    })
-    // const newArray = this.state.selectedValues;
-    // newArray.push(e.target.value[0]);
-    // this.setState( {
-    //   selectedValues: newArray
-    // })
   }
 
+  public handleBack = () => this.setState( prevState => ({
+    ...prevState,
+    activeStep: this.state.activeStep - 1
+  }))
+
+  public handleNext = () => this.setState( prevState => ({
+    ...prevState,
+    activeStep: this.state.activeStep + 1
+  }))
+
+  public getStepContent = (step: number) => {
+    switch(step) {
+      case 0:
+        return <CreateNewProjectForm
+          onSubmit={this.submit}
+          selectedValues={this.state.selectedValues}
+          users={this.props.users}
+          handleSelectChange={this.handleSelectChange}
+          handleClose={() => this.setState({open: false})}
+        />;
+      case 1:
+        return (
+          <Grid
+            container={true}
+            direction='row'
+          >
+            <Grid item={true} xs={4}> Item 1</Grid>
+            <Grid item={true} xs={4}> Item 1</Grid>
+            <Grid item={true} xs={4}> Item 1</Grid>
+            <Grid item={true} xs={4}> Item 1</Grid>
+            <Grid item={true} xs={4}> Item 1</Grid>
+            <Grid item={true} xs={4}> Item 1</Grid>
+
+          </Grid>
+        )
+    }
+  }
+
+  public getSteps = () => ['Add your project details', 'Insert Tasks'];
 
   render() {
     const {
@@ -74,20 +135,12 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       users
     } = this.props;
 
+    const {
+      activeStep
+    } = this.state;
     // console.log('currentProps: ', this.props.users);
 
-    const names: string[] = [
-      'Oliver Hansen',
-      'Van Henry',
-      'April Tucker',
-      'Ralph Hubbard',
-      'Omar Alexander',
-      'Carlos Abbott',
-      'Miriam Wagner',
-      'Bradley Wilkerson',
-      'Virginia Andrews',
-      'Kelly Snyder',
-    ];
+    const steps = this.getSteps();
 
     return (
       <React.Fragment>
@@ -102,86 +155,30 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
         >
           {
             users &&
-            <Grid
-                container={true}
-                direction='column'
-            >
-                <form onSubmit={this.props.handleSubmit}>
-                    <Grid
-                        container={true}
-                        direction='column'
-                    >
-                        <Field
-                            name='project-name'
-                            component={FieldTextField}
-                            label='Project Name'
-                        />
-                        <Field
-                            name='project-due-date'
-                            component={FieldDatePicker}
-                            label='Project Due Date'
-                        />
-                      {/*<Field*/}
-                      {/*  name='lead-sources'*/}
-                      {/*  component={FieldMultiSelect}*/}
-                      {/*  props={{*/}
-                      {/*    inputProps: {*/}
-                      {/*      value: this.state.selectedValues as Array<string>,*/}
-                      {/*      onChange: this.handleSelectChange*/}
-                      {/*    },*/}
-                      {/*    label: "Choose your Lead Sources",*/}
-                      {/*    values: users as Array<IUser>,*/}
-                      {/*  }}*/}
-                      {/*/>*/}
+              <Stepper activeStep={activeStep} orientation='vertical'>
+                {steps.map( (label, index) => (
+                  <Step key={`${label}${index}`}>
+                    <StepLabel>{label}</StepLabel>
+                    <StepContent>
+                      {this.getStepContent(index)}
+                      <Button
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={this.handleNext}
+                      >
+                        {activeStep === steps.length - 1 ? 'Finish' : 'Create The Project'}
+                      </Button>
+                    </StepContent>
+                  </Step>
+                ))}
+              </Stepper>
 
-                      {/*  <Field*/}
-                      {/*      name='lead-sources'*/}
-                      {/*      component={ReactSelect}*/}
-                      {/*      props={{*/}
-                      {/*        label: 'Select your leads',*/}
-                      {/*        isMulti: true,*/}
-                      {/*        // value: this.state.selectedValues,*/}
-                      {/*        onChange: this.handleSelectChange,*/}
-                      {/*        options: users.map(user => ({*/}
-                      {/*          label: [user.firstName, user.lastName].join(' '),*/}
-                      {/*          value: user.id,*/}
-                      {/*          ...user*/}
-                      {/*        }))*/}
-                      {/*      }}*/}
-                      {/*      value='asdadasdasd'*/}
-                      {/*  />*/}
-                        <Field
-                            name='lead-sources'
-                            component={FieldReactSelect}
-                            props={{
-                              label: 'Select your leads',
-                              isMulti: true,
-                              // value: this.state.selectedValues,
-                              onChange: this.handleSelectChange,
-                              options: users.map(user => ({
-                                label: [user.firstName, user.lastName].join(' '),
-                                value: user.id,
-                                ...user
-                              }))
-                            }}
-                            value='asdadasdasd'
-                        />
-                    </Grid>
-                    <Button
-                        type='submit'
-                    >
-                        Submit
-                    </Button>
-
-                </form>
-                <Grid>
-                    <Button
-                        onClick={() => this.setState({open: false})}
-                    >
-                        close
-                    </Button>
-                </Grid>
-            </Grid>
           }
         </SwipeableDrawer>
         <Button
@@ -194,6 +191,13 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   }
 }
 
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
+  return {
+    createProject: (project) => {
+      dispatch(CreateProjectAction(project))
+    },
+  };
+}
 const mapStateToProps = (state: any) => {
   // return createStructuredSelector({
   //   // projects: makeSelectProjects(),
@@ -205,10 +209,8 @@ const mapStateToProps = (state: any) => {
 }
 
 export default compose<React.ComponentClass<ICreateNewProjectComponentProps>>(
-  reduxForm({
-    form: 'newProject'
-  }),
-  connect(mapStateToProps),
+
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
     {collection: 'users'}
   ]),

@@ -10,10 +10,26 @@ export interface IProject {
   // tags: List<object>;
   status: any;
   keyContacts: object[];
-  dueData: any;
+  dueDate: any;
   sprint: number;
 
   tasks: any; // possible
+}
+
+export const projectBase = {
+  id: null,
+  name: null,
+  createdBy: null,
+  createdDate: null,
+  leadSource: null,
+  modifiedBy: null,
+  modifiedDate: null,
+  projectPhase: null,
+  status: null,
+  keyContacts: null,
+  dueDate: null,
+  sprint: null,
+  tasks: null
 }
 
 // name
