@@ -17,7 +17,6 @@ export interface IProject {
 }
 
 export const projectBase = {
-  id: null,
   name: null,
   createdBy: null,
   createdDate: null,

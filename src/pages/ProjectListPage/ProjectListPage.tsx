@@ -110,10 +110,10 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       projects
     } = this.props;
 
-    console.log('=============')
-    console.log(
-      projects
-    )
+    // console.log('=============')
+    // console.log(
+    //   projects
+    // )
     // const data = projects.map(project => {
     //   // console.log('project: ', project.toJS())
     //   return Map().withMutations(item => {
@@ -168,7 +168,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       data
     } = this.state;
 
-    console.log(this.props.projects);
+    // console.log(this.props.projects);
 
     return (
       <React.Fragment>

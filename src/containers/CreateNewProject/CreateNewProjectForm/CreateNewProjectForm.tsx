@@ -66,7 +66,7 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
           direction='column'
         >
           <Field
-            name='projectName'
+            name='name'
             component={FieldTextField}
             label='Project Name'
           />
