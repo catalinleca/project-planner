@@ -11,6 +11,7 @@ import firebase from '../base';
 import { firebaseConfig } from "../base";
 import { userConfig } from "../base";
 import thunk from 'redux-thunk';
+import { reducer as formReducer } from 'redux-form';
 
 
 const sagaMiddleware = createSagaMiddleware();
@@ -78,7 +79,8 @@ export default function configureStore({
 
   const combinedReducers = combineReducers({
     ptReducer: reducer,
-    firestore: firestoreReducer
+    firestore: firestoreReducer,
+    form: formReducer
   })
 
   const store: PTStore = createStore(

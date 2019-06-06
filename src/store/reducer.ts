@@ -23,10 +23,12 @@ export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any
       return state.set('projects', action.payload);
     case ActionTypes.FIRST_ACTION_SUCCEEDED:
       const {
-        payload
+        payload: john
       } = action;
 
-      return state.set('projects', payload);
+      return state.set('projects', john);
+    case ActionTypes.SELECT_PROJECT:
+      return state.set('selectedProject', action.payload);
     default:
       return state;
   }

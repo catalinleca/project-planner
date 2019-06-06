@@ -1,6 +1,8 @@
 import {IAction} from "../utils/interfaces";
 import {fromJS} from "immutable";
 import {getFirestore} from "redux-firestore";
+import { projectBase } from "../utils/interfaces";
+import {taskBase} from "../utils/interfaces/ITask/ITask";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -9,6 +11,7 @@ export enum ActionTypes {
 	CREATE_PROJECT = 'CREATE_PROJECT',
 	GET_PROJECTS = 'GET_PROJECTS',
 	DELTE_PROJECT = 'DELTE_PROJECT',
+	SELECT_PROJECT = 'SELECT_PROJECT',
 }
 //
 
@@ -36,18 +39,38 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	// 	sprint: 1,
 	// 	trackStatus: 'tracked'
 	firestore.collection('users').add({
-		firstName: 'John',
-		lastName: 'Jhin',
-		email: 'john.jhin@mail.com',
-		mobilePhone: '333 444 2211',
-		userHash: 'JJ',
-		username: 'JJ123',
-		tasks: [1,2,3,4]
+		firstName: 'Peter',
+		lastName: 'Paul',
+		email: 'Peter.paul@mail.com',
+		mobilePhone: '123 444 123',
+		userHash: 'PP',
+		username: 'PP22',
+		tasks: [1,4]
 	}).then( resp => {
 		console.log(resp);
 	}).catch( err => {
 		console.log(err);
 	})
+
+}
+
+export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	firestore.collection('tasks').add({
+		...taskBase,
+		...task,
+	}).then( (resp) => {
+		console.log(resp);
+	}).catch( err => {
+		console.log(err);
+	})
+
+	// let projectsRef = firestore.collection('projects').doc(projectId)
+	//
+	// projectsRef.update({
+	// 	tasks: firestore.FieldValue.arrayUnion({...task})
+	// })
 
 }
 
@@ -57,17 +80,20 @@ export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFireba
 	firestore.collection('projects').doc(id).delete()
 
 }
-export const createProject = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+export const CreateProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
-		...project,
-		firstName: 'da',
-		nameId: 123
-	}).then( () => {
-		dispatch({ type: ActionTypes.CREATE_PROJECT })
+		...projectBase,
+		...project
+	}).then( (resp) => {
+		dispatch({
+			type: ActionTypes.SELECT_PROJECT,
+			payload: resp.id
+		})
 	}).catch( err => {
-		console.log('trolol');
+		console.log(err);
 	})
 }
 
@@ -99,3 +125,4 @@ export const FirstActionSucceeded = (payload: any) => ({
 export const MyApiCallAction = (payload: any) => ({
 	type: ActionTypes.MY_API_CALL,
 })
+

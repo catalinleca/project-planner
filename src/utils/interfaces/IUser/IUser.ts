@@ -9,5 +9,19 @@ export interface IUser {
   username: any;
   verified: any;
 
-  tasks: any; // possible, we ll see
+  tasks: any; // possible, we ll seem MMNU
+}
+
+export const userBase = {
+  id: null,
+  email: null,
+  firstName: null,
+  jobTitle: null,
+  lastName: null,
+  mobilePhone: null,
+  userhash: null,
+  username: null,
+  verified: null,
+
+  tasks: null /// MNU
 }

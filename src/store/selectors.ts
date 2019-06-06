@@ -43,6 +43,11 @@ export const makeSelectProjectTitle = () => createSelector(
   }
 );
 
-export default {
+export const makeSelectSelectedProject = () => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.get('selectedProject');
+  }
+);export default {
   selectReducerState
 }

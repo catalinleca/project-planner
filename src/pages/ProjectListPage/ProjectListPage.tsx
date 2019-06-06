@@ -13,7 +13,7 @@ import {
 } from 'redux';
 import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import {createProject, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
+import {CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import {createStructuredSelector} from "reselect";
 import MaterialTable from 'material-table';
@@ -110,10 +110,10 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       projects
     } = this.props;
 
-    console.log('=============')
-    console.log(
-      projects
-    )
+    // console.log('=============')
+    // console.log(
+    //   projects
+    // )
     // const data = projects.map(project => {
     //   // console.log('project: ', project.toJS())
     //   return Map().withMutations(item => {
@@ -168,7 +168,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       data
     } = this.state;
 
-    console.log(this.props.projects);
+    // console.log(this.props.projects);
 
     return (
       <React.Fragment>
@@ -200,7 +200,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
+  // console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
   // return createStructuredSelector({
   //   // projects: makeSelectProjects(),
   // })(state)
