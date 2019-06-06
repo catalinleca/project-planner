@@ -66,11 +66,11 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 		console.log(err);
 	})
 
-	let projectsRef = firestore.collection('projects').doc(projectId)
-
-	projectsRef.update({
-		tasks: firestore.FieldValue.arrayUnion({...task})
-	})
+	// let projectsRef = firestore.collection('projects').doc(projectId)
+	//
+	// projectsRef.update({
+	// 	tasks: firestore.FieldValue.arrayUnion({...task})
+	// })
 
 }
 

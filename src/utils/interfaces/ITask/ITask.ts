@@ -8,11 +8,11 @@ export interface ITask {
   subTasks: any
   tag: any //users
   description: string;
-  createdBy: number; //userId
-  assignedTo: number; //userId
+  createdBy: string; //userId
   taskStatus: TaskStatus;
-  projectID: number;
-  projectName: number;
+  projectName: string;
+  projectID: string;
+  assignedTo: string; //userId
 }
 
 export const taskBase = {

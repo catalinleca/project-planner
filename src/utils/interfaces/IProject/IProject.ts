@@ -13,7 +13,7 @@ export interface IProject {
   dueDate: any;
   sprint: number;
 
-  tasks: any; // possible
+  tasks: any; // possible, MNUUU
 }
 
 export const projectBase = {
@@ -28,7 +28,7 @@ export const projectBase = {
   keyContacts: [],
   dueDate: null,
   sprint: null,
-  tasks: []
+  tasks: [] // MNU
 }
 
 // name

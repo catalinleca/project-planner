@@ -105,9 +105,10 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       dueDate: taskData.dueDate
         ? new Date(taskData.dueDate).toString()
         : null,
+      assignedUser: taskData.assignedUser.id,
     }
     console.log('newTaskData: ', newTaskData);
-    addTaskToProject(newTaskData, 'OGMbWFdBoxcUOUgcQ52z');
+    addTaskToProject(newTaskData, selectedProjectId);
   }
 
   public handleSelectChangeLeads = (users?: IUser) => {
