@@ -200,7 +200,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
+  // console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
   // return createStructuredSelector({
   //   // projects: makeSelectProjects(),
   // })(state)

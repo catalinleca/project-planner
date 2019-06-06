@@ -2,6 +2,7 @@ import {IAction} from "../utils/interfaces";
 import {fromJS} from "immutable";
 import {getFirestore} from "redux-firestore";
 import { projectBase } from "../utils/interfaces";
+import {taskBase} from "../utils/interfaces/ITask/ITask";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -10,6 +11,7 @@ export enum ActionTypes {
 	CREATE_PROJECT = 'CREATE_PROJECT',
 	GET_PROJECTS = 'GET_PROJECTS',
 	DELTE_PROJECT = 'DELTE_PROJECT',
+	SELECT_PROJECT = 'SELECT_PROJECT',
 }
 //
 
@@ -52,12 +54,33 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	firestore.collection('tasks').add({
+		...taskBase,
+		...task,
+	}).then( (resp) => {
+		console.log(resp);
+	}).catch( err => {
+		console.log(err);
+	})
+
+	let projectsRef = firestore.collection('projects').doc(projectId)
+
+	projectsRef.update({
+		tasks: firestore.FieldValue.arrayUnion({...task})
+	})
+
+}
+
 export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
 	firestore.collection('projects').doc(id).delete()
 
 }
+
 export const CreateProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const firestore = getFirestore();
@@ -65,7 +88,10 @@ export const CreateProjectAction = (project) => (dispatch, getState, {getFirebas
 		...projectBase,
 		...project
 	}).then( (resp) => {
-		console.log(resp);
+		dispatch({
+			type: ActionTypes.SELECT_PROJECT,
+			payload: resp.id
+		})
 	}).catch( err => {
 		console.log(err);
 	})

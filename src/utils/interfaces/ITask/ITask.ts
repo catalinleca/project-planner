@@ -2,28 +2,30 @@ import {TaskStatus} from "../../types/types";
 
 export interface ITask {
   id: number;
-  completeDate: string;
+  title: string;
   dueDate: string;
   createdDate: string;
-  criteria: any
+  subTasks: any
   tag: any //users
-  task: string;
+  description: string;
   createdBy: number; //userId
   assignedTo: number; //userId
   taskStatus: TaskStatus;
   projectID: number;
+  projectName: number;
 }
 
 export const taskBase = {
   id: null,
-  completeDate: null,
+  title: null,
   dueDate: null,
   createdDate: null,
-  criteria: null,
+  subTasks: null,
   tag: null,
-  task: null,
+  description: null,
   createdBy: null,
   assignedTo: null,
   taskStatus: null,
   projectID: null,
+  projectName: null,
 }

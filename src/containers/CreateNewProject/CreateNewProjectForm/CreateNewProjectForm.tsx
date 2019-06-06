@@ -33,7 +33,7 @@ const styles = (theme: Theme): StyleRules => ({
 interface ICreateNewProjectFormComponentProps {
   handleSubmit?: any;
   onSubmit?: any
-  selectedValues?: any
+  selectedLeads?: any
   users?: any
   handleSelectChange?: any
   handleClose?: any
@@ -49,7 +49,7 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
 
   const {
     // handleSubmit,
-    selectedValues,
+    selectedLeads,
     users,
     handleSelectChange,
     handleClose

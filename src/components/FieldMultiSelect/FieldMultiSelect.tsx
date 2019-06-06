@@ -52,7 +52,7 @@ const FieldMultiSelect: React.FC<FieldMultiSelectType> = (props) => {
     ...rest
   } = props;
   console.log('--- props: ', props);
-  console.log( typeof props.selectedValues)
+  console.log( typeof props.selectedLeads)
   const {
     value
   } = inputProps;

@@ -37,8 +37,10 @@ import {IUser} from "../../utils/interfaces/IUser/IUser";
 import ReactSelect from 'react-select';
 import FieldReactSelect from "../../components/FieldReactSelect/FieldReactSelect";
 import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
-import {CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
+import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
+import {createStructuredSelector} from "reselect";
+import {makeSelectProjects, makeSelectSelectedProject} from "../../store/selectors";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -53,14 +55,18 @@ interface ICreateNewProjectComponentProps {
 
 //from state
 interface ICreateNewProjectProps extends ICreateNewProjectComponentProps {
+  users: any;
+  selectedProjectId: any;
 }
 
 type CreateNewProjectType = ICreateNewProjectProps & InjectedFormProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 interface IStateProps {
   open: boolean;
-  selectedValues: any;
+  selectedLeads: any;
   activeStep: number;
+  assignedUser: any;
+  newCreatedProjectId: string;
 }
 
 
@@ -68,26 +74,54 @@ interface IStateProps {
 class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   public state: IStateProps = {
     open: false,
-    selectedValues: [],
-    activeStep: 0
+    selectedLeads: [],
+    assignedUser: null,
+    activeStep: 0,
+    newCreatedProjectId: ''
   }
 
-  public submit = (values) => {
-    console.log(values);
-    const newValues = {
-      ...values,
-      dueDate: new Date(values.dueDate),
-      leadSources: values.leadSources.map( leadSource => leadSource.id)
+  public handleCreateNewProject = (projectData) => {
+    console.log(projectData);
+    const newProjectData = {
+      ...projectData,
+      dueDate: projectData.dueDate
+        ? new Date(projectData.dueDate).toString()
+        : null,
+      leadSources: projectData.leadSources.map( leadSource => leadSource.id)
     }
-    console.log(newValues);
-    this.props.createProject(newValues);
+    console.log(newProjectData);
+    this.props.createProject(newProjectData);
   }
 
-  public handleSelectChange = (users?: IUser) => {
+  public handleCreateNewTask = (taskData) => {
+    const {
+      addTaskToProject,
+      selectedProjectId
+    } = this.props;
+
+    console.log('taskData: ', taskData);
+    const newTaskData = {
+      ...taskData,
+      dueDate: taskData.dueDate
+        ? new Date(taskData.dueDate).toString()
+        : null,
+    }
+    console.log('newTaskData: ', newTaskData);
+    addTaskToProject(newTaskData, 'OGMbWFdBoxcUOUgcQ52z');
+  }
+
+  public handleSelectChangeLeads = (users?: IUser) => {
     console.log(users);
    this.setState({
-     selectedValues: users
+     selectedLeads: users
    })
+  }
+
+  public handleChangeAssignedUser = (user?: IUser) => {
+    console.log('user: ', user);
+    this.setState({
+      assignedUser: user
+    })
   }
 
   public handleBack = () => this.setState( prevState => ({
@@ -104,14 +138,18 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
     switch(step) {
       case 0:
         return <CreateNewProjectForm
-          onSubmit={this.submit}
-          selectedValues={this.state.selectedValues}
+          onSubmit={this.handleCreateNewProject}
+          selectedLeads={this.state.selectedLeads}
           users={this.props.users}
-          handleSelectChange={this.handleSelectChange}
+          handleSelectChange={this.handleSelectChangeLeads}
           handleClose={() => this.setState({open: false})}
         />;
       case 1:
-        return <AddNewTaskForm/>
+        return <AddNewTaskForm
+          users={this.props.users}
+          handleSelectChange={this.handleChangeAssignedUser}
+          onSubmit={this.handleCreateNewTask}
+        />
     }
   }
 
@@ -129,6 +167,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
     // console.log('currentProps: ', this.props.users);
 
     const steps = this.getSteps();
+
 
     return (
       <React.Fragment>
@@ -184,15 +223,24 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
     createProject: (project) => {
       dispatch(CreateProjectAction(project))
     },
+    addTaskToProject: (task, projectId) => {
+      dispatch(AddTaskToProjectAction(task, projectId))
+    },
   };
 }
 const mapStateToProps = (state: any) => {
-  // return createStructuredSelector({
-  //   // projects: makeSelectProjects(),
-  // })(state)
+
+  const {
+    selectedProjectId
+  }: {
+    selectedProjectId: string
+  } =  createStructuredSelector({
+    selectedProjectId: makeSelectSelectedProject(),
+  })(state.ptReducer)
 
   return {
     users: state.firestore.ordered.users,
+    selectedProjectId
   }
 }
 

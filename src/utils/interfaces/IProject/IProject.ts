@@ -25,10 +25,10 @@ export const projectBase = {
   modifiedDate: null,
   projectPhase: null,
   status: null,
-  keyContacts: null,
+  keyContacts: [],
   dueDate: null,
   sprint: null,
-  tasks: null
+  tasks: []
 }
 
 // name
