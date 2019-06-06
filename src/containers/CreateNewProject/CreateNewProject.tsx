@@ -38,6 +38,7 @@ import ReactSelect from 'react-select';
 import FieldReactSelect from "../../components/FieldReactSelect/FieldReactSelect";
 import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
 import {CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
+import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -110,20 +111,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
           handleClose={() => this.setState({open: false})}
         />;
       case 1:
-        return (
-          <Grid
-            container={true}
-            direction='row'
-          >
-            <Grid item={true} xs={4}> Item 1</Grid>
-            <Grid item={true} xs={4}> Item 1</Grid>
-            <Grid item={true} xs={4}> Item 1</Grid>
-            <Grid item={true} xs={4}> Item 1</Grid>
-            <Grid item={true} xs={4}> Item 1</Grid>
-            <Grid item={true} xs={4}> Item 1</Grid>
-
-          </Grid>
-        )
+        return <AddNewTaskForm/>
     }
   }
 
