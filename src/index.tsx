@@ -24,7 +24,7 @@ import {createFirestoreInstance} from "redux-firestore";
 library.add(faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars, faCalendarAlt)
 
 const initialState: object = {};
-const history = createBrowserHistory()
+const history = createBrowserHistory({basename: '/'})
 const store = configureStore({
   initialState,
   history,
@@ -45,6 +45,7 @@ export const rrfProps = {
 const app = (
   <AppWrapper
     ptStore={store}
+    history={history}
   >
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <App/>

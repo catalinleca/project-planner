@@ -1,6 +1,6 @@
 import {createStore, applyMiddleware, compose, Store, combineReducers} from "redux";
 import Immutable, { fromJS } from 'immutable';
-import {routerMiddleware} from "connected-react-router";
+import {connectRouter, routerMiddleware} from "connected-react-router";
 import createSagaMiddleware from 'redux-saga';
 import {reducer} from './reducer';
 import rootSaga from "./sagas";
@@ -78,6 +78,7 @@ export default function configureStore({
       }) : compose;
 
   const combinedReducers = combineReducers({
+    router: connectRouter(history),
     ptReducer: reducer,
     firestore: firestoreReducer,
     form: formReducer

@@ -3,6 +3,8 @@ import {fromJS} from "immutable";
 import {getFirestore} from "redux-firestore";
 import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
+import {push} from "connected-react-router";
+import {PROJECT_DETAILS} from "../utils/constants";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',

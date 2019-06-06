@@ -48,6 +48,8 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
       classes
     } = this.props;
 
+    console.log('poate ai norocl: ', this.props)
+
     return (
       <Grid
         container={true}

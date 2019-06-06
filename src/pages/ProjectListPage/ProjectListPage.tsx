@@ -13,7 +13,7 @@ import {
 } from 'redux';
 import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import {CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
+import { CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import {createStructuredSelector} from "reselect";
 import MaterialTable from 'material-table';
@@ -33,6 +33,11 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import {firestoreConnect} from "react-redux-firebase";
+import {
+  push
+} from 'connected-react-router'
+import {PROJECT_DETAILS} from "../../utils/constants";
+import {Link} from "react-router-dom";
 
 const tableIcons = {
   Add: AddBox,
@@ -69,7 +74,9 @@ interface IProjectListPageComponentProps {
 
 //from state
 interface IProjectListPageProps extends IProjectListPageComponentProps {
+  dispatch: any;
   getProjects(): void;
+  asd: any;
 }
 
 type ProjectListPageType = IProjectListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -157,6 +164,10 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
   }
 
+  public handleRowClick = (rowData) => {
+    this.props.dispatch(push(`${PROJECT_DETAILS}/${rowData.id}`))
+  }
+
   render() {
     const {
       classes,
@@ -178,12 +189,13 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
               title="All Projects"
               columns={this.columns}
               data={this.getData()}
+              onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
               actions={[
                 {
                   icon: 'bookmark',
                   tooltip: 'Save Project',
-                  onClick: () => {
-                    console.log('trag la buci lu ma-ta');
+                  onClick: (e, rowData) => {
+                    console.log(rowData);
                   }
                 },
                 {
@@ -212,12 +224,13 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
+    dispatch,
     getProjects: () => {
       dispatch(GetProjectsAction())
     },
     deleteProject: (id) => {
       dispatch(DeleteProjectAction(id))
-    }
+    },
   };
 }
 

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createGenerateClassName, JssProvider, jss } from 'react-jss';
 import jssCompose from 'jss-compose';
 import jssExtend from 'jss-extend';
-import {BrowserRouter, Link} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import {
   withSize,
 } from 'react-sizeme';
@@ -48,12 +48,9 @@ class AppWrapper extends React.Component<AppWrapperProps> {
           // context: ReactReduxContext,
         },
       },
-      {
-        component: BrowserRouter,
-      },
-      {
-        component: ThemeProvider,
-      },
+      // {
+      //   component: BrowserRouter,
+      // },
       {
         component: Provider,
         props: {
@@ -66,6 +63,9 @@ class AppWrapper extends React.Component<AppWrapperProps> {
         props: {
           value: store,
         },
+      },
+      {
+        component: ThemeProvider,
       },
       {
         component: Sagas,

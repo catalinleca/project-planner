@@ -82,7 +82,7 @@ const App: React.FC<AppProps> = (props) => {
         menuItems={menuItems}
       >
         <Switch>
-          <Route path={PROJECT_DETAILS} component={ProjectDetailsPage} />
+          <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
         </Switch>
         <CreateNewProject/>
