@@ -31,6 +31,8 @@ type FieldReactSelectType = IFieldReactSelectProps & WithStyles<keyof ReturnType
 const FieldReactSelect: React.FC<any> = (props) => {
   const {meta: {touched, error}} = props;
 
+  console.log(props);
+
   return (
       <ReactSelect
         {...props}

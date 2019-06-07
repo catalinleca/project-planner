@@ -221,7 +221,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
 }
 
 export const mapStateToProps = (state: any) => {
-  console.log(state);
+  // console.log(state);
   const {
     selectedProjectId
   }: {

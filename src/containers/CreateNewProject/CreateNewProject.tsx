@@ -87,7 +87,11 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       dueDate: projectData.dueDate
         ? new Date(projectData.dueDate).toString()
         : null,
-      leadSources: projectData.leadSources.map( leadSource => leadSource.id)
+      leadSources: projectData.leadSources.map( leadSource => ({
+        id: leadSource.id,
+        firstName: leadSource.firstName,
+        lastName: leadSource.lastName
+      }))
     }
     console.log(newProjectData);
     this.props.createProject(newProjectData);

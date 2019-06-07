@@ -108,7 +108,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
-    {title: 'Status', field: 'status'},
+    {title: '4', field: 'status'},
     {title: 'Sprint', field: 'sprint'},
   ]
 
@@ -144,7 +144,6 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       item['id'] = project['id'];
       return item;
     })
-    console.log(john);
 
     // console.log(data.toJS())
     // return data.toJS();
