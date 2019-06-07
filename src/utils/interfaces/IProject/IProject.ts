@@ -36,3 +36,15 @@ export const projectBase = {
 // due date
 // key contacts
 // tasks
+
+
+/** for project info section
+ * 
+ *  createdBy
+ *  createdDate
+ *  LeadSource
+ *  ProjectsPhase
+ *  Status
+ *  dueDate
+ *  Sprint
+ */

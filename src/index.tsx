@@ -12,7 +12,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faBars,
-  faCalendarAlt
+  faCalendarAlt, faTasks
 } from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "./containers/AppWrapper/AppWrapper";
 import configureStore from './store/store';
@@ -21,7 +21,7 @@ import firebase from './base';
 import userConfig from './base';
 import {createFirestoreInstance} from "redux-firestore";
 
-library.add(faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars, faCalendarAlt)
+library.add(faTasks, faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars, faCalendarAlt)
 
 const initialState: object = {};
 const history = createBrowserHistory({basename: '/'})

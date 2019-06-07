@@ -15,12 +15,20 @@ import {
 import WidgetDetailStyle from "../../components/WidgetDetailStyle/WidgetDetailStyle";
 import TaskComponent from "../../containers/TaskComponent/TaskComponent";
 import ProjectInfoSection from "../../containers/ProjectInfoSection/ProjectInfoSection";
+import {IAction} from "../../utils/interfaces";
+import {connect} from "react-redux";
+import {SelectProjectAction} from "../../store/action";
+import {createStructuredSelector} from "reselect";
+import {makeSelectSelectedProject} from "../../store/selectors";
+import {firestoreConnect} from "react-redux-firebase";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
   widgetContainerStyle: {
     backgroundColor: 'rgb(238,238,238)',
-    padding: `${theme.spacing.unit * 2}px`
+    padding: `${theme.spacing.unit * 2}px`,
+    margin: `-${theme.spacing.unit * 3}px`,
+    width: 'calc(100% + 48px)'
   },
   widgetStyle: {
     padding: 4,
@@ -38,17 +46,25 @@ interface IProjectDetailsPageComponentProps {
 
 //from state
 interface IProjectDetailsPageProps extends IProjectDetailsPageComponentProps {
+  selectProject: any;
+  project: any;
+  projects: any;
 }
 
 type ProjectDetailsPageType = IProjectDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
+  componentDidMount() {
+    this.props.selectProject();
+  }
+
   render() {
     const {
-      classes
+      classes,
+      project
     } = this.props;
 
-    console.log('poate ai norocl: ', this.props)
+    // console.log('poate ai norocl: ', this.props)
 
     return (
       <Grid
@@ -120,7 +136,9 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                       </Grid>
                     }
                   >
-                    <ProjectInfoSection/>
+                    <ProjectInfoSection
+                      project={project}
+                    />
                   </WidgetDetailStyle>
                 </Paper>
               </Grid>
@@ -195,7 +213,6 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                 </Paper>
               </Grid>
             </Grid>
-
           </Grid>
         </Grid>
       </Grid>
@@ -203,6 +220,35 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
   }
 }
 
+export const mapStateToProps = (state: any) => {
+  console.log(state);
+  const {
+    selectedProjectId
+  }: {
+    selectedProjectId: string
+  } =  createStructuredSelector({
+    selectedProjectId: makeSelectSelectedProject(),
+  })(state.ptReducer)
+
+  const projects = state.firestore.data.projects;
+
+  return {
+    selectedProjectId,
+    project:  projects ? projects[selectedProjectId] : null,
+  }
+}
+
+export function mapDispatchToProps(dispatch: React.Dispatch<IAction>, ownProps) {
+  const projectId = ownProps.match.params.id;
+  return {
+    dispatch,
+    selectProject: () => dispatch(SelectProjectAction(projectId))
+  };
+}
 export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
   withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect([
+    { collection: 'projects'}
+  ])
 )(ProjectDetailsPage);

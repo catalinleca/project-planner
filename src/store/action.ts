@@ -76,6 +76,13 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 }
 
+export const SelectProjectAction = (payload: any) => ({
+	type: ActionTypes.SELECT_PROJECT,
+	payload
+})
+
+
+
 export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -90,10 +97,7 @@ export const CreateProjectAction = (project) => (dispatch, getState, {getFirebas
 		...projectBase,
 		...project
 	}).then( (resp) => {
-		dispatch({
-			type: ActionTypes.SELECT_PROJECT,
-			payload: resp.id
-		})
+		dispatch(SelectProjectAction(resp.id))
 	}).catch( err => {
 		console.log(err);
 	})

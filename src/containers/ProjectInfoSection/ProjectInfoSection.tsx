@@ -17,6 +17,7 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface IProjectInfoSectionComponentProps {
+  project: any;
 }
 
 //from state
@@ -27,10 +28,16 @@ type ProjectInfoSectionType = IProjectInfoSectionProps & WithStyles<keyof Return
 
 class ProjectInfoSection extends React.Component<ProjectInfoSectionType, {}> {
   render() {
+    const {
+      project
+    } = this.props;
+
+
     return (
       <Grid
         container={true}
         direction='row'
+        justify='space-between'
       >
         <Grid
             container={true}
