@@ -1,10 +1,13 @@
 import * as React from 'react';
 import {
   Button,
-  Grid, Paper,
+  Grid, Paper, Popper,
   Theme, Typography,
   withStyles,
   WithStyles,
+  Grow, ClickAwayListener,
+  MenuItem,
+  MenuList
 } from '@material-ui/core';
 import {
   StyleRules
@@ -18,9 +21,12 @@ import ProjectInfoSection from "../../containers/ProjectInfoSection/ProjectInfoS
 import {IAction} from "../../utils/interfaces";
 import {connect} from "react-redux";
 import {SelectProjectAction} from "../../store/action";
+import {ChangeProjectPhaseAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectSelectedProject} from "../../store/selectors";
 import {firestoreConnect} from "react-redux-firebase";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {projectPhases} from "../../utils/constants";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -49,13 +55,31 @@ interface IProjectDetailsPageProps extends IProjectDetailsPageComponentProps {
   selectProject: any;
   project: any;
   projects: any;
+  changeProjectPhase: any;
 }
 
 type ProjectDetailsPageType = IProjectDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
+  public state = {
+    anchorEl: null,
+  }
+
   componentDidMount() {
     this.props.selectProject();
+  }
+
+  public handleClick = event => {
+    this.setState({anchorEl: event.currentTarget});
+  };
+
+  public handleClose = () => {
+    this.setState({anchorEl: null});
+  };
+
+  public handleChangeProjectPhase = (label) => {
+    this.props.changeProjectPhase(label);
+    this.handleClose();
   }
 
   render() {
@@ -64,9 +88,52 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
       project
     } = this.props;
 
-    // console.log('poate ai norocl: ', this.props)
+    const {
+      anchorEl
+    } = this.state;
 
-    return (
+    const trackButton = project && <Grid>
+      <Button
+        aria-owns={anchorEl ? 'menu-list-grow' : undefined}
+        aria-haspopup="true"
+        variant='contained'
+        onClick={this.handleClick}
+        className={classes.trackButton}
+      >
+        <Typography style={{marginTop: '1px'}}>
+          {project.projectPhase}
+        </Typography>
+      </Button>
+      <Popper open={Boolean(anchorEl)} anchorEl={anchorEl} transition={true} disablePortal={true}
+              className={classes.trackMenu}>
+        {({TransitionProps, placement}) => (
+          <Grow
+            {...TransitionProps}
+            {...{id: 'menu-list-grow'}}
+            style={{transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'}}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={this.handleClose}>
+                <MenuList>
+                  {
+                    projectPhases.map( (label, index) => (
+                      <MenuItem
+                        key={`${label}${index}`}
+                        onClick={() => this.handleChangeProjectPhase(label)}
+                      >
+                        {label}
+                      </MenuItem>
+                    ))
+                  }
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </Grid>
+
+    return project && (
       <Grid
         container={true}
         direction='column'
@@ -86,12 +153,10 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
               variant='h5'
               className={classes.titleStyle}
             >
-              Big Name
+              {project.name}
             </Typography>
             <Grid>
-              <Button>
-                Track Button TBD
-              </Button>
+              {trackButton}
             </Grid>
           </Grid>
         </Grid>
@@ -238,11 +303,12 @@ export const mapStateToProps = (state: any) => {
   }
 }
 
-export function mapDispatchToProps(dispatch: React.Dispatch<IAction>, ownProps) {
+export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   const projectId = ownProps.match.params.id;
   return {
     dispatch,
-    selectProject: () => dispatch(SelectProjectAction(projectId))
+    selectProject: () => dispatch(SelectProjectAction(projectId)),
+    changeProjectPhase: (label) => dispatch(ChangeProjectPhaseAction(label, projectId))
   };
 }
 export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
