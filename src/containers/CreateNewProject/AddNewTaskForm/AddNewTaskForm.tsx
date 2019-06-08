@@ -63,7 +63,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
           }}
         />
         <Field
-          name='assignedUser'
+          name='assignedTo'
           component={FieldReactSelect}
           props={{
             label: 'Assigned User',

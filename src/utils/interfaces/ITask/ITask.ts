@@ -1,7 +1,7 @@
 import {TaskStatus} from "../../types/types";
 
 export interface ITask {
-  id: number;
+  id: string;
   title: string;
   dueDate: string;
   createdDate: string;
@@ -16,7 +16,6 @@ export interface ITask {
 }
 
 export const taskBase = {
-  id: null,
   title: null,
   dueDate: null,
   createdDate: null,
@@ -29,3 +28,10 @@ export const taskBase = {
   projectID: null,
   projectName: null,
 }
+
+/**
+ task title
+ task status
+ assigned to
+ due date
+ */

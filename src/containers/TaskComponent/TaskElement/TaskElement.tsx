@@ -127,12 +127,17 @@ class TaskElement extends React.Component<any> {
   render() {
     const {
       classes,
-      toggler
+      toggler,
+      task
     } = this.props;
 
-    const task = Map({
-      unos: "cac pe viata ta"
-    });
+    const newDate = task && new Date(task.dueDate);
+    let formatted_date = newDate && newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
+
+    const fullName = [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    console.log('fullName: ', fullName);
+
     return (
       <Grid
         item={true}
@@ -154,24 +159,16 @@ class TaskElement extends React.Component<any> {
           >
             <Grid
               item={true}
-              style={{marginRight: '-8px'}}
+              // style={{marginRight: '-8px'}}
             >
               <ButtonBase
                 color='primary'
                 onClick={toggler}
               >
                 <Typography variant='body2'>
-                  {task.get('task')}
+                  {task.title}
                 </Typography>
               </ButtonBase>
-            </Grid>
-            <Grid
-              item={true}
-              container={true}
-              direction='row'
-              className={classes.marginTopBot}
-            >
-              {this.getButtons(classes.sideVerticalDivider)}
             </Grid>
             <Grid
               item={true}
@@ -192,27 +189,7 @@ class TaskElement extends React.Component<any> {
               {/*    variant: 'caption'*/}
               {/*  }}*/}
               {/*/>*/}
-              this.getDate()
-            </Grid>
-            <Grid
-              item={true}
-              className={classes.marginTopBot}
-            >
-              <Typography variant='caption'>
-                <FontAwesomeIcon
-                  icon='tasks'
-                  className={classes.alignTasks}
-                />
-                {/*{`${completedCriterias}/${totalCriterias}`}*/}
-                {/* Comments number section */}
-                {/*<Typography inline={true}>
-                  <FontAwesomeIcon
-                    icon='comment'
-                    className={classes.alignComments}
-                  />
-                  2
-                </Typography>*/}
-              </Typography>
+              {formatted_date}
             </Grid>
           </Grid>
           <Grid
@@ -224,16 +201,22 @@ class TaskElement extends React.Component<any> {
             xs={4}
           >
             <Grid
-              item={true}
+              container={true}
+              direction='row-reverse'
+              alignItems='center'
             >
-              <Typography variant='caption'>
-                Created by
-                <Typography
-                  inline={true}
-                  color='primary'
-                >
-                  {/*{` ${task.get('taskFrom').get('first_name')} ${task.get('taskFrom').get('last_name')}`}*/}
-                </Typography>
+              <Typography
+                inline={true}
+                color='primary'
+                variant='caption'
+              >
+                {fullName}
+              </Typography>
+              <Typography
+                style={{marginRight: '4px'}}
+                variant='caption'
+              >
+                Assigned To:
               </Typography>
             </Grid>
             {/*<Grid*/}

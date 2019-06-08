@@ -65,7 +65,7 @@ interface IStateProps {
   open: boolean;
   selectedLeads: any;
   activeStep: number;
-  assignedUser: any;
+  assignedTo: any;
   newCreatedProjectId: string;
 }
 
@@ -75,7 +75,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   public state: IStateProps = {
     open: false,
     selectedLeads: [],
-    assignedUser: null,
+    assignedTo: null,
     activeStep: 0,
     newCreatedProjectId: ''
   }
@@ -109,7 +109,11 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       dueDate: taskData.dueDate
         ? new Date(taskData.dueDate).toString()
         : null,
-      assignedUser: taskData.assignedUser.id,
+      assignedTo: {
+        id: taskData.assignedTo.id,
+        firstName: taskData.assignedTo.firstName,
+        lastName: taskData.assignedTo.lastName
+      },
     }
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
@@ -125,7 +129,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   public handleChangeAssignedUser = (user?: IUser) => {
     console.log('user: ', user);
     this.setState({
-      assignedUser: user
+      assignedTo: user
     })
   }
 
