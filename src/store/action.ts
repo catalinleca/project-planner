@@ -5,6 +5,7 @@ import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
+import {makeSelectSelectedProject, makeSelectSelectedTask} from "./selectors";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -30,6 +31,9 @@ export const closeTaskDrawerAction = () => ({
 
 export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
+
+	console.log('taskId: ', taskId)
+	console.log('status: ', status)
 
 	const taskRef = firestore.collection('tasks').doc(taskId);
 
@@ -75,6 +79,27 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const currentState = getState();
+	console.log('currentState: ', currentState)
+	const currentProjectState = currentState.ptReducer;
+
+	const selectedTaskId = (makeSelectSelectedTask())(currentProjectState)
+	console.log('selectedTask: ', selectedTaskId);
+
+	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
+
+	const setWithMerge = taskRef.set({
+		projectName,
+		projectId
+	}, {merge: true})
+
+
+
+}
+
 export const ChangeProjectPhaseAction = (label, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -103,17 +128,6 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	// })
 
 }
-
-export const SelectProjectAction = (payload: any) => ({
-	type: ActionTypes.SELECT_PROJECT,
-	payload
-})
-
-export const SelectTaskAction = (payload: any) => ({
-	type: ActionTypes.SELECT_TASK,
-	payload
-})
-
 
 
 export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
@@ -151,10 +165,6 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 		.catch( err => console.log(err))
 }
 
-export const FirstAction = () => {
-
-	return ({	type: ActionTypes.FIRST_ACTION })
-}
 
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
@@ -165,3 +175,18 @@ export const MyApiCallAction = (payload: any) => ({
 	type: ActionTypes.MY_API_CALL,
 })
 
+export const SelectProjectAction = (payload: any) => ({
+	type: ActionTypes.SELECT_PROJECT,
+	payload
+})
+
+export const SelectTaskAction = (payload: any) => ({
+	type: ActionTypes.SELECT_TASK,
+	payload
+})
+
+
+export const FirstAction = () => {
+
+	return ({	type: ActionTypes.FIRST_ACTION })
+}

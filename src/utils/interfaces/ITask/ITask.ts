@@ -11,10 +11,24 @@ export interface ITask {
   createdBy: string; //userId
   taskStatus: TaskStatus;
   projectName: string;
-  projectID: string;
+  projectId: string;
   assignedTo: string; //userId
 }
 
+/**
+ * Title
+ * Project Name
+ * taskStatus
+ * description
+ *
+ * assignedTo
+ * createdDate
+ * dueDate
+ * createdBy ***
+ * tags
+ *
+ * subTasks
+ * */
 export const taskBase = {
   title: null,
   dueDate: null,
@@ -25,7 +39,7 @@ export const taskBase = {
   createdBy: null,
   assignedTo: null,
   taskStatus: 'toDo',
-  projectID: null,
+  projectId: null,
   projectName: null,
 }
 
