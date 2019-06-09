@@ -21,7 +21,7 @@ import TableRow from "@material-ui/core/TableRow";
 import {
   ChangeTaskStatusAction,
   CreateProjectAction,
-  doTheThingAction,
+  doTheThingAction, EditTaskAction,
   FirstAction, SelectTaskAction,
   toggleTaskDrawerAction
 } from "../../store/action";
@@ -48,6 +48,7 @@ interface ITaskComponentProps extends ITaskComponentComponentProps {
   toggleTaskDrawer: any;
   selectTask: any;
   selectedTaskId: any;
+  editTask: any;
 }
 
 type TaskComponentType = ITaskComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -135,6 +136,11 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     toggleTaskDrawer();
   }
 
+  public handleCreateNewTask = (values) => {
+    console.log('DACA ASTA MERGE ESTI ZEU: ', values);
+    this.props.editTask(values)
+  }
+
   render() {
     const {
       orderedTasks,
@@ -157,7 +163,9 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
     return (
       <React.Fragment>
-        <TaskDrawer/>
+        <TaskDrawer
+          onSubmit={this.handleCreateNewTask}
+        />
         {
           orderedTasks &&
           <MaterialTable
@@ -252,7 +260,8 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
     toggleTaskDrawer: () => {dispatch(toggleTaskDrawerAction())},
-    selectTask: (task) => {dispatch(SelectTaskAction(task))}
+    selectTask: (task) => {dispatch(SelectTaskAction(task))},
+    editTask: (values) => {dispatch(EditTaskAction(values))}
   };
 }
 

@@ -10,7 +10,7 @@ import {
   Typography, TextField, Button, Menu, MenuItem
 
 } from '@material-ui/core';
-import { Field, reduxForm } from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import {
   StyleRules
 } from '@material-ui/core/styles';
@@ -48,6 +48,7 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ITaskDrawerComponentProps {
+  onSubmit: any
 }
 
 //from state
@@ -59,6 +60,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   projects: any;
   changeTaskStatus: any;
   selectedTaskId: any;
+  handleSubmit: any;
 }
 
 type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -81,12 +83,12 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   }
 
   public toggleEdit = () => {
-    this.setState( (prevState: ITaskDrawerState) => ({
+    this.setState((prevState: ITaskDrawerState) => ({
       edit: !prevState.edit
     }))
   }
 
-  public handleProjectMenuClose = ( ) => {
+  public handleProjectMenuClose = () => {
     this.setState({projectAnchorEl: null})
   }
 
@@ -103,7 +105,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.setState({projectAnchorEl: null})
 
   }
-
 
   public onChangeTaskStatus = (status) => {
     this.props.changeTaskStatus(this.props.selectedTaskId, status);
@@ -137,7 +138,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
     // console.log(this.state);
     // console.log('task: ', task)
-    
+
     const taskStatus = task && (
       <Grid>
         <StatusChip
@@ -165,7 +166,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
         >
           {
             projects &&
-            projects.map ( (project, index) => (
+            projects.map((project, index) => (
               <MenuItem
                 key={`${project.id}${index}`}
                 onClick={() => this.handleProjectMenuClick(project.name, project.id)}
@@ -185,19 +186,27 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
         onClose={closeDrawer}
         classes={{
           paper:
-            classes.container
+          classes.container
 
         }}
         className={classes.container}
       >
+
         {
           task &&
-          <React.Fragment>
+          <form onSubmit={this.props.handleSubmit}>
+
             <AppBar position="static" color="primary">
               <Toolbar>
-                <Typography variant="h6" color="inherit">
-                  {task.title}
-                </Typography>
+                <DisplayEdit
+                  edit={edit}
+                  displayValue={task.title}
+                  component={FieldTextField}
+                  fieldProps={{
+                    name: 'title',
+                    label: 'Title'
+                  }}
+                />
               </Toolbar>
             </AppBar>
             <Grid
@@ -215,18 +224,22 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                   direction='column'
                 >
                   {taskStatus}
-                  
+
                   {taskProject}
 
-                  <DisplayEdit
-                    edit={edit}
-                    displayValue={task.description}
-                    component={FieldTextField}
-                    fieldProps={{
-                      name: 'description',
-                      label: 'Description'
-                    }}
-                  />
+                    <DisplayEdit
+                      edit={edit}
+                      displayValue={task.description}
+                      component={FieldTextField}
+                      fieldProps={{
+                        name: 'description',
+                        label: 'Description',
+                      }}
+                      componentProps={{
+                        multiline: true,
+                        rowsMax: '4',
+                      }}
+                    />
 
                 </Grid>
               </Grid>
@@ -234,16 +247,18 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                 item={true}
                 xs={4}
               >
-
               </Grid>
             </Grid>
             <Button
-              onClick={this.toggleEdit}
+              type='submit'
+            >Submit the shit</Button>
+            <Button
+                onClick={this.toggleEdit}
             >
-              toggle
+                toggle
             </Button>
 
-          </React.Fragment>
+          </form>
         }
       </Drawer>
     );
@@ -269,19 +284,25 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
-    closeDrawer: () => { dispatch(closeTaskDrawerAction()) },
-    changeTaskProject: (projectName, projectId) => { dispatch(ChangeTaskProjectAction(projectName, projectId)) },
-    changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
+    closeDrawer: () => {
+      dispatch(closeTaskDrawerAction())
+    },
+    changeTaskProject: (projectName, projectId) => {
+      dispatch(ChangeTaskProjectAction(projectName, projectId))
+    },
+    changeTaskStatus: (taskId, status) => {
+      dispatch(ChangeTaskStatusAction(taskId, status))
+    },
   };
 }
 
 export default compose<React.ComponentClass<ITaskDrawerComponentProps>>(
   reduxForm({
-    form: 'iesi aks'
+    form: 'editProject'
   }),
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
-    { collection: 'projects'}
+    {collection: 'projects'}
   ])
 )(TaskDrawer);

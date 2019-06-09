@@ -79,6 +79,28 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+/**
+ * Refactoring. Vezi ca folosesti 100 functii ca sa editezi project sau task cand poti
+ * sa folosesti una si sa trimiti campurile ca parametur ba pula
+ *
+ */
+
+
+export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const selectedTaskId = (makeSelectSelectedTask())(getState().ptReducer)
+
+	console.log('selectedTaskId: ', selectedTaskId)
+	console.log('values: ', values)
+
+	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
+
+	const setWithMerge = taskRef.set({
+		...values
+	}, {merge: true})
+
+}
 export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 

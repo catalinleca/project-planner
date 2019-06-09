@@ -14,6 +14,7 @@ import {
 import { Field } from 'redux-form';
 import FieldTextField from "../FieldTextField/FieldTextField";
 import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
+import {TextFieldProps} from "@material-ui/core/TextField";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -29,6 +30,7 @@ interface IDisplayEditComponentProps {
   displayValue: any
   component: any
   fieldProps: IFieldProps
+  componentProps?: TextFieldProps
 }
 
 //from state
@@ -42,16 +44,18 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
     edit,
     displayValue,
     component,
-    fieldProps
+    fieldProps,
+    componentProps
   } = props;
 
-  console.log(props);
+  console.log('DisplayEdit: ',props);
   return edit
     ? (
       <Field
         component={component}
         props={{
-          value: displayValue
+          // value: displayValue,
+            ...componentProps
         }}
         {...fieldProps}
       />
