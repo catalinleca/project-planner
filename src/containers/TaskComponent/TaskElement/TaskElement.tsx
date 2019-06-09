@@ -14,6 +14,10 @@ import {
   StyleRules
 } from '@material-ui/core/styles';
 import {
+  List,
+  Map
+} from 'immutable';
+import {
   FontAwesomeIcon
 } from '@fortawesome/react-fontawesome';
 // import StatusChip from '../../../../../components/StatusChip/StatusChip';
@@ -22,9 +26,8 @@ import * as Immutable from 'immutable';
 import {
   compose,
 } from 'redux';
-import {
-  Map
-} from 'immutable';
+import StatusChip from "../../../components/StatusChip/StatusChip";
+import {TaskStatus} from "../../../utils/types/types";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -109,6 +112,9 @@ type TaskElementProps =  WithStyles<keyof ReturnType<typeof styles>>;
 
 
 class TaskElement extends React.Component<any> {
+  public state = {
+    anchorEl: null
+  }
   public getButtons = (sideVerticalDivider: string) => {
     return (
       ['Project Title', 'Quote Number', 'Spec Title'].map((value, index) => (
@@ -124,6 +130,22 @@ class TaskElement extends React.Component<any> {
       ))
     );
   }
+
+  public changeStatus = (status) => {
+    console.log('in changeStatus: ', status);
+    this.setState({anchorEl: null});
+
+  }
+
+  public handleOpen = event => {
+    this.setState({anchorEl: event.currentTarget});
+  };
+
+  public handleClose = () => {
+    this.setState({anchorEl: null});
+  };
+
+
   render() {
     const {
       classes,
@@ -131,10 +153,28 @@ class TaskElement extends React.Component<any> {
       task
     } = this.props;
 
+    const {
+      anchorEl
+    } = this.state;
+
     const newDate = task && new Date(task.dueDate);
     let formatted_date = newDate && newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
 
     const fullName = [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    const keys = Object.keys(TaskStatus);
+    //
+    // const taskStatusValues = keys.map( key =>  ({key: key[0], value: key[1]}));
+
+    const taskStatusValues = Map().withMutations( taskStatuses => {
+      keys.forEach( key => {
+        taskStatuses.set(key, TaskStatus[key])
+      })
+    });
+
+    console.log(taskStatusValues)
+    console.log(taskStatusValues.toJS())
+
 
     console.log('fullName: ', fullName);
 
@@ -170,6 +210,14 @@ class TaskElement extends React.Component<any> {
                 </Typography>
               </ButtonBase>
             </Grid>
+            <StatusChip
+              status={task.taskStatus}
+              anchorEl={anchorEl}
+              options={taskStatusValues}
+              changeStatus={this.changeStatus}
+              handleOpen={this.handleOpen}
+              handleClose={this.handleClose}
+            />
             <Grid
               item={true}
               container={true}
@@ -227,6 +275,7 @@ class TaskElement extends React.Component<any> {
             {/*</Grid>*/}
           </Grid>
         </Grid>
+        <Divider/>
       </Grid>
     );
   }

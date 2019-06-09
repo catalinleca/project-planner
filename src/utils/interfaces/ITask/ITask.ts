@@ -24,7 +24,7 @@ export const taskBase = {
   description: null,
   createdBy: null,
   assignedTo: null,
-  taskStatus: null,
+  taskStatus: 'toDo',
   projectID: null,
   projectName: null,
 }
