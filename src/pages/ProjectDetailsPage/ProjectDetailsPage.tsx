@@ -7,7 +7,7 @@ import {
   WithStyles,
   Grow, ClickAwayListener,
   MenuItem,
-  MenuList
+  MenuList, Drawer
 } from '@material-ui/core';
 import {
   StyleRules
@@ -27,6 +27,7 @@ import {makeSelectSelectedProject} from "../../store/selectors";
 import {firestoreConnect} from "react-redux-firebase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {projectPhases} from "../../utils/constants";
+import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -89,7 +90,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
     } = this.props;
 
     const {
-      anchorEl
+      anchorEl,
     } = this.state;
 
     const trackButton = project && <Grid>

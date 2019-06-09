@@ -18,7 +18,16 @@ import {connect} from "react-redux";
 import {firestoreConnect} from "react-redux-firebase";
 import TaskElement from "./TaskElement/TaskElement";
 import TableRow from "@material-ui/core/TableRow";
-import {ChangeTaskStatusAction, CreateProjectAction, doTheThingAction, FirstAction} from "../../store/action";
+import {
+  ChangeTaskStatusAction,
+  CreateProjectAction,
+  doTheThingAction,
+  FirstAction, SelectTaskAction,
+  toggleTaskDrawerAction
+} from "../../store/action";
+import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
+import {createStructuredSelector} from "reselect";
+import {makeSelectSelectedProject, makeSelectSelectedTask} from "../../store/selectors";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -34,13 +43,23 @@ interface ITaskComponentComponentProps {
 //from state
 interface ITaskComponentProps extends ITaskComponentComponentProps {
   orderedTasks: any;
-  unorderedTasks: any;
+  // unorderedTasks: any;
   changeTaskStatus: any;
+  toggleTaskDrawer: any;
+  selectTask: any;
+  selectedTaskId: any;
 }
 
 type TaskComponentType = ITaskComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
 
+interface ITaskComponentState {
+  open: boolean,
+}
+
 class TaskComponent extends React.Component<TaskComponentType, {}> {
+  public state: ITaskComponentState = {
+    open: false
+  }
   private columns = [
     {title: 'Title', field: 'title'},
     {title: 'Task Status', field: 'taskStatus'},
@@ -51,63 +70,86 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
   private asd = [
   ]
 
-  public getData = () => {
-    const {
-      orderedTasks,
-      unorderedTasks
-    } = this.props;
-
-    // const john = orderedTasks.map(task => {
-    //   let item = {};
-    //   this.columns.map(columnType => {
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = task[fieldName]
-    //   })
-    //   item['id'] = task['id'];
-    //   return item;
-    // })
-
-    // console.log(typeof unorderedTasks);
-    //
-    const keys = Object.keys(unorderedTasks)
-
-    const john = keys.map(id => {
-      let item = {};
-      const task = unorderedTasks[id];
-      console.log('task: ', task);
-      this.columns.map(columnType => {
-        console.log('columnType: ', columnType);
-        const fieldName = columnType['field']
-        item[fieldName] = task[fieldName]
-      })
-      item['id'] = id;
-      return item;
-    })
-    //
-    console.log('-----john-----', john);
-
-    // console.log(data.toJS())
-    // return data.toJS();
-    return john;
-  }
+  // public getData = () => {
+  //   const {
+  //     orderedTasks,
+  //     // unorderedTasks
+  //   } = this.props;
+  //
+  //   // const john = orderedTasks.map(task => {
+  //   //   let item = {};
+  //   //   this.columns.map(columnType => {
+  //   //     const fieldName = columnType['field']
+  //   //     item[fieldName] = task[fieldName]
+  //   //   })
+  //   //   item['id'] = task['id'];
+  //   //   return item;
+  //   // })
+  //
+  //   // console.log(typeof unorderedTasks);
+  //   //
+  //   const keys = Object.keys(unorderedTasks)
+  //
+  //   const john = keys.map(id => {
+  //     let item = {};
+  //     const task = unorderedTasks[id];
+  //     console.log('task: ', task);
+  //     this.columns.map(columnType => {
+  //       console.log('columnType: ', columnType);
+  //       const fieldName = columnType['field']
+  //       item[fieldName] = task[fieldName]
+  //     })
+  //     item['id'] = id;
+  //     return item;
+  //   })
+  //   //
+  //   console.log('-----john-----', john);
+  //
+  //   // console.log(data.toJS())
+  //   // return data.toJS();
+  //   return john;
+  // }
 
   public onChangeTaskStatus = (taskId, status) => {
     this.props.changeTaskStatus(taskId, status);
 
   }
 
+  public closeDrawer = () => {
+    this.setState({open: false})
+  }
+
+  public toggleDrawer = () => {
+    this.setState((prevState: ITaskComponentState) => ({
+      open: !prevState.open
+    }));
+  }
+
+  public handleRowClick = (task) => {
+    const {
+      toggleTaskDrawer,
+      selectTask,
+    } = this.props;
+
+    console.log('handleRowClick: ', task);
+    selectTask(task)
+    toggleTaskDrawer();
+  }
+
   render() {
     const {
       orderedTasks,
-      unorderedTasks,
-      classes
+      // unorderedTasks,
+      toggleTaskDrawer,
+      classes,
     } = this.props
 
     console.log('orderedTasks: ', orderedTasks)
-    console.log('unorderedTasks: ', unorderedTasks)
+    // console.log('unorderedTasks: ', unorderedTasks)
 
     return (
       <React.Fragment>
+        <TaskDrawer/>
         {
           orderedTasks &&
           <MaterialTable
@@ -156,6 +198,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                   return (
                     <TableRow
                       // className={classes.duteDreacu}
+                      onClick={() => this.handleRowClick(props.data)}
                     >
                       <td>
                         <TaskElement
@@ -187,20 +230,17 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  // console.log('mapStateToProps in ProjectListPage: ', state);
-  // return createStructuredSelector({
-  //   // projects: makeSelectProjects(),
-  // })(state)
-
   return {
     orderedTasks: state.firestore.ordered.tasks,
-    unorderedTasks: state.firestore.data.tasks,
+    // unorderedTasks: state.firestore.data.tasks,
   }
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
+    toggleTaskDrawer: () => {dispatch(toggleTaskDrawerAction())},
+    selectTask: (task) => {dispatch(SelectTaskAction(task))}
   };
 }
 

@@ -36,6 +36,13 @@ export const makeSelectProjects = () => createSelector(
   }
 );
 
+export const makeSelectTaskDrawerOpen = () => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.get('taskDrawerOpen');
+  }
+);
+
 export const makeSelectProjectTitle = () => createSelector(
   makeSelectProjects(),
   (projects: any) => {
@@ -48,6 +55,15 @@ export const makeSelectSelectedProject = () => createSelector(
   (state: any) => {
     return state.get('selectedProject');
   }
-);export default {
+);
+
+export const makeSelectSelectedTask = () => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.get('selectedTask');
+  }
+);
+
+export default {
   selectReducerState
 }

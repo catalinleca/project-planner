@@ -14,8 +14,19 @@ export enum ActionTypes {
 	GET_PROJECTS = 'GET_PROJECTS',
 	DELTE_PROJECT = 'DELTE_PROJECT',
 	SELECT_PROJECT = 'SELECT_PROJECT',
+	SELECT_TASK = 'SELECT_TASK',
+	TOGGLE_TASK_DRAWER = 'TOGGLE_TASK_DRAWER',
+	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER'
 }
 //
+
+export const toggleTaskDrawerAction = () => ({
+	type: ActionTypes.TOGGLE_TASK_DRAWER,
+})
+
+export const closeTaskDrawerAction = () => ({
+	type: ActionTypes.CLOSE_TASK_DRAWER,
+})
 
 export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
@@ -95,6 +106,11 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 export const SelectProjectAction = (payload: any) => ({
 	type: ActionTypes.SELECT_PROJECT,
+	payload
+})
+
+export const SelectTaskAction = (payload: any) => ({
+	type: ActionTypes.SELECT_TASK,
 	payload
 })
 
