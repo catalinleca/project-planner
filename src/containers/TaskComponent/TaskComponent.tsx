@@ -18,6 +18,7 @@ import {connect} from "react-redux";
 import {firestoreConnect} from "react-redux-firebase";
 import TaskElement from "./TaskElement/TaskElement";
 import TableRow from "@material-ui/core/TableRow";
+import {ChangeTaskStatusAction, CreateProjectAction, doTheThingAction, FirstAction} from "../../store/action";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -34,6 +35,7 @@ interface ITaskComponentComponentProps {
 interface ITaskComponentProps extends ITaskComponentComponentProps {
   orderedTasks: any;
   unorderedTasks: any;
+  changeTaskStatus: any;
 }
 
 type TaskComponentType = ITaskComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -87,6 +89,11 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     // console.log(data.toJS())
     // return data.toJS();
     return john;
+  }
+
+  public onChangeTaskStatus = (taskId, status) => {
+    this.props.changeTaskStatus(taskId, status);
+
   }
 
   render() {
@@ -153,6 +160,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                       <td>
                         <TaskElement
                           task={props.data}
+                          changeTaskStatus={this.onChangeTaskStatus}
                         />
                       </td>
                     </TableRow>
@@ -190,9 +198,15 @@ const mapStateToProps = (state: any) => {
   }
 }
 
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
+  return {
+    changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
+  };
+}
+
 export default compose<React.ComponentClass<ITaskComponentComponentProps>>(
   withStyles(styles),
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
     {collection: 'tasks'}
   ])

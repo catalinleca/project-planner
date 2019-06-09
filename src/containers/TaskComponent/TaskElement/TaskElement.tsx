@@ -28,6 +28,7 @@ import {
 } from 'redux';
 import StatusChip from "../../../components/StatusChip/StatusChip";
 import {TaskStatus} from "../../../utils/types/types";
+import classnames from 'classnames';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -79,20 +80,20 @@ const styles = (theme: Theme): StyleRules => ({
   // [CriteriaStatus.Rejected]: {
   //   color: Immutable.getIn(theme.palette, ['status', 'cancelled'], 'none'),
   // },
-  passed: {
-    color: Immutable.getIn(theme.palette, ['status', 'passed'], 'none'),
+  toDo: {
+    borderLeftColor: 'orange !important',
   },
-  missed: {
-    color: Immutable.getIn(theme.palette, ['status', 'missed'], 'none'),
+  inProgress: {
+    borderLeftColor: 'lightblue !important',
   },
-  quoted: {
-    color: Immutable.getIn(theme.palette, ['status', 'quoted'], 'none'),
+  completed: {
+    borderLeftColor: 'blue !important',
   },
-  lost: {
-    color: Immutable.getIn(theme.palette, ['status', 'lost'], 'none'),
+  rejected: {
+    borderLeftColor: 'red !important',
   },
-  won: {
-    color: Immutable.getIn(theme.palette, ['status', 'won'], 'none'),
+  accepted: {
+    borderLeftColor: 'green !important',
   },
   // [CriteriaStatus.Created]: {
   //   color: Immutable.getIn(theme.palette, ['status', 'toDo'], 'none'),
@@ -106,6 +107,10 @@ const styles = (theme: Theme): StyleRules => ({
   avatarItems: {
     marginBottom: `${theme.spacing.unit * 1.5}px`
   },
+  bar: {
+    borderLeft: '2px solid',
+    paddingLeft: `${theme.spacing.unit}px`
+  }
 });
 
 type TaskElementProps =  WithStyles<keyof ReturnType<typeof styles>>;
@@ -133,6 +138,7 @@ class TaskElement extends React.Component<any> {
 
   public changeStatus = (status) => {
     console.log('in changeStatus: ', status);
+    this.props.changeTaskStatus(this.props.task.id, status);
     this.setState({anchorEl: null});
 
   }
@@ -182,7 +188,7 @@ class TaskElement extends React.Component<any> {
       <Grid
         item={true}
         // className={classNames(classes.tableRow, classes[taskStatus])}
-        className={classNames(classes.tableRow)}
+        className={classnames([classes.tableRow, classes.bar, classes[task.taskStatus]])}
         container={true}
         direction='column'
         wrap='nowrap'
@@ -210,14 +216,6 @@ class TaskElement extends React.Component<any> {
                 </Typography>
               </ButtonBase>
             </Grid>
-            <StatusChip
-              status={task.taskStatus}
-              anchorEl={anchorEl}
-              options={taskStatusValues}
-              changeStatus={this.changeStatus}
-              handleOpen={this.handleOpen}
-              handleClose={this.handleClose}
-            />
             <Grid
               item={true}
               container={true}
@@ -225,6 +223,14 @@ class TaskElement extends React.Component<any> {
               className={classNames(classes.noWrap, classes.marginTopBot)}
               alignItems='center'
             >
+              <StatusChip
+                status={task.taskStatus}
+                anchorEl={anchorEl}
+                options={taskStatusValues}
+                changeStatus={this.changeStatus}
+                handleOpen={this.handleOpen}
+                handleClose={this.handleClose}
+              />
               {/*<StatusChip*/}
               {/*  status={task.get('taskStatus')}*/}
               {/*  anchorEl={anchorEl}*/}
