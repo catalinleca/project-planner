@@ -17,7 +17,15 @@ export enum ActionTypes {
 }
 //
 
+export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
 
+	const taskRef = firestore.collection('tasks').doc(taskId);
+
+	const setWithMerge = taskRef.set({
+		taskStatus: status
+	}, {merge: true})
+}
 
 export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();

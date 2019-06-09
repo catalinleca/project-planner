@@ -14,6 +14,10 @@ import {
   StyleRules
 } from '@material-ui/core/styles';
 import {
+  List,
+  Map
+} from 'immutable';
+import {
   FontAwesomeIcon
 } from '@fortawesome/react-fontawesome';
 // import StatusChip from '../../../../../components/StatusChip/StatusChip';
@@ -22,9 +26,9 @@ import * as Immutable from 'immutable';
 import {
   compose,
 } from 'redux';
-import {
-  Map
-} from 'immutable';
+import StatusChip from "../../../components/StatusChip/StatusChip";
+import {TaskStatus} from "../../../utils/types/types";
+import classnames from 'classnames';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -76,20 +80,20 @@ const styles = (theme: Theme): StyleRules => ({
   // [CriteriaStatus.Rejected]: {
   //   color: Immutable.getIn(theme.palette, ['status', 'cancelled'], 'none'),
   // },
-  passed: {
-    color: Immutable.getIn(theme.palette, ['status', 'passed'], 'none'),
+  toDo: {
+    borderLeftColor: 'orange !important',
   },
-  missed: {
-    color: Immutable.getIn(theme.palette, ['status', 'missed'], 'none'),
+  inProgress: {
+    borderLeftColor: 'lightblue !important',
   },
-  quoted: {
-    color: Immutable.getIn(theme.palette, ['status', 'quoted'], 'none'),
+  completed: {
+    borderLeftColor: 'blue !important',
   },
-  lost: {
-    color: Immutable.getIn(theme.palette, ['status', 'lost'], 'none'),
+  rejected: {
+    borderLeftColor: 'red !important',
   },
-  won: {
-    color: Immutable.getIn(theme.palette, ['status', 'won'], 'none'),
+  accepted: {
+    borderLeftColor: 'green !important',
   },
   // [CriteriaStatus.Created]: {
   //   color: Immutable.getIn(theme.palette, ['status', 'toDo'], 'none'),
@@ -103,12 +107,19 @@ const styles = (theme: Theme): StyleRules => ({
   avatarItems: {
     marginBottom: `${theme.spacing.unit * 1.5}px`
   },
+  bar: {
+    borderLeft: '2px solid',
+    paddingLeft: `${theme.spacing.unit}px`
+  }
 });
 
 type TaskElementProps =  WithStyles<keyof ReturnType<typeof styles>>;
 
 
 class TaskElement extends React.Component<any> {
+  public state = {
+    anchorEl: null
+  }
   public getButtons = (sideVerticalDivider: string) => {
     return (
       ['Project Title', 'Quote Number', 'Spec Title'].map((value, index) => (
@@ -124,20 +135,60 @@ class TaskElement extends React.Component<any> {
       ))
     );
   }
+
+  public changeStatus = (status) => {
+    console.log('in changeStatus: ', status);
+    this.props.changeTaskStatus(this.props.task.id, status);
+    this.setState({anchorEl: null});
+
+  }
+
+  public handleOpen = event => {
+    this.setState({anchorEl: event.currentTarget});
+  };
+
+  public handleClose = () => {
+    this.setState({anchorEl: null});
+  };
+
+
   render() {
     const {
       classes,
-      toggler
+      toggler,
+      task
     } = this.props;
 
-    const task = Map({
-      unos: "cac pe viata ta"
+    const {
+      anchorEl
+    } = this.state;
+
+    const newDate = task && new Date(task.dueDate);
+    let formatted_date = newDate && newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
+
+    const fullName = [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    const keys = Object.keys(TaskStatus);
+    //
+    // const taskStatusValues = keys.map( key =>  ({key: key[0], value: key[1]}));
+
+    const taskStatusValues = Map().withMutations( taskStatuses => {
+      keys.forEach( key => {
+        taskStatuses.set(key, TaskStatus[key])
+      })
     });
+
+    console.log(taskStatusValues)
+    console.log(taskStatusValues.toJS())
+
+
+    console.log('fullName: ', fullName);
+
     return (
       <Grid
         item={true}
         // className={classNames(classes.tableRow, classes[taskStatus])}
-        className={classNames(classes.tableRow)}
+        className={classnames([classes.tableRow, classes.bar, classes[task.taskStatus]])}
         container={true}
         direction='column'
         wrap='nowrap'
@@ -154,24 +205,16 @@ class TaskElement extends React.Component<any> {
           >
             <Grid
               item={true}
-              style={{marginRight: '-8px'}}
+              // style={{marginRight: '-8px'}}
             >
               <ButtonBase
                 color='primary'
                 onClick={toggler}
               >
                 <Typography variant='body2'>
-                  {task.get('task')}
+                  {task.title}
                 </Typography>
               </ButtonBase>
-            </Grid>
-            <Grid
-              item={true}
-              container={true}
-              direction='row'
-              className={classes.marginTopBot}
-            >
-              {this.getButtons(classes.sideVerticalDivider)}
             </Grid>
             <Grid
               item={true}
@@ -180,6 +223,14 @@ class TaskElement extends React.Component<any> {
               className={classNames(classes.noWrap, classes.marginTopBot)}
               alignItems='center'
             >
+              <StatusChip
+                status={task.taskStatus}
+                anchorEl={anchorEl}
+                options={taskStatusValues}
+                changeStatus={this.changeStatus}
+                handleOpen={this.handleOpen}
+                handleClose={this.handleClose}
+              />
               {/*<StatusChip*/}
               {/*  status={task.get('taskStatus')}*/}
               {/*  anchorEl={anchorEl}*/}
@@ -192,27 +243,7 @@ class TaskElement extends React.Component<any> {
               {/*    variant: 'caption'*/}
               {/*  }}*/}
               {/*/>*/}
-              this.getDate()
-            </Grid>
-            <Grid
-              item={true}
-              className={classes.marginTopBot}
-            >
-              <Typography variant='caption'>
-                <FontAwesomeIcon
-                  icon='tasks'
-                  className={classes.alignTasks}
-                />
-                {/*{`${completedCriterias}/${totalCriterias}`}*/}
-                {/* Comments number section */}
-                {/*<Typography inline={true}>
-                  <FontAwesomeIcon
-                    icon='comment'
-                    className={classes.alignComments}
-                  />
-                  2
-                </Typography>*/}
-              </Typography>
+              {formatted_date}
             </Grid>
           </Grid>
           <Grid
@@ -224,16 +255,22 @@ class TaskElement extends React.Component<any> {
             xs={4}
           >
             <Grid
-              item={true}
+              container={true}
+              direction='row-reverse'
+              alignItems='center'
             >
-              <Typography variant='caption'>
-                Created by
-                <Typography
-                  inline={true}
-                  color='primary'
-                >
-                  {/*{` ${task.get('taskFrom').get('first_name')} ${task.get('taskFrom').get('last_name')}`}*/}
-                </Typography>
+              <Typography
+                inline={true}
+                color='primary'
+                variant='caption'
+              >
+                {fullName}
+              </Typography>
+              <Typography
+                style={{marginRight: '4px'}}
+                variant='caption'
+              >
+                Assigned To:
               </Typography>
             </Grid>
             {/*<Grid*/}
@@ -244,6 +281,7 @@ class TaskElement extends React.Component<any> {
             {/*</Grid>*/}
           </Grid>
         </Grid>
+        <Divider/>
       </Grid>
     );
   }

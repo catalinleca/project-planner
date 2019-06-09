@@ -108,7 +108,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
-    {title: '4', field: 'status'},
+    {title: 'Status', field: 'status'},
     {title: 'Sprint', field: 'sprint'},
   ]
 
@@ -185,24 +185,24 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
         {
           projects &&
           <MaterialTable
-              title="All Projects"
-              columns={this.columns}
-              data={this.getData()}
-              onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
-              actions={[
-                {
-                  icon: 'bookmark',
-                  tooltip: 'Save Project',
-                  onClick: (e, rowData) => {
-                    console.log(rowData);
-                  }
-                },
-                {
-                  icon: 'delete',
-                  tooltip: 'Delete Project',
-                  onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
+            title="All Projects"
+            columns={this.columns}
+            data={this.getData()}
+            onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
+            actions={[
+              {
+                icon: 'bookmark',
+                tooltip: 'Save Project',
+                onClick: (e, rowData) => {
+                  console.log(rowData);
                 }
-              ]}
+              },
+              {
+                icon: 'delete',
+                tooltip: 'Delete Project',
+                onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
+              }
+            ]}
           />
         }
       </React.Fragment>

@@ -133,155 +133,161 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
       </Popper>
     </Grid>
 
-    return project && (
-      <Grid
-        container={true}
-        direction='column'
-        wrap='nowrap'
-        className={classes.widgetContainerStyle}
-      >
+    return  project ? (
+      <React.Fragment>
         <Grid
           container={true}
-          item={true}
+          direction='column'
+          wrap='nowrap'
+          className={classes.widgetContainerStyle}
         >
           <Grid
             container={true}
-            direction='row'
-            className={classes.titleContainer}
-          >
-            <Typography
-              variant='h5'
-              className={classes.titleStyle}
-            >
-              {project.name}
-            </Typography>
-            <Grid>
-              {trackButton}
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid
-          container={true}
-        >
-          <Grid
             item={true}
-            container={true}
-            direction='column'
-            wrap='nowrap'
-            xs={12}
           >
             <Grid
               container={true}
+              direction='row'
+              className={classes.titleContainer}
+            >
+              <Typography
+                variant='h5'
+                className={classes.titleStyle}
+              >
+                {project.name}
+              </Typography>
+              <Grid>
+                {trackButton}
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid
+            container={true}
+          >
+            <Grid
               item={true}
+              container={true}
+              direction='column'
+              wrap='nowrap'
+              xs={12}
             >
               <Grid
-                // ProjectInfo
-                // leaderii scrumu pzdms
-                item={true}
                 container={true}
-                direction='column'
-                xs={12}
-                sm={8}
-                className={classes.widgetStyle}
-              >
-                <Paper
-                  elevation={0}
-                  classes={{
-                    root: classes.widgetStylePaper
-                  }}
-                >
-                  <WidgetDetailStyle
-                    header={
-                      <Grid container={true}>
-                        <Grid container={true} item={true} xs={true} alignItems='center'>
-                          <Typography variant='h6'>
-                            Project Info
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    }
-                  >
-                    <ProjectInfoSection
-                      project={project}
-                    />
-                  </WidgetDetailStyle>
-                </Paper>
-              </Grid>
-              <Grid
-                // Due Date tasks
-                // My user page like in jira
                 item={true}
-                container={true}
-                direction='column'
-                xs={12}
-                sm={4}
-                className={classes.widgetStyle}
               >
-                <Paper
-                  elevation={0}
-                  classes={{
-                    root: classes.widgetStylePaper
-                  }}
+                <Grid
+                  // ProjectInfo
+                  // leaderii scrumu pzdms
+                  item={true}
+                  container={true}
+                  direction='column'
+                  xs={12}
+                  sm={8}
+                  className={classes.widgetStyle}
                 >
-                  <WidgetDetailStyle
-                    header={
-                      <Grid container={true}>
-                        <Grid container={true} item={true} xs={true} alignItems='center'>
-                          <Typography variant='h6'>
-                            Due Dates
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    }
+                  <Paper
+                    elevation={0}
+                    classes={{
+                      root: classes.widgetStylePaper
+                    }}
                   >
-                    <Grid
-                      container={true}
-                      direction='column'
+                    <WidgetDetailStyle
+                      header={
+                        <Grid container={true}>
+                          <Grid container={true} item={true} xs={true} alignItems='center'>
+                            <Typography variant='h6'>
+                              Project Info
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      }
                     >
-                      <Grid>PLT</Grid>
-                      <Grid>PLT</Grid>
-                      <Grid>PLT</Grid>
-                      <Grid>PLT</Grid>
-                      <Grid>PLT</Grid>
-                    </Grid>
-                  </WidgetDetailStyle>
-                </Paper>
-              </Grid>
-              <Grid
-                // Tasks
-                item={true}
-                container={true}
-                direction='column'
-                xs={12}
-                className={classes.widgetStyle}
-              >
-                <Paper
-                  elevation={0}
-                  classes={{
-                    root: classes.widgetStylePaper
+                      <ProjectInfoSection
+                        project={project}
+                      />
+                    </WidgetDetailStyle>
+                  </Paper>
+                </Grid>
+                <Grid
+                  // Due Date tasks
+                  // My user page like in jira
+                  item={true}
+                  container={true}
+                  direction='column'
+                  xs={12}
+                  sm={4}
+                  className={classes.widgetStyle}
+                >
+                  <Paper
+                    elevation={0}
+                    classes={{
+                      root: classes.widgetStylePaper
+                    }}
+                  >
+                    <WidgetDetailStyle
+                      header={
+                        <Grid container={true}>
+                          <Grid container={true} item={true} xs={true} alignItems='center'>
+                            <Typography variant='h6'>
+                              Due Dates
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      }
+                    >
+                      <Grid
+                        container={true}
+                        direction='column'
+                      >
+                        <Grid>PLT</Grid>
+                        <Grid>PLT</Grid>
+                        <Grid>PLT</Grid>
+                        <Grid>PLT</Grid>
+                        <Grid>PLT</Grid>
+                      </Grid>
+                    </WidgetDetailStyle>
+                  </Paper>
+                </Grid>
+                <Grid
+                  // Tasks
+                  item={true}
+                  container={true}
+                  direction='column'
+                  xs={12}
+                  // className={classes.widgetStyle}
+                  style={{
+                    padding: '4px',
+                    height: '500px'
                   }}
                 >
-                  <WidgetDetailStyle
-                    header={
-                      <Grid container={true}>
-                        <Grid container={true} item={true} xs={true} alignItems='center'>
-                          <Typography variant='h6'>
-                            Tasks
-
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    }
+                  <Paper
+                    elevation={0}
+                    classes={{
+                      root: classes.widgetStylePaper
+                    }}
                   >
-                    <TaskComponent/>
-                  </WidgetDetailStyle>
-                </Paper>
+                    <WidgetDetailStyle
+                      header={
+                        <Grid container={true}>
+                          <Grid container={true} item={true} xs={true} alignItems='center'>
+                            <Typography variant='h6'>
+                              Tasks
+
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      }
+                    >
+                      <TaskComponent/>
+                    </WidgetDetailStyle>
+                  </Paper>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    );
+      </React.Fragment>
+    ) : '';
   }
 }
 
