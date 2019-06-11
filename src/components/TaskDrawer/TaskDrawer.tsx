@@ -32,6 +32,8 @@ import FieldTextField from "../FieldTextField/FieldTextField";
 import {firestoreConnect} from "react-redux-firebase";
 import StatusChip from "../StatusChip/StatusChip";
 import {taskStatusValues} from "../../utils/constants";
+import FieldReactSelect from "../FieldReactSelect/FieldReactSelect";
+import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -44,6 +46,12 @@ const styles = (theme: Theme): StyleRules => ({
   },
   drawerBodyContainer: {
     padding: '24px'
+  },
+  marginRight: {
+    marginRight: '8px'
+  },
+  selectAssigned: {
+    // width: '100%'
   }
 });
 
@@ -61,6 +69,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   changeTaskStatus: any;
   selectedTaskId: any;
   handleSubmit: any;
+  users: any;
 }
 
 type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -120,6 +129,15 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.setState({taskStatusAnchorEl: null});
   };
 
+  public formatStringDate = (date: any) => {
+    if (date) {
+      const newDate = new Date(date)
+      return newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
+    } else {
+      return null
+    }
+  }
+
 
   render() {
     const {
@@ -127,7 +145,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       closeDrawer,
       classes,
       task,
-      projects
+      projects,
+      users
     } = this.props;
 
     const {
@@ -138,6 +157,13 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
     // console.log(this.state);
     // console.log('task: ', task)
+
+    const now = new Date();
+    console.log('now: ', now)
+    const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    const taskCreatedDate = task && new Date(task.createdDate)
+    const createdDate =  taskCreatedDate && taskCreatedDate.getDate() + "-" + (taskCreatedDate.getMonth() + 1) + "-" + taskCreatedDate.getFullYear()
 
     const taskStatus = task && (
       <Grid>
@@ -247,7 +273,71 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                 item={true}
                 xs={4}
               >
-              </Grid>
+                <Grid
+                  container={true}
+                  direction='column'
+                  alignItems='flex-start'
+                >
+                  <Grid
+                    container={true}
+                    direction='row'
+                    alignItems='center'
+                  >
+                    <Grid>
+                      <Typography variant='body2' color='inherit' className={classes.marginRight}>Assigned To:</Typography>
+                    </Grid>
+                    <Grid
+                      className={classes.selectAssigned}
+                    >
+                      <DisplayEdit
+                        edit={edit}
+                        displayValue={fullName}
+                        component={FieldReactSelect}
+                        fieldProps={{
+                          name: 'assignedTo',
+                        }}
+                        componentProps={{
+                          label: 'Assigned To',
+                          onChange: (e) => console.log(e),
+                          isMulti: false,
+                          options: users.map(user => ({
+                            label: [user.firstName, user.lastName].join(' '),
+                            value: user.id,
+                            ...user
+                          }))
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid>
+                    <Typography inline={true} color='inherit' variant='body2' className={classes.marginRight}>Created Date:</Typography>
+                    <Typography inline={true} color='inherit' variant='body2'>{this.formatStringDate(task.createdDate)}</Typography>
+                  </Grid>
+                  <Grid
+                    container={true}
+                    direction='row'
+                    alignItems='center'
+                  >
+                    <Grid>
+                      <Typography variant='body2' color='inherit' className={classes.marginRight}>Due Date:</Typography>
+                    </Grid>
+										<DisplayEdit
+											edit={edit}
+											displayValue={this.formatStringDate(task.dueDate)}
+											component={FieldDatePicker}
+											fieldProps={{
+                        name: 'dueDate',
+                        label: 'Change Task Due Date'
+                      }}
+										/>
+                  </Grid>
+									<Grid>
+										<Typography inline={true} color='inherit' variant='body2' className={classes.marginRight}>Created By; </Typography>
+										<Typography inline={true} color='inherit' variant='body2'>TBD</Typography>
+									</Grid>
+                </Grid>
+							</Grid>
+
             </Grid>
             <Button
               type='submit'
@@ -278,7 +368,8 @@ const mapStateToProps = (state: any) => {
     taskDrawerOpen,
     selectedTaskId,
     task: state.firestore.data.tasks && state.firestore.data.tasks[selectedTaskId],
-    projects: state.firestore.ordered.projects
+    projects: state.firestore.ordered.projects,
+    users: state.firestore.ordered.users
   }
 };
 

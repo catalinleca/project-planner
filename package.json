@@ -26,6 +26,7 @@
     "jss-compose": "^5.0.0",
     "jss-extend": "^6.2.0",
     "material-table": "^1.36.6",
+    "material-ui-pickers": "^2.2.4",
     "moment": "^2.24.0",
     "re-base": "^4.0.0",
     "react": "^16.8.6",

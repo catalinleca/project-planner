@@ -17,10 +17,11 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {PROJECT_DETAILS, PROJECT_LIST} from "../../utils/constants";
+import {PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
+import UserListPage from "../../pages/UserListPage/UserListPage";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -63,8 +64,8 @@ const App: React.FC<AppProps> = (props) => {
       width={width}
     />
     <CustomMenuItem
-      to='/users'
-      iconProps={{icon: 'trash'}}
+      to={USER_LIST}
+      iconProps={{icon: 'users'}}
       label='Users'
       width={width}
     />
@@ -84,6 +85,7 @@ const App: React.FC<AppProps> = (props) => {
         <Switch>
           <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
+          <Route path={USER_LIST} component={UserListPage} exact={true}/>
         </Switch>
         <CreateNewProject/>
       </AppMenu>

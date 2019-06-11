@@ -22,7 +22,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IFieldProps {
   name: string,
-  label: string,
+  label?: string,
 }
 
 interface IDisplayEditComponentProps {
@@ -30,7 +30,7 @@ interface IDisplayEditComponentProps {
   displayValue: any
   component: any
   fieldProps: IFieldProps
-  componentProps?: TextFieldProps
+  componentProps?: any
 }
 
 //from state
@@ -53,11 +53,11 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
     ? (
       <Field
         component={component}
+        {...fieldProps}
         props={{
           // value: displayValue,
             ...componentProps
         }}
-        {...fieldProps}
       />
     )
     : (

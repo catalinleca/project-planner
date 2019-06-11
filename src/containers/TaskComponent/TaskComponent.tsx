@@ -138,7 +138,10 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
   public handleCreateNewTask = (values) => {
     console.log('DACA ASTA MERGE ESTI ZEU: ', values);
-    this.props.editTask(values)
+    this.props.editTask({
+      ...values,
+      dueDate: values.dueDate.toString(),
+    })
   }
 
   render() {

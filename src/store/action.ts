@@ -135,6 +135,7 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	const firestore = getFirestore();
 
 	firestore.collection('tasks').add({
+		createdDate: new Date().toString,
 		...taskBase,
 		...task,
 	}).then( (resp) => {
