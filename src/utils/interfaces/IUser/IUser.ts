@@ -5,7 +5,6 @@ export interface IUser {
   jobTitle: any;
   lastName: any;
   mobilePhone: any;
-  userhash: any;
   username: any;
   verified: any;
 
@@ -19,7 +18,6 @@ export const userBase = {
   jobTitle: null,
   lastName: null,
   mobilePhone: null,
-  userhash: null,
   username: null,
   verified: null,
 

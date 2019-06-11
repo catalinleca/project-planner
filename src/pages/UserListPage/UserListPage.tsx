@@ -11,11 +11,8 @@ import {
 import {
   compose,
 } from 'redux';
-import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import { CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
-import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
-import {createStructuredSelector} from "reselect";
+// import {DeleteUserAction} from "../../store/action";
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -36,8 +33,8 @@ import {firestoreConnect} from "react-redux-firebase";
 import {
   push
 } from 'connected-react-router'
-import {PROJECT_DETAILS} from "../../utils/constants";
 import {Link} from "react-router-dom";
+import {USER_DETAILS} from "../../utils/constants";
 
 const tableIcons = {
   Add: AddBox,
@@ -67,143 +64,112 @@ const styles = (theme: Theme): StyleRules => ({
   }
 });
 
-interface IProjectListPageComponentProps {
-  projects: any;
-  deleteProject(id: number): void
+interface IUserListPageComponentProps {
+  users: any;
+  deleteUser(id: number): void
 }
 
 //from state
-interface IProjectListPageProps extends IProjectListPageComponentProps {
+interface IUserListPageProps extends IUserListPageComponentProps {
   dispatch: any;
-  getProjects(): void;
   asd: any;
 }
 
-type ProjectListPageType = IProjectListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
+type UserListPageType = IUserListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class ProjectListPage extends React.Component<ProjectListPageType, {}> {
-  public state = {
-    columns: [
-      {title: 'Name', field: 'name'},
-      {title: 'Project Phase', field: 'projectPhase'},
-      {title: 'Status', field: 'status'},
-      {title: 'Sprint', field: 'sprint'},
-    ],
-    data: [
-      {
-        name: 'Project 1',
-        projectPhase: 'beginning',
-        status: 'to do',
-        sprint: 1,
-      },
-      {
-        name: 'Project 2',
-        projectPhase: 'mid',
-        status: 'in progress',
-        sprint: 4,
-      }
-    ]
-  }
-
-  private columns = [
-    {title: 'Name', field: 'name'},
-    {title: 'Project Phase', field: 'projectPhase'},
-    {title: 'Status', field: 'status'},
+class UserListPage extends React.Component<UserListPageType, {}> {
+  private columns =  [
+    {title: 'First Name', field: 'firstName'},
+    {title: 'Last Name', field: 'lastName'},
+    {title: 'Job Title', field: 'jobTitle'},
     {title: 'Sprint', field: 'sprint'},
   ]
 
   public getData = () => {
     const {
-      projects
+      users
     } = this.props;
 
     // console.log('=============')
     // console.log(
-    //   projects
+    //   Users
     // )
-    // const data = projects.map(project => {
-    //   // console.log('project: ', project.toJS())
+    // const data = Users.map(user => {
+    //   // console.log('user: ', user.toJS())
     //   return Map().withMutations(item => {
     //     this.columns.forEach(columnType => {
     //       const filedName = columnType['field']
     //       // console.log('filedName: ', filedName);
-    //       // console.log('project.get(filedName): ', project.get(filedName));
-    //       item.set(filedName, project.get(filedName))
+    //       // console.log('user.get(filedName): ', user.get(filedName));
+    //       item.set(filedName, user.get(filedName))
     //       // console.log('item: ', item);
     //     })
     //   })
     // });
 
     //
-    const john = projects.map( project => {
-      let item = {};
-      this.columns.map ( columnType => {
-        const fieldName = columnType['field']
-        item[fieldName] = project[fieldName]
-      })
-      item['id'] = project['id'];
-      return item;
-    })
-
-    // console.log(data.toJS())
-    // return data.toJS();
-    return john;
+    // const john = users.map( user => {
+    //   let item = {};
+    //   this.columns.map ( columnType => {
+    //     const fieldName = columnType['field']
+    //     item[fieldName] = user[fieldName]
+    //   })
+    //   item['id'] = user['id'];
+    //   return item;
+    // })
+    //
+    // // console.log(data.toJS())
+    // // return data.toJS();
+    // return john;
   }
-
-  // componentDidMount() {
-  //   this.props.getProjects();
-  // }
 
   public onDeleteHandler = (e,rowData) => {
     const {
-      deleteProject
+      deleteUser
     } = this.props;
 
-    deleteProject(rowData.id)
-
+    deleteUser(rowData.id)
   }
 
   public handleRowClick = (rowData) => {
-    this.props.dispatch(push(`${PROJECT_DETAILS}/${rowData.id}`))
+    this.props.dispatch(push(`${USER_DETAILS}/${rowData.id}`))
   }
 
   render() {
     const {
       classes,
-      projects
+      users
     } = this.props;
 
-    const {
-      columns,
-      data
-    } = this.state;
-
-    // console.log(this.props.projects);
+    console.log(this.props);
 
     return (
       <React.Fragment>
         {
-          projects &&
-          <MaterialTable
-            title="All Projects"
-            columns={this.columns}
-            data={this.getData()}
-            onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
-            actions={[
+          users &&
+					<MaterialTable
+						title="All Users"
+						columns={this.columns}
+						data={users.map( (user, index) => ({
+              ...user,
+              tableData: {id: index}
+            }))}
+						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
+						actions={[
               {
                 icon: 'bookmark',
-                tooltip: 'Save Project',
+                tooltip: 'Save User',
                 onClick: (e, rowData) => {
                   console.log(rowData);
                 }
               },
               {
                 icon: 'delete',
-                tooltip: 'Delete Project',
+                tooltip: 'Delete User',
                 onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
               }
             ]}
-          />
+					/>
         }
       </React.Fragment>
     );
@@ -211,29 +177,24 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  // console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
-  // return createStructuredSelector({
-  //   // projects: makeSelectProjects(),
-  // })(state)
-
   return {
-    projects: state.firestore.ordered.projects,
+    users: state.firestore.ordered.users,
   }
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
-    deleteProject: (id) => {
-      dispatch(DeleteProjectAction(id))
-    },
+    // deleteUser: (id) => {
+    //   dispatch(DeleteUserAction(id))
+    // },
   };
 }
 
-export default compose<React.ComponentClass<IProjectListPageComponentProps>>(
+export default compose<React.ComponentClass<IUserListPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
-    { collection: 'projects'}
+    { collection: 'users'}
   ])
-)(ProjectListPage);
+)(UserListPage);

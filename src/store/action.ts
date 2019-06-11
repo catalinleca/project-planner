@@ -5,6 +5,7 @@ import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
+import {makeSelectSelectedProject, makeSelectSelectedTask} from "./selectors";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -14,11 +15,25 @@ export enum ActionTypes {
 	GET_PROJECTS = 'GET_PROJECTS',
 	DELTE_PROJECT = 'DELTE_PROJECT',
 	SELECT_PROJECT = 'SELECT_PROJECT',
+	SELECT_TASK = 'SELECT_TASK',
+	TOGGLE_TASK_DRAWER = 'TOGGLE_TASK_DRAWER',
+	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER'
 }
 //
 
+export const toggleTaskDrawerAction = () => ({
+	type: ActionTypes.TOGGLE_TASK_DRAWER,
+})
+
+export const closeTaskDrawerAction = () => ({
+	type: ActionTypes.CLOSE_TASK_DRAWER,
+})
+
 export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
+
+	console.log('taskId: ', taskId)
+	console.log('status: ', status)
 
 	const taskRef = firestore.collection('tasks').doc(taskId);
 
@@ -64,6 +79,49 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+/**
+ * Refactoring. Vezi ca folosesti 100 functii ca sa editezi project sau task cand poti
+ * sa folosesti una si sa trimiti campurile ca parametur ba pula
+ *
+ */
+
+
+export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const selectedTaskId = (makeSelectSelectedTask())(getState().ptReducer)
+
+	console.log('selectedTaskId: ', selectedTaskId)
+	console.log('values: ', values)
+
+	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
+
+	const setWithMerge = taskRef.set({
+		...values
+	}, {merge: true})
+
+}
+export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const currentState = getState();
+	console.log('currentState: ', currentState)
+	const currentProjectState = currentState.ptReducer;
+
+	const selectedTaskId = (makeSelectSelectedTask())(currentProjectState)
+	console.log('selectedTask: ', selectedTaskId);
+
+	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
+
+	const setWithMerge = taskRef.set({
+		projectName,
+		projectId
+	}, {merge: true})
+
+
+
+}
+
 export const ChangeProjectPhaseAction = (label, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -77,6 +135,7 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	const firestore = getFirestore();
 
 	firestore.collection('tasks').add({
+		createdDate: new Date().toString,
 		...taskBase,
 		...task,
 	}).then( (resp) => {
@@ -92,12 +151,6 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	// })
 
 }
-
-export const SelectProjectAction = (payload: any) => ({
-	type: ActionTypes.SELECT_PROJECT,
-	payload
-})
-
 
 
 export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
@@ -135,10 +188,6 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 		.catch( err => console.log(err))
 }
 
-export const FirstAction = () => {
-
-	return ({	type: ActionTypes.FIRST_ACTION })
-}
 
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
@@ -149,3 +198,18 @@ export const MyApiCallAction = (payload: any) => ({
 	type: ActionTypes.MY_API_CALL,
 })
 
+export const SelectProjectAction = (payload: any) => ({
+	type: ActionTypes.SELECT_PROJECT,
+	payload
+})
+
+export const SelectTaskAction = (payload: any) => ({
+	type: ActionTypes.SELECT_TASK,
+	payload
+})
+
+
+export const FirstAction = () => {
+
+	return ({	type: ActionTypes.FIRST_ACTION })
+}

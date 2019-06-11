@@ -68,7 +68,6 @@ const StatusChip: React.FC<StatusChipType> = (props) => {
     classes
   } = props;
 
-  console.log(props);
   return (
     <React.Fragment>
       <Button

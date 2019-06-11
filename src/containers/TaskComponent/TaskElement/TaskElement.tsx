@@ -29,6 +29,7 @@ import {
 import StatusChip from "../../../components/StatusChip/StatusChip";
 import {TaskStatus} from "../../../utils/types/types";
 import classnames from 'classnames';
+import {taskStatusValues} from "../../../utils/constants";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -172,17 +173,6 @@ class TaskElement extends React.Component<any> {
     //
     // const taskStatusValues = keys.map( key =>  ({key: key[0], value: key[1]}));
 
-    const taskStatusValues = Map().withMutations( taskStatuses => {
-      keys.forEach( key => {
-        taskStatuses.set(key, TaskStatus[key])
-      })
-    });
-
-    console.log(taskStatusValues)
-    console.log(taskStatusValues.toJS())
-
-
-    console.log('fullName: ', fullName);
 
     return (
       <Grid
