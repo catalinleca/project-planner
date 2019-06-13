@@ -36,8 +36,9 @@ import {firestoreConnect} from "react-redux-firebase";
 import {
   push
 } from 'connected-react-router'
-import {PROJECT_DETAILS} from "../../utils/constants";
+import {PROJECT_DETAILS, PROJECT_LIST, USER_LIST} from "../../utils/constants";
 import {Link} from "react-router-dom";
+import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 
 const tableIcons = {
   Add: AddBox,
@@ -179,6 +180,8 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     } = this.state;
 
     // console.log(this.props.projects);
+
+
 
     return (
       <React.Fragment>

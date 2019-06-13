@@ -8,6 +8,7 @@ export interface ISpecification {
   projects: any;
   selectedProject: string;
   selectedTask: string;
+  selectedUser: string;
   taskDrawerOpen: boolean,
 
 }
@@ -17,6 +18,7 @@ const INITIAL_STATE = fromJS({
   projects: {},
   selectedProject: '',
   selectedTask: '',
+  selectedUser: '',
   taskDrawerOpen: false,
 });
 
@@ -34,6 +36,8 @@ export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any
       return state.set('selectedProject', action.payload);
     case ActionTypes.SELECT_TASK:
       return state.set('selectedTask', fromJS(action.payload));
+    case ActionTypes.SELECT_USER:
+      return state.set('selectedUser', action.payload);
     case ActionTypes.TOGGLE_TASK_DRAWER:
       const currentDrawerState = state.get('taskDrawerOpen')
       return state.set('taskDrawerOpen', !currentDrawerState);

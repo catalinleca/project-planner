@@ -46,7 +46,7 @@ const FieldTextField: React.FC<FieldTextFieldType> = (props) => {
     ...rest
   } = props;
 
-  console.log('FieldTextField: ', props);
+  // console.log('FieldTextField: ', props);
   return (
     <FormControl error={touched && (error != null)} {...formControlProps} >
       <TextField
