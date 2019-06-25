@@ -159,7 +159,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     // console.log('task: ', task)
 
     const now = new Date();
-    console.log('now: ', now)
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
 
     const taskCreatedDate = task && new Date(task.createdDate)

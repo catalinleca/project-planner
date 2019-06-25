@@ -5,7 +5,7 @@ import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
-import {makeSelectSelectedProject, makeSelectSelectedTask} from "./selectors";
+import {makeSelectSelectedProject, makeSelectSelectedTask, makeSelectSelectedUser} from "./selectors";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -16,6 +16,7 @@ export enum ActionTypes {
 	DELTE_PROJECT = 'DELTE_PROJECT',
 	SELECT_PROJECT = 'SELECT_PROJECT',
 	SELECT_TASK = 'SELECT_TASK',
+	SELECT_USER = 'SELECT_USER',
 	TOGGLE_TASK_DRAWER = 'TOGGLE_TASK_DRAWER',
 	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER'
 }
@@ -32,8 +33,8 @@ export const closeTaskDrawerAction = () => ({
 export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	console.log('taskId: ', taskId)
-	console.log('status: ', status)
+	// console.log('taskId: ', taskId)
+	// console.log('status: ', status)
 
 	const taskRef = firestore.collection('tasks').doc(taskId);
 
@@ -45,7 +46,7 @@ export const ChangeTaskStatusAction = (taskId, status) => (dispatch, getState, {
 export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	console.log('ba du te dreq');
+	// console.log('ba du te dreq');
 
 	// firestore.collection('projects').add({
 	// 	name: 'First Real Test Name Project',
@@ -85,14 +86,47 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
  *
  */
 
+const cleanParams = (obj) => {
+	for (let propName in obj) {
+		if (obj[propName] === null || obj[propName] === undefined) {
+			delete obj[propName];
+		}
+	}
+}
+
+export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
+
+	firestore.collection('users').doc(selectedUserId).delete()
+
+}
+
+export const EditUserAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
+
+	const userRef = firestore.collection('users').doc(selectedUserId);
+
+	console.log('in action: ', values);
+
+	cleanParams(values)
+	console.log('in action2: ', values);
+
+	const setWithMerge = userRef.set({
+		...values,
+	}, {merge: true})
+}
 
 export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
 	const selectedTaskId = (makeSelectSelectedTask())(getState().ptReducer)
 
-	console.log('selectedTaskId: ', selectedTaskId)
-	console.log('values: ', values)
+	// console.log('selectedTaskId: ', selectedTaskId)
+	// console.log('values: ', values)
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 
@@ -105,11 +139,11 @@ export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, ge
 	const firestore = getFirestore();
 
 	const currentState = getState();
-	console.log('currentState: ', currentState)
+	// console.log('currentState: ', currentState)
 	const currentProjectState = currentState.ptReducer;
 
 	const selectedTaskId = (makeSelectSelectedTask())(currentProjectState)
-	console.log('selectedTask: ', selectedTaskId);
+	// console.log('selectedTask: ', selectedTaskId);
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 
@@ -205,6 +239,11 @@ export const SelectProjectAction = (payload: any) => ({
 
 export const SelectTaskAction = (payload: any) => ({
 	type: ActionTypes.SELECT_TASK,
+	payload
+})
+
+export const SelectUserAction = (payload: any) => ({
+	type: ActionTypes.SELECT_USER,
 	payload
 })
 

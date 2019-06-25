@@ -38,12 +38,14 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ITaskComponentComponentProps {
+  type: any;
+  typeId: any;
 }
 
 //from state
 interface ITaskComponentProps extends ITaskComponentComponentProps {
   orderedTasks: any;
-  unorderedTasks: any;
+  // unorderedTasks: any;
   changeTaskStatus: any;
   toggleTaskDrawer: any;
   selectTask: any;
@@ -74,7 +76,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
   public getData = () => {
     const {
       orderedTasks,
-      unorderedTasks
+      // unorderedTasks
     } = this.props;
 
     // const john = orderedTasks.map(task => {
@@ -89,26 +91,26 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
     // console.log(typeof unorderedTasks);
     //
-    const keys = Object.keys(unorderedTasks)
-
-    const john = keys.map(id => {
-      let item = {};
-      const task = unorderedTasks[id];
-      // console.log('task: ', task);
-      this.columns.map(columnType => {
-        // console.log('columnType: ', columnType);
-        const fieldName = columnType['field']
-        item[fieldName] = task[fieldName]
-      })
-      item['id'] = id;
-      return item;
-    })
+    // const keys = Object.keys(unorderedTasks)
     //
-    // console.log('-----john-----', john);
-
-    // console.log(data.toJS())
-    // return data.toJS();
-    return john;
+    // const john = keys.map(id => {
+    //   let item = {};
+    //   const task = unorderedTasks[id];
+    //   // console.log('task: ', task);
+    //   this.columns.map(columnType => {
+    //     // console.log('columnType: ', columnType);
+    //     const fieldName = columnType['field']
+    //     item[fieldName] = task[fieldName]
+    //   })
+    //   item['id'] = id;
+    //   return item;
+    // })
+    // //
+    // // console.log('-----john-----', john);
+    //
+    // // console.log(data.toJS())
+    // // return data.toJS();
+    // return john;
   }
 
   public onChangeTaskStatus = (taskId, status) => {
@@ -137,17 +139,36 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
   }
 
   public handleCreateNewTask = (values) => {
-    console.log('DACA ASTA MERGE ESTI ZEU: ', values);
+    console.log('create new task values: ', values);
     this.props.editTask({
       ...values,
       dueDate: values.dueDate.toString(),
     })
   }
 
+  public getTableData = () => {
+    const {
+      type,
+      typeId,
+    } = this.props;
+
+    return this.props.orderedTasks.filter( task => {
+      if (type === 'user') {
+        return task.assignedTo.id === typeId
+      }
+      if (type === 'project') {
+        return task.projectId === typeId
+      }
+    }).map( (task, index) => ({
+      ...task,
+      tableData: {id: index}
+    }))
+  }
+
   render() {
     const {
       orderedTasks,
-      unorderedTasks,
+      // unorderedTasks,
       toggleTaskDrawer,
       classes,
     } = this.props
@@ -155,10 +176,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     // console.log('orderedTasks: ', orderedTasks)
     // console.log('unorderedTasks: ', unorderedTasks)
 
-
-
-
-    const tableData = unorderedTasks && this.getData();
+    // const tableData = unorderedTasks && this.getData();
 
     // console.log('***tableData*** ', tableData)
     // console.log('***orderedTasks*** ', orderedTasks)
@@ -172,12 +190,9 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
         {
           orderedTasks &&
           <MaterialTable
-              title="All Projects"
+              title="All Project Tasks"
               columns={this.columns}
-              data={orderedTasks.map( (task, index) => ({
-                ...task,
-                tableData: {id: index}
-              }))}
+              data={this.getTableData()}
               actions={[
                 {
                   icon: 'bookmark',
@@ -255,7 +270,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 const mapStateToProps = (state: any) => {
   return {
     orderedTasks: state.firestore.ordered.tasks,
-    unorderedTasks: state.firestore.data.tasks,
+    // unorderedTasks: state.firestore.data.tasks,
   }
 }
 

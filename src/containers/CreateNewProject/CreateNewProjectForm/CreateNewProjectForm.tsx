@@ -4,7 +4,7 @@ import {
   withStyles,
   WithStyles,
   Grid,
-  SwipeableDrawer, Button, TextField, FormControl, Select, InputLabel, Input, MenuItem, ListItemText, Checkbox
+  Button
 } from '@material-ui/core';
 import {
   StyleRules
@@ -13,17 +13,8 @@ import {
   compose,
 } from 'redux';
 import FieldTextField from "../../../components/FieldTextField/FieldTextField";
-import {Field, reduxForm, InjectedFormProps} from 'redux-form'
-import {
-  BaseFieldProps,
-} from 'redux-form';
-import {IFieldTextFieldComponentProps} from '../../../components/FieldTextField/FieldTextField'
+import {Field, reduxForm} from 'redux-form'
 import FieldDatePicker from "../../../components/FieldDatePicker/FieldDatePicker";
-import FieldMultiSelect from "../../../components/FieldMultiSelect/FieldMultiSelect";
-import {firestoreConnect} from "react-redux-firebase";
-import {connect} from "react-redux";
-import {IUser} from "../../../utils/interfaces/IUser/IUser";
-import ReactSelect from 'react-select';
 import FieldReactSelect from "../../../components/FieldReactSelect/FieldReactSelect";
 
 const styles = (theme: Theme): StyleRules => ({

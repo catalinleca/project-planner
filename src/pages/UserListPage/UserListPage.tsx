@@ -185,9 +185,6 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
-    // deleteUser: (id) => {
-    //   dispatch(DeleteUserAction(id))
-    // },
   };
 }
 

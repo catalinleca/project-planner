@@ -48,7 +48,7 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
     componentProps
   } = props;
 
-  console.log('DisplayEdit: ',props);
+  // console.log('DisplayEdit: ',props);
   return edit
     ? (
       <Field

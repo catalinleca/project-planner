@@ -57,6 +57,13 @@ export const makeSelectSelectedProject = () => createSelector(
   }
 );
 
+export const makeSelectSelectedUser = () => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.get('selectedUser');
+  }
+);
+
 export const makeSelectSelectedTask = () => createSelector(
   selectReducerState(),
   (state: any) => {

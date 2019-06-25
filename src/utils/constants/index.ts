@@ -2,10 +2,14 @@ import {ProjectPhase, TaskStatus} from "../types/types";
 import {Map} from "immutable";
 
 export const PROJECT_LIST = '/projectList';
-export const MATA = '/mata';
 export const PROJECT_DETAILS = `${PROJECT_LIST}/details`;
+
 export const USER_LIST = '/userList';
 export const USER_DETAILS = `${USER_LIST}/details`;
+
+export const USER_TASKS_PATH = `${USER_DETAILS}/tasks`;
+export const USER_PROFILE_PATH = `${USER_DETAILS}/profile`;
+export const USER_SETTINGS_PATH = `${USER_DETAILS}/settings`;
 
 
 

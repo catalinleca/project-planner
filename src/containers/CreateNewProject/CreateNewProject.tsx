@@ -6,14 +6,6 @@ import {
   Grid,
   SwipeableDrawer,
   Button,
-  TextField,
-  FormControl,
-  Select,
-  InputLabel,
-  Input,
-  MenuItem,
-  ListItemText,
-  Checkbox,
   Stepper,
   Step, StepLabel, StepContent
 } from '@material-ui/core';
@@ -23,19 +15,10 @@ import {
 import {
   compose,
 } from 'redux';
-import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import {Field, reduxForm, InjectedFormProps} from 'redux-form'
-import {
-  BaseFieldProps,
-} from 'redux-form';
-import {IFieldTextFieldComponentProps} from '../../components/FieldTextField/FieldTextField'
-import FieldDatePicker from "../../components/FieldDatePicker/FieldDatePicker";
-import FieldMultiSelect from "../../components/FieldMultiSelect/FieldMultiSelect";
 import {firestoreConnect} from "react-redux-firebase";
 import {connect} from "react-redux";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
-import ReactSelect from 'react-select';
-import FieldReactSelect from "../../components/FieldReactSelect/FieldReactSelect";
 import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
 import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
@@ -127,7 +110,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   }
 
   public handleChangeAssignedUser = (user?: IUser) => {
-    console.log('user: ', user);
+    // console.log('user: ', user);
     this.setState({
       assignedTo: user
     })

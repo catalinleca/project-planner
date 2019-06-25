@@ -22,6 +22,8 @@ import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPag
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
 import UserListPage from "../../pages/UserListPage/UserListPage";
+import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
+import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -76,15 +78,49 @@ const App: React.FC<AppProps> = (props) => {
       width={width}
     />
   </React.Fragment>
+
+  const userMenuItems = <React.Fragment>
+    <CustomMenuItem
+      to='/'
+      iconProps={{icon: 'inbox'}}
+      label='Home'
+      width={width}
+    />
+    <CustomMenuItem
+      to={PROJECT_LIST}
+      iconProps={{icon: 'envelope'}}
+      label='Projects'
+      width={width}
+    />
+    <CustomMenuItem
+      to={USER_LIST}
+      iconProps={{icon: 'users'}}
+      label='Users'
+      width={width}
+    />
+    <CustomMenuItem
+      to={PROJECT_DETAILS}
+      iconProps={{icon: 'bars'}}
+      label='Project Details'
+      width={width}
+    />
+  </React.Fragment>
+
   return (
     <React.Fragment>
       <Module/>
+      <LoginSignupComponent/>
       <AppMenu
         menuItems={menuItems}
+        userMenuItems={userMenuItems}
       >
         <Switch>
           <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
+          <Route path={`${USER_DETAILS}/:id`} render={(props) => {
+            return <Route path={`${USER_DETAILS}/:id`} render={() => <UserDetailsPage width={width} {...props}/>}/>
+
+          }}/>
           <Route path={USER_LIST} component={UserListPage} exact={true}/>
         </Switch>
         <CreateNewProject/>

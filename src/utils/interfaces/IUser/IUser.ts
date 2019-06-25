@@ -6,7 +6,8 @@ export interface IUser {
   lastName: any;
   mobilePhone: any;
   username: any;
-  verified: any;
+  password: any;
+  registeredDate: any;
 
   tasks: any; // possible, we ll seem MMNU
 }
@@ -19,7 +20,8 @@ export const userBase = {
   lastName: null,
   mobilePhone: null,
   username: null,
-  verified: null,
+  password: null,
+  registeredDate: null,
 
   tasks: null /// MNU
 }

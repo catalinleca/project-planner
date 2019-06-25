@@ -34,6 +34,7 @@ import {createStructuredSelector} from "reselect";
 import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
+import AppNavBar from "../../components/AppNavBar/AppNavBar";
 
 const drawerWidth = 240;
 
@@ -369,6 +370,7 @@ class AppMenu extends React.Component<AppMenuProps> {
                   <FontAwesomeIcon icon='bars' />
               </IconButton>
             }
+            <AppNavBar/>
           </Toolbar>
         </AppBarWrapper>
         <ResponsiveDrawer

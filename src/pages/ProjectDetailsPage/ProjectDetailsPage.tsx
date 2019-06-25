@@ -57,6 +57,7 @@ interface IProjectDetailsPageProps extends IProjectDetailsPageComponentProps {
   project: any;
   projects: any;
   changeProjectPhase: any;
+  selectedProjectId: any;
 }
 
 type ProjectDetailsPageType = IProjectDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -86,7 +87,8 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
   render() {
     const {
       classes,
-      project
+      project,
+      selectedProjectId
     } = this.props;
 
     const {
@@ -273,13 +275,15 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                           <Grid container={true} item={true} xs={true} alignItems='center'>
                             <Typography variant='h6'>
                               Tasks
-
                             </Typography>
                           </Grid>
                         </Grid>
                       }
                     >
-                      <TaskComponent/>
+                      <TaskComponent
+                        type='project'
+                        typeId={selectedProjectId}
+                      />
                     </WidgetDetailStyle>
                   </Paper>
                 </Grid>
@@ -318,6 +322,7 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
     changeProjectPhase: (label) => dispatch(ChangeProjectPhaseAction(label, projectId))
   };
 }
+
 export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
