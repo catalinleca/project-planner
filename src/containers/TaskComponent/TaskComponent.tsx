@@ -28,6 +28,7 @@ import {
 import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
 import {createStructuredSelector} from "reselect";
 import {makeSelectSelectedProject, makeSelectSelectedTask} from "../../store/selectors";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -38,8 +39,9 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ITaskComponentComponentProps {
-  type: any;
-  typeId: any;
+  type?: any;
+  typeId?: any;
+  tasks: ITask[];
 }
 
 //from state
@@ -148,47 +150,29 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
   public getTableData = () => {
     const {
-      type,
-      typeId,
+      tasks
     } = this.props;
 
-    return this.props.orderedTasks.filter( task => {
-      if (type === 'user') {
-        return task.assignedTo.id === typeId
-      }
-      if (type === 'project') {
-        return task.projectId === typeId
-      }
-    }).map( (task, index) => ({
+    return tasks.map( (task, index) => ({
       ...task,
       tableData: {id: index}
-    }))
+    }));
   }
 
   render() {
     const {
-      orderedTasks,
-      // unorderedTasks,
-      toggleTaskDrawer,
-      classes,
+      tasks,
     } = this.props
 
-    // console.log('orderedTasks: ', orderedTasks)
-    // console.log('unorderedTasks: ', unorderedTasks)
-
-    // const tableData = unorderedTasks && this.getData();
-
-    // console.log('***tableData*** ', tableData)
-    // console.log('***orderedTasks*** ', orderedTasks)
-
-
+    console.log('this.props.tasks: ', this.props.tasks);
+    console.log('this.props.orderedTasks: ', this.props.orderedTasks);
     return (
       <React.Fragment>
         <TaskDrawer
           onSubmit={this.handleCreateNewTask}
         />
         {
-          orderedTasks &&
+          tasks &&
           <MaterialTable
               title="All Project Tasks"
               columns={this.columns}
@@ -267,13 +251,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
   }
 }
 
-const mapStateToProps = (state: any) => {
-  return {
-    orderedTasks: state.firestore.ordered.tasks,
-    // unorderedTasks: state.firestore.data.tasks,
-  }
-}
-
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
@@ -285,8 +262,5 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 export default compose<React.ComponentClass<ITaskComponentComponentProps>>(
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    {collection: 'tasks'}
-  ])
+  connect(null, mapDispatchToProps),
 )(TaskComponent);

@@ -28,6 +28,7 @@ import {firestoreConnect} from "react-redux-firebase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {projectPhases} from "../../utils/constants";
 import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -58,6 +59,7 @@ interface IProjectDetailsPageProps extends IProjectDetailsPageComponentProps {
   projects: any;
   changeProjectPhase: any;
   selectedProjectId: any;
+  tasks: ITask[];
 }
 
 type ProjectDetailsPageType = IProjectDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -84,11 +86,22 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
     this.handleClose();
   }
 
+  public getProjectTasks = (): ITask[] => {
+    const {
+      tasks,
+      selectedProjectId
+    } = this.props;
+
+    return tasks.filter( task => task.projectId === selectedProjectId);
+
+  }
+
   render() {
     const {
       classes,
       project,
-      selectedProjectId
+      selectedProjectId,
+      tasks
     } = this.props;
 
     const {
@@ -280,10 +293,13 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                         </Grid>
                       }
                     >
-                      <TaskComponent
-                        type='project'
-                        typeId={selectedProjectId}
-                      />
+                      {tasks &&
+                        <TaskComponent
+                          type='project'
+                          typeId={selectedProjectId}
+                          tasks={this.getProjectTasks()}
+                        />
+                      }
                     </WidgetDetailStyle>
                   </Paper>
                 </Grid>
@@ -311,6 +327,7 @@ export const mapStateToProps = (state: any) => {
   return {
     selectedProjectId,
     project:  projects ? projects[selectedProjectId] : null,
+    tasks:  state.firestore.ordered.tasks,
   }
 }
 
@@ -327,6 +344,7 @@ export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
-    { collection: 'projects'}
+    { collection: 'projects'},
+    { collection: 'tasks'}
   ])
 )(ProjectDetailsPage);

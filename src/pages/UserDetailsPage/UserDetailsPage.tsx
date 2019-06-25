@@ -34,6 +34,7 @@ import {ResponsiveListItemText} from "../../components/ResponsiveListItemText/Re
 import UserTasksPage from "../UserTasksPage/UserTasksPage";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import {push} from "connected-react-router";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -65,11 +66,12 @@ interface IUserDetailsPageComponentProps {
 interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   user: IUser;
   selectUser: any;
-  selectedUserId: any
-  match: any
-  editUser: any,
-  dispatch: any,
-  deleteUser: any
+  selectedUserId: any;
+  match: any;
+  editUser: any;
+  dispatch: any;
+  deleteUser: any;
+  tasks: ITask[];
 }
 
 type UserDetailsPageType = IUserDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -123,15 +125,25 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     this.props.dispatch(push(USER_LIST))
   }
 
+  public getUserTasks = (): ITask[] => {
+    const {
+      tasks,
+      selectedUserId
+    } = this.props;
+
+    return tasks.filter( (task: ITask) => task.assignedTo.id === selectedUserId)
+  }
+
   render() {
     const {
       user,
       classes,
-      width
+      width,
+      tasks
     } = this.props;
 
 
-    // console.log('this.props: ', this.props);
+    console.log('this.props: ', this.props);
     // console.log('user: ', user);
 
     const sideUserMenu = (
@@ -205,7 +217,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
         >
           <Switch>
             <Redirect from={`${USER_DETAILS}/:id`} to={`${USER_DETAILS}/:id/tasks`} exact={true}/>
-            <Route path={`${USER_DETAILS}/:id/tasks`} component={UserTasksPage}/>
+            {tasks && <Route path={`${USER_DETAILS}/:id/tasks`} render={(props) => <UserTasksPage {...props} tasks={this.getUserTasks()}/>}/>}
             <Route path={`${USER_DETAILS}/:id/profile`} render={(props) => <UserProfilePage {...props} onSubmit={this.handleEditUserProfile}/>}/>
             <Route path={`${USER_DETAILS}/:id/settings`} render={(props) => { console.log(props); return (<Grid>Ma sugi de pl</Grid>)}}/>
           </Switch>
@@ -229,6 +241,7 @@ export const mapStateToProps = (state: any) => {
   return {
     selectedUserId,
     user:  users ? users[selectedUserId] : null,
+    tasks:  state.firestore.ordered.tasks,
   }
 }
 
@@ -246,6 +259,7 @@ export default compose<React.ComponentClass<IUserDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
-    { collection: 'users'}
+    { collection: 'users'},
+    { collection: 'tasks'}
   ])
 )(UserDetailsPage);

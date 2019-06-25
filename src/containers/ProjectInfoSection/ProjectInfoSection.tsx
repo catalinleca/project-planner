@@ -68,7 +68,7 @@ class ProjectInfoSection extends React.Component<ProjectInfoSectionType, {}> {
       classes
     } = this.props;
 
-    console.log(project);
+    // console.log(project);
     const dataSet1 = project && [
       ['Sprint:', project.sprint],
       ['Created By:', project.createdBy],
@@ -84,7 +84,7 @@ class ProjectInfoSection extends React.Component<ProjectInfoSectionType, {}> {
 
     const steps: ProjectPhase[] = this.getSteps();
 
-    console.log('steps: ',steps);
+    // console.log('steps: ',steps);
     const projectPhase = project && (
       <Grid
         item={true}
