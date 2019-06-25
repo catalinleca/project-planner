@@ -5,11 +5,8 @@ import createSagaMiddleware from 'redux-saga';
 import {reducer} from './reducer';
 import rootSaga from "./sagas";
 import { reduxFirestore, getFirestore, firestoreReducer } from 'redux-firestore';
-import { ReactReduxFirebaseProvider } from "react-redux-firebase";
-import { reactReduxFirebase } from 'react-redux-firebase';
+import { firebaseReducer } from 'react-redux-firebase';
 import firebase from '../base';
-import { firebaseConfig } from "../base";
-import { userConfig } from "../base";
 import thunk from 'redux-thunk';
 import { reducer as formReducer } from 'redux-form';
 
@@ -81,6 +78,7 @@ export default function configureStore({
     router: connectRouter(history),
     ptReducer: reducer,
     firestore: firestoreReducer,
+    firebase: firebaseReducer,
     form: formReducer
   })
 

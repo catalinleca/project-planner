@@ -23,6 +23,7 @@ import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
 import UserListPage from "../../pages/UserListPage/UserListPage";
 import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
+import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -108,6 +109,7 @@ const App: React.FC<AppProps> = (props) => {
   return (
     <React.Fragment>
       <Module/>
+      <LoginSignupComponent/>
       <AppMenu
         menuItems={menuItems}
         userMenuItems={userMenuItems}
