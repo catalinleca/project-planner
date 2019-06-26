@@ -116,7 +116,6 @@ const styles = (theme: Theme): StyleRules => ({
 
 type TaskElementProps =  WithStyles<keyof ReturnType<typeof styles>>;
 
-
 class TaskElement extends React.Component<any> {
   public state = {
     anchorEl: null

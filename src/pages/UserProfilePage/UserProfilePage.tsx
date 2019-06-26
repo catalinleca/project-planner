@@ -78,8 +78,6 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
       user
     } = this.props;
 
-    console.log('user: ', user && user)
-
     const fullname = user && [user.firstName, user.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
     return (
       <Grid
@@ -219,16 +217,10 @@ const mapStateToProps = (state: any, ownProps) => {
   }
 };
 
-export function mapDispatchToProps(dispatch: React.Dispatch<IAction>) {
-  return {
-    dispatch,
-  };
-}
-
 export default compose<React.ComponentClass<IUserProfilePageComponentProps>>(
   reduxForm({
     form: 'userProfilePage'
   }),
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps)
 )(UserProfilePage);

@@ -30,23 +30,20 @@ interface IUserTasksPageProps extends IUserTasksPageComponentProps {
 
 type UserTasksPageType = IUserTasksPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class UserTasksPage extends React.Component<UserTasksPageType, {}> {
-  render() {
-    // console.log('this.props in userTaskPage: ', this.props);
-    return (
-      <Grid>
-        {this.props.tasks &&
-        <TaskComponent
-          type='user'
-          typeId={this.props.match.params.id}
-          tasks={this.props.tasks}
-        />
-        }
+const UserTasksPage: React.FC<UserTasksPageType> = props => {
+  // console.log('props in userTaskPage: ', props);
+  return (
+    <Grid>
+      {props.tasks &&
+			<TaskComponent
+				type='user'
+				typeId={props.match.params.id}
+				tasks={props.tasks}
+			/>
+      }
+    </Grid>
 
-      </Grid>
-
-    );
-  }
+  );
 }
 
 export default compose<React.ComponentClass<IUserTasksPageComponentProps>>(

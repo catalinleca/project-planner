@@ -85,44 +85,6 @@ class UserListPage extends React.Component<UserListPageType, {}> {
     {title: 'Sprint', field: 'sprint'},
   ]
 
-  public getData = () => {
-    const {
-      users
-    } = this.props;
-
-    // console.log('=============')
-    // console.log(
-    //   Users
-    // )
-    // const data = Users.map(user => {
-    //   // console.log('user: ', user.toJS())
-    //   return Map().withMutations(item => {
-    //     this.columns.forEach(columnType => {
-    //       const filedName = columnType['field']
-    //       // console.log('filedName: ', filedName);
-    //       // console.log('user.get(filedName): ', user.get(filedName));
-    //       item.set(filedName, user.get(filedName))
-    //       // console.log('item: ', item);
-    //     })
-    //   })
-    // });
-
-    //
-    // const john = users.map( user => {
-    //   let item = {};
-    //   this.columns.map ( columnType => {
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = user[fieldName]
-    //   })
-    //   item['id'] = user['id'];
-    //   return item;
-    // })
-    //
-    // // console.log(data.toJS())
-    // // return data.toJS();
-    // return john;
-  }
-
   public onDeleteHandler = (e,rowData) => {
     const {
       deleteUser
