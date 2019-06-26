@@ -83,29 +83,6 @@ interface IProjectListPageProps extends IProjectListPageComponentProps {
 type ProjectListPageType = IProjectListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class ProjectListPage extends React.Component<ProjectListPageType, {}> {
-  public state = {
-    columns: [
-      {title: 'Name', field: 'name'},
-      {title: 'Project Phase', field: 'projectPhase'},
-      {title: 'Status', field: 'status'},
-      {title: 'Sprint', field: 'sprint'},
-    ],
-    data: [
-      {
-        name: 'Project 1',
-        projectPhase: 'beginning',
-        status: 'to do',
-        sprint: 1,
-      },
-      {
-        name: 'Project 2',
-        projectPhase: 'mid',
-        status: 'in progress',
-        sprint: 4,
-      }
-    ]
-  }
-
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
@@ -170,14 +147,8 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
   render() {
     const {
-      classes,
       projects
     } = this.props;
-
-    const {
-      columns,
-      data
-    } = this.state;
 
     // console.log(this.props.projects);
 

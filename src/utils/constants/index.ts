@@ -16,8 +16,19 @@ export const USER_SETTINGS_PATH = `${USER_DETAILS}/settings`;
 export const projectPhases: ProjectPhase[] = ['initial', 'planning', 'execution', 'closure'];
 
 const keys = Object.keys(TaskStatus);
+
 export const taskStatusValues = Map().withMutations( taskStatuses => {
   keys.forEach( key => {
     taskStatuses.set(key, TaskStatus[key])
   })
 });
+
+export const formatStringDate = (date: any) => {
+  if (date) {
+    const newDate = new Date(date)
+    return newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
+  } else {
+    return null
+  }
+}
+
