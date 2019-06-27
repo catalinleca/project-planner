@@ -16,7 +16,7 @@ import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {selectReducerState} from "../../store/selectors";
+import {makeSelectFirestoreOrderedData, selectReducerState} from "../../store/selectors";
 import {IAction} from "../../utils/interfaces";
 
 const styles = (theme: Theme): StyleRules => ({
@@ -212,8 +212,11 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
 
 const mapStateToProps = (state: any, ownProps) => {
   const currentUserId = ownProps.match.params.id;
+
+  const users = makeSelectFirestoreOrderedData('users')(state)
+
   return {
-    user: state.firestore.data.users && state.firestore.data.users[currentUserId]
+    user: users && state.firestore.data.users[currentUserId]
   }
 };
 

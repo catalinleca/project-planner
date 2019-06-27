@@ -35,6 +35,8 @@ import {
 } from 'connected-react-router'
 import {Link} from "react-router-dom";
 import {USER_DETAILS} from "../../utils/constants";
+import {createStructuredSelector} from "reselect";
+import {makeSelectFirestoreOrderedData} from "../../store/selectors";
 
 const tableIcons = {
   Add: AddBox,
@@ -139,9 +141,9 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  return {
-    users: state.firestore.ordered.users,
-  }
+  return createStructuredSelector({
+    users: makeSelectFirestoreOrderedData('users')
+  })(state)
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
@@ -153,7 +155,4 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 export default compose<React.ComponentClass<IUserListPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    { collection: 'users'}
-  ])
 )(UserListPage);

@@ -18,7 +18,7 @@ import {
 import WidgetDetailStyle from "../../components/WidgetDetailStyle/WidgetDetailStyle";
 import TaskComponent from "../../containers/TaskComponent/TaskComponent";
 import ProjectInfoSection from "../../containers/ProjectInfoSection/ProjectInfoSection";
-import {IAction} from "../../utils/interfaces";
+import {IAction, IProject} from "../../utils/interfaces";
 import {connect} from "react-redux";
 import {SelectProjectAction} from "../../store/action";
 import {ChangeProjectPhaseAction} from "../../store/action";
@@ -333,8 +333,8 @@ export const mapStateToProps = (state: any) => {
     tasks
   }: {
     selectedProjectId: string,
-    projects: string,
-    tasks: string,
+    projects: IProject[],
+    tasks: ITask[],
   } =  createStructuredSelector({
     selectedProjectId: makeSelectSelectedProject(),
     projects: makeSelectFirestoreData('projects'),

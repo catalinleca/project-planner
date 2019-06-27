@@ -32,7 +32,7 @@ export const selectReducerState = () => (state: any) => {
 
 export const selectPtReducerState = () => createSelector(
   selectReducerState(),
-  (state: any) => state.ptReducer
+  (state: any) => state.ptReducer || Map()
 )
 
 export const makeSelectProjects = () => createSelector(
@@ -59,13 +59,12 @@ export const makeSelectProjectTitle = () => createSelector(
 export const makeSelectSelectedProject = () => createSelector(
   selectPtReducerState(),
   (state: any) => {
-    console.log('state here: ', state);
-    return state && state.get('selectedProject');
+    return state.get('selectedProject');
   }
 );
 
 export const makeSelectSelectedUser = () => createSelector(
-  selectReducerState(),
+  selectPtReducerState(),
   (state: any) => {
     return state.get('selectedUser');
   }

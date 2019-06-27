@@ -14,7 +14,7 @@ import {
 import {connect} from "react-redux";
 import {firestoreConnect} from "react-redux-firebase";
 import {createStructuredSelector} from "reselect";
-import {makeSelectSelectedUser} from "../../store/selectors";
+import {makeSelectFirestoreData, makeSelectFirestoreOrderedData, makeSelectSelectedUser} from "../../store/selectors";
 import {DeleteUserAction, EditUserAction, SelectUserAction} from "../../store/action";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {
@@ -234,21 +234,23 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
 
 export const mapStateToProps = (state: any) => {
   const {
-    selectedUserId
+    selectedUserId,
+    users,
+    tasks
   }: {
     selectedUserId: string
+    users: IUser[],
+    tasks: ITask[]
   } =  createStructuredSelector({
     selectedUserId: makeSelectSelectedUser(),
-  })(state.ptReducer)
-
-  const users = state.firestore.data.users;
-
-  // console.log('---', state);
+    users: makeSelectFirestoreData('users'),
+    tasks: makeSelectFirestoreOrderedData('tasks')
+  })(state)
 
   return {
     selectedUserId,
     user:  users ? users[selectedUserId] : null,
-    tasks:  state.firestore.ordered.tasks,
+    tasks
   }
 }
 
@@ -265,8 +267,4 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
 export default compose<React.ComponentClass<IUserDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    // { collection: 'users'},
-    { collection: 'tasks'}
-  ])
 )(UserDetailsPage);
