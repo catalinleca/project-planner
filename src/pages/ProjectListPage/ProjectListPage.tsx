@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  Grid, Paper,
   Theme,
   withStyles,
   WithStyles,
@@ -11,11 +10,8 @@ import {
 import {
   compose,
 } from 'redux';
-import {List, Map} from 'immutable';
 import {connect} from "react-redux";
-import { CreateProjectAction, DeleteProjectAction, doTheThingAction, FirstAction, GetProjectsAction} from "../../store/action";
-import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
-import {createStructuredSelector} from "reselect";
+import { DeleteProjectAction } from "../../store/action";
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -36,9 +32,7 @@ import {firestoreConnect} from "react-redux-firebase";
 import {
   push
 } from 'connected-react-router'
-import {PROJECT_DETAILS, PROJECT_LIST, USER_LIST} from "../../utils/constants";
-import {Link} from "react-router-dom";
-import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
+import {PROJECT_DETAILS} from "../../utils/constants";
 
 const tableIcons = {
   Add: AddBox,
@@ -90,47 +84,32 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     {title: 'Sprint', field: 'sprint'},
   ]
 
-  public getData = () => {
+  // public getData = () => {
+  //   const {
+  //     projects
+  //   } = this.props;
+  //
+  //   return projects.map( project => {
+  //     let item = {};
+  //     this.columns.map ( columnType => {
+  //       const fieldName = columnType['field']
+  //       item[fieldName] = project[fieldName]
+  //     })
+  //     item['id'] = project['id'];
+  //     return item;
+  //   })
+  // }
+
+  public getTableData = () => {
     const {
       projects
     } = this.props;
 
-    // console.log('=============')
-    // console.log(
-    //   projects
-    // )
-    // const data = projects.map(project => {
-    //   // console.log('project: ', project.toJS())
-    //   return Map().withMutations(item => {
-    //     this.columns.forEach(columnType => {
-    //       const filedName = columnType['field']
-    //       // console.log('filedName: ', filedName);
-    //       // console.log('project.get(filedName): ', project.get(filedName));
-    //       item.set(filedName, project.get(filedName))
-    //       // console.log('item: ', item);
-    //     })
-    //   })
-    // });
-
-    //
-    const john = projects.map( project => {
-      let item = {};
-      this.columns.map ( columnType => {
-        const fieldName = columnType['field']
-        item[fieldName] = project[fieldName]
-      })
-      item['id'] = project['id'];
-      return item;
-    })
-
-    // console.log(data.toJS())
-    // return data.toJS();
-    return john;
+    return projects.map( (task, index) => ({
+      ...task,
+      tableData: {id: index}
+    }))
   }
-
-  // componentDidMount() {
-  //   this.props.getProjects();
-  // }
 
   public onDeleteHandler = (e,rowData) => {
     const {
@@ -138,7 +117,6 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     } = this.props;
 
     deleteProject(rowData.id)
-
   }
 
   public handleRowClick = (rowData) => {
@@ -152,8 +130,6 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
     // console.log(this.props.projects);
 
-
-
     return (
       <React.Fragment>
         {
@@ -161,7 +137,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
           <MaterialTable
             title="All Projects"
             columns={this.columns}
-            data={this.getData()}
+            data={this.getTableData()}
             onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
             actions={[
               {
@@ -185,11 +161,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  // console.log('mapStateToProps in ProjectListPage: ', state.firestore.ordered.projects);
-  // return createStructuredSelector({
-  //   // projects: makeSelectProjects(),
-  // })(state)
-
+  console.log('state in projectListPage: ', state);
   return {
     projects: state.firestore.ordered.projects,
   }
@@ -208,6 +180,6 @@ export default compose<React.ComponentClass<IProjectListPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([
-    { collection: 'projects'}
+    {collection: 'projects'}
   ])
 )(ProjectListPage);

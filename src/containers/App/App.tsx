@@ -14,10 +14,11 @@ import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import Module from "../../store/Module";
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {
+  Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
-import {PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
+import {HOME_PATH, PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
@@ -54,7 +55,7 @@ const App: React.FC<AppProps> = (props) => {
   const { width } = props;
   const menuItems = <React.Fragment>
     <CustomMenuItem
-      to='/'
+      to='/home'
       iconProps={{icon: 'inbox'}}
       label='Home'
       width={width}
@@ -115,6 +116,7 @@ const App: React.FC<AppProps> = (props) => {
         userMenuItems={userMenuItems}
       >
         <Switch>
+          <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
           <Route path={`${USER_DETAILS}/:id`} render={(props) => {

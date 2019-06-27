@@ -72,48 +72,45 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     {title: 'Due Date', field: 'dueDate'},
   ]
 
-  private asd = [
-  ]
-
-  public getData = () => {
-    const {
-      orderedTasks,
-      // unorderedTasks
-    } = this.props;
-
-    // const john = orderedTasks.map(task => {
-    //   let item = {};
-    //   this.columns.map(columnType => {
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = task[fieldName]
-    //   })
-    //   item['id'] = task['id'];
-    //   return item;
-    // })
-
-    // console.log(typeof unorderedTasks);
-    //
-    // const keys = Object.keys(unorderedTasks)
-    //
-    // const john = keys.map(id => {
-    //   let item = {};
-    //   const task = unorderedTasks[id];
-    //   // console.log('task: ', task);
-    //   this.columns.map(columnType => {
-    //     // console.log('columnType: ', columnType);
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = task[fieldName]
-    //   })
-    //   item['id'] = id;
-    //   return item;
-    // })
-    // //
-    // // console.log('-----john-----', john);
-    //
-    // // console.log(data.toJS())
-    // // return data.toJS();
-    // return john;
-  }
+  // public getData = () => {
+  //   const {
+  //     orderedTasks,
+  //     // unorderedTasks
+  //   } = this.props;
+  //
+  //   // const john = orderedTasks.map(task => {
+  //   //   let item = {};
+  //   //   this.columns.map(columnType => {
+  //   //     const fieldName = columnType['field']
+  //   //     item[fieldName] = task[fieldName]
+  //   //   })
+  //   //   item['id'] = task['id'];
+  //   //   return item;
+  //   // })
+  //
+  //   // console.log(typeof unorderedTasks);
+  //   //
+  //   // const keys = Object.keys(unorderedTasks)
+  //   //
+  //   // const john = keys.map(id => {
+  //   //   let item = {};
+  //   //   const task = unorderedTasks[id];
+  //   //   // console.log('task: ', task);
+  //   //   this.columns.map(columnType => {
+  //   //     // console.log('columnType: ', columnType);
+  //   //     const fieldName = columnType['field']
+  //   //     item[fieldName] = task[fieldName]
+  //   //   })
+  //   //   item['id'] = id;
+  //   //   return item;
+  //   // })
+  //   // //
+  //   // // console.log('-----john-----', john);
+  //   //
+  //   // // console.log(data.toJS())
+  //   // // return data.toJS();
+  //   // return john;
+  // }
 
   public onChangeTaskStatus = (taskId, status) => {
     this.props.changeTaskStatus(taskId, status);
@@ -164,8 +161,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
       tasks,
     } = this.props
 
-    console.log('this.props.tasks: ', this.props.tasks);
-    console.log('this.props.orderedTasks: ', this.props.orderedTasks);
     return (
       <React.Fragment>
         <TaskDrawer

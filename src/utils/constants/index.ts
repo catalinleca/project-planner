@@ -11,6 +11,8 @@ export const USER_TASKS_PATH = `${USER_DETAILS}/tasks`;
 export const USER_PROFILE_PATH = `${USER_DETAILS}/profile`;
 export const USER_SETTINGS_PATH = `${USER_DETAILS}/settings`;
 
+export const HOME_PATH = '/home';
+
 
 
 export const projectPhases: ProjectPhase[] = ['initial', 'planning', 'execution', 'closure'];
