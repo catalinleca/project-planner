@@ -3,7 +3,7 @@ import {ActionTypes} from "./action";
 import {fromJS} from "immutable";
 import {IMap} from "../utils/interfaces";
 
-export interface ISpecification {
+export interface IPtReducer {
   users: any;
   projects: any;
   selectedProject: string;
@@ -22,7 +22,7 @@ const INITIAL_STATE = fromJS({
   taskDrawerOpen: false,
 });
 
-export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any) => {
+export const reducer = (state: IMap<IPtReducer> = INITIAL_STATE, action: any) => {
   switch (action.type) {
     case ActionTypes.GET_PROJECTS:
       return state.set('projects', action.payload);
@@ -34,15 +34,20 @@ export const reducer = (state: IMap<ISpecification> = INITIAL_STATE, action: any
       return state.set('projects', john);
     case ActionTypes.SELECT_PROJECT:
       return state.set('selectedProject', action.payload);
+
     case ActionTypes.SELECT_TASK:
       return state.set('selectedTask', fromJS(action.payload));
+
     case ActionTypes.SELECT_USER:
       return state.set('selectedUser', action.payload);
+
     case ActionTypes.TOGGLE_TASK_DRAWER:
       const currentDrawerState = state.get('taskDrawerOpen')
       return state.set('taskDrawerOpen', !currentDrawerState);
+
     case ActionTypes.CLOSE_TASK_DRAWER:
       return state.set('taskDrawerOpen', false);
+
     default:
       return state;
   }

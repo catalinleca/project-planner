@@ -23,7 +23,11 @@ import {connect} from "react-redux";
 import {SelectProjectAction} from "../../store/action";
 import {ChangeProjectPhaseAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectSelectedProject} from "../../store/selectors";
+import {
+  makeSelectFirestoreData,
+  makeSelectFirestoreOrderedData,
+  makeSelectSelectedProject
+} from "../../store/selectors";
 import {firestoreConnect} from "react-redux-firebase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {projectPhases} from "../../utils/constants";
@@ -312,25 +316,6 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
   }
 }
 
-export const mapStateToProps = (state: any) => {
-  // console.log(state);
-  const {
-    selectedProjectId
-  }: {
-    selectedProjectId: string
-  } =  createStructuredSelector({
-    selectedProjectId: makeSelectSelectedProject(),
-  })(state.ptReducer)
-
-  const projects = state.firestore.data.projects;
-
-  return {
-    selectedProjectId,
-    project:  projects ? projects[selectedProjectId] : null,
-    tasks:  state.firestore.ordered.tasks,
-  }
-}
-
 export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   const projectId = ownProps.match.params.id;
   return {
@@ -340,11 +325,31 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   };
 }
 
+export const mapStateToProps = (state: any) => {
+  // console.log(state);
+  const {
+    selectedProjectId,
+    projects,
+    tasks
+  }: {
+    selectedProjectId: string,
+    projects: string,
+    tasks: string,
+  } =  createStructuredSelector({
+    selectedProjectId: makeSelectSelectedProject(),
+    projects: makeSelectFirestoreData('projects'),
+    tasks: makeSelectFirestoreOrderedData('tasks')
+  })(state)
+
+
+  return {
+    selectedProjectId,
+    project:  projects ? projects[selectedProjectId] : null,
+    tasks
+  }
+}
+
 export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    { collection: 'projects'},
-    { collection: 'tasks'}
-  ])
 )(ProjectDetailsPage);

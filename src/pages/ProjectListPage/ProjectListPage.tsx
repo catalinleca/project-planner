@@ -11,7 +11,7 @@ import {
   compose,
 } from 'redux';
 import {connect} from "react-redux";
-import { DeleteProjectAction } from "../../store/action";
+import {DeleteProjectAction} from "../../store/action";
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -33,6 +33,12 @@ import {
   push
 } from 'connected-react-router'
 import {PROJECT_DETAILS} from "../../utils/constants";
+import {createStructuredSelector} from "reselect";
+import {
+  makeSelectFirestoreOrderedData,
+  makeSelectSelectedTask,
+  makeSelectTaskDrawerOpen
+} from "../../store/selectors";
 
 const tableIcons = {
   Add: AddBox,
@@ -64,13 +70,16 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IProjectListPageComponentProps {
   projects: any;
+
   deleteProject(id: number): void
 }
 
 //from state
 interface IProjectListPageProps extends IProjectListPageComponentProps {
   dispatch: any;
+
   getProjects(): void;
+
   asd: any;
 }
 
@@ -105,13 +114,13 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       projects
     } = this.props;
 
-    return projects.map( (task, index) => ({
+    return projects.map((task, index) => ({
       ...task,
       tableData: {id: index}
     }))
   }
 
-  public onDeleteHandler = (e,rowData) => {
+  public onDeleteHandler = (e, rowData) => {
     const {
       deleteProject
     } = this.props;
@@ -135,24 +144,28 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
         {
           projects &&
           <MaterialTable
-            title="All Projects"
-            columns={this.columns}
-            data={this.getTableData()}
-            onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
-            actions={[
-              {
-                icon: 'bookmark',
-                tooltip: 'Save Project',
-                onClick: (e, rowData) => {
-                  console.log(rowData);
+              title="All Projects"
+              columns={this.columns}
+              data={this.getTableData()}
+              onRowClick={(e, rowData) => {
+                this.handleRowClick(rowData)
+              }}
+              actions={[
+                {
+                  icon: 'bookmark',
+                  tooltip: 'Save Project',
+                  onClick: (e, rowData) => {
+                    console.log(rowData);
+                  }
+                },
+                {
+                  icon: 'delete',
+                  tooltip: 'Delete Project',
+                  onClick: (e, rowData) => {
+                    this.onDeleteHandler(e, rowData)
+                  }
                 }
-              },
-              {
-                icon: 'delete',
-                tooltip: 'Delete Project',
-                onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
-              }
-            ]}
+              ]}
           />
         }
       </React.Fragment>
@@ -161,10 +174,9 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
-  console.log('state in projectListPage: ', state);
-  return {
-    projects: state.firestore.ordered.projects,
-  }
+  return createStructuredSelector({
+    projects: makeSelectFirestoreOrderedData('projects'),
+  })(state);
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
@@ -179,7 +191,4 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 export default compose<React.ComponentClass<IProjectListPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    {collection: 'projects'}
-  ])
 )(ProjectListPage);

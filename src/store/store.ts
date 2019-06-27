@@ -39,14 +39,6 @@ export type PTStore = Store & {
 //   return store;
 // }
 
-function* helloSaga(getFirebase) {
-  try {
-    yield getFirebase().push('/some/path', { nice: 'work!' })
-  } catch(err) {
-    console.log('Error in saga!:', err)
-  }
-}
-
 export default function configureStore({
   initialState = {},
   history,

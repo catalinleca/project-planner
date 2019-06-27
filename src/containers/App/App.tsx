@@ -25,6 +25,7 @@ import CreateNewProject from "../CreateNewProject/CreateNewProject";
 import UserListPage from "../../pages/UserListPage/UserListPage";
 import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
 import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
+import {firestoreConnect} from "react-redux-firebase";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -134,5 +135,8 @@ const App: React.FC<AppProps> = (props) => {
 
 export default compose<React.ComponentClass<any>>(
   withWidth(),
-  withStyles(styles, {withTheme: true})
+  withStyles(styles, {withTheme: true}),
+  firestoreConnect([
+    'projects', 'tasks', 'users'
+  ])
 )(App);

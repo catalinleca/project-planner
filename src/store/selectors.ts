@@ -13,6 +13,7 @@ import {
 let initTime;
 
 export const selectReducerState = () => (state: any) => {
+  // console.log('state: ', state);
   if (state != null) {
     return state;
   }
@@ -28,6 +29,11 @@ export const selectReducerState = () => (state: any) => {
   }
   return Map();
 };
+
+export const selectPtReducerState = () => createSelector(
+  selectReducerState(),
+  (state: any) => state.ptReducer
+)
 
 export const makeSelectProjects = () => createSelector(
   selectReducerState(),
@@ -51,9 +57,10 @@ export const makeSelectProjectTitle = () => createSelector(
 );
 
 export const makeSelectSelectedProject = () => createSelector(
-  selectReducerState(),
+  selectPtReducerState(),
   (state: any) => {
-    return state.get('selectedProject');
+    console.log('state here: ', state);
+    return state && state.get('selectedProject');
   }
 );
 
@@ -70,6 +77,19 @@ export const makeSelectSelectedTask = () => createSelector(
     return state.get('selectedTask');
   }
 );
+
+export const makeSelectFirestoreOrderedData = (dataType: string) => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.firestore.ordered[dataType]
+  }
+)
+export const makeSelectFirestoreData = (dataType: string) => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.firestore.data[dataType]
+  }
+)
 
 export default {
   selectReducerState
