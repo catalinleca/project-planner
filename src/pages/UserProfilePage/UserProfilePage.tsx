@@ -16,8 +16,10 @@ import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, selectReducerState} from "../../store/selectors";
+import {makeSelectDataById, makeSelectFirestoreOrderedData, selectReducerState} from "../../store/selectors";
 import {IAction} from "../../utils/interfaces";
+import {IUser} from "../../utils/interfaces/IUser/IUser";
+import {firestoreConnect} from "react-redux-firebase";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -213,11 +215,19 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
 const mapStateToProps = (state: any, ownProps) => {
   const currentUserId = ownProps.match.params.id;
 
-  const users = makeSelectFirestoreOrderedData('users')(state)
+  // doesn't use ownProps so technically there is no need for memoization
+  // if the arguments do not change then the function will return the previous value
+  // the argument is the state, that means each time the selector is called, that state is changed
+  // because otherwise mapStateToProps wouldn't have been called in the first place, but but but,
+  // if memoization keeps only the last value then, YES indeed there is no need for memoization
+  //, but if the memoization will do it's job for all the values that the function was called in the past
+  // then, considering the change of rerunning the selector with the same state values again will lead
+  // to increase performance because of the memoization
 
-  return {
-    user: users && state.firestore.data.users[currentUserId]
-  }
+  return createStructuredSelector({
+    user: makeSelectDataById('users', currentUserId)
+  })(state);
+
 };
 
 export default compose<React.ComponentClass<IUserProfilePageComponentProps>>(
@@ -225,5 +235,5 @@ export default compose<React.ComponentClass<IUserProfilePageComponentProps>>(
     form: 'userProfilePage'
   }),
   withStyles(styles),
-  connect(mapStateToProps)
+  connect(mapStateToProps),
 )(UserProfilePage);

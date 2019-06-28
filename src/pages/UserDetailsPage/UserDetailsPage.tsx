@@ -218,12 +218,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
           <Switch>
             <Redirect from={`${USER_DETAILS}/:id`} to={`${USER_DETAILS}/:id/tasks`} exact={true}/>
             {tasks && <Route path={`${USER_DETAILS}/:id/tasks`} render={(props) => <UserTasksPage {...props} tasks={this.getUserTasks()}/>}/>}
-            <Route path={`${USER_DETAILS}/:id/profile`} render={(props) => {
-              // console.log('props: ', props);
-              return (
-                <UserProfilePage {...props} onSubmit={this.handleEditUserProfile}/>
-              );
-            }}/>
+            <Route path={`${USER_DETAILS}/:id/profile`} render={(props) => <UserProfilePage {...props} onSubmit={this.handleEditUserProfile}/>}/>
             <Route path={`${USER_DETAILS}/:id/settings`} render={(props) => { console.log(props); return (<Grid>Ma sugi de pl</Grid>)}}/>
           </Switch>
         </Grid>

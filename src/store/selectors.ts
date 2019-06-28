@@ -86,10 +86,16 @@ export const makeSelectFirestoreOrderedData = (dataType: string) => createSelect
 export const makeSelectFirestoreData = (dataType: string) => createSelector(
   selectReducerState(),
   (state: any) => {
-    return state.firestore.data[dataType]
+    return state.firestore.data[dataType] || {}
   }
 )
 
+export const makeSelectDataById = (dataType: string, id: string) => createSelector(
+  makeSelectFirestoreData(dataType),
+  (state: any) => {
+    return state[id]
+  }
+)
 export default {
   selectReducerState
 }
