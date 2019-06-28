@@ -43,7 +43,7 @@ export const makeSelectProjects = () => createSelector(
 );
 
 export const makeSelectTaskDrawerOpen = () => createSelector(
-  selectReducerState(),
+  selectPtReducerState(),
   (state: any) => {
     return state.get('taskDrawerOpen');
   }
@@ -71,7 +71,7 @@ export const makeSelectSelectedUser = () => createSelector(
 );
 
 export const makeSelectSelectedTask = () => createSelector(
-  selectReducerState(),
+  selectPtReducerState(),
   (state: any) => {
     return state.get('selectedTask');
   }

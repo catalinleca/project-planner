@@ -26,7 +26,12 @@ import {
   FirstAction
 } from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectSelectedTask, makeSelectTaskDrawerOpen, selectReducerState} from "../../store/selectors";
+import {
+  makeSelectDataById, makeSelectFirestoreOrderedData,
+  makeSelectSelectedTask,
+  makeSelectTaskDrawerOpen,
+  selectReducerState
+} from "../../store/selectors";
 import DisplayEdit from "../DisplayEdit/DisplayEdit";
 import FieldTextField from "../FieldTextField/FieldTextField";
 import {firestoreConnect} from "react-redux-firebase";
@@ -67,7 +72,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   changeTaskProject: any;
   projects: any;
   changeTaskStatus: any;
-  selectedTaskId: any;
+  // selectedTaskId: any;
   handleSubmit: any;
   users: any;
 }
@@ -116,7 +121,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   }
 
   public onChangeTaskStatus = (status) => {
-    this.props.changeTaskStatus(this.props.selectedTaskId, status);
+    // this.props.changeTaskStatus(this.props.selectedTaskId, status);
+    this.props.changeTaskStatus(this.props.task.id, status);
     this.setState({taskStatusAnchorEl: null});
 
   }
@@ -138,7 +144,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     }
   }
 
-
+  // could improve a little, passing task from parent and keeping openDrawerState in the component's state
+  // but since we use projects and users there wouldn't be much of an improvement
   render() {
     const {
       taskDrawerOpen,
@@ -180,7 +187,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     const taskProject = task && (
       <Grid>
         <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleProjectMenuOpen}>
-          {task.projectName || 'No Task Selected'}
+          {task.projectName || 'No Projects Assigned'}
         </Button>
         <Menu
           id="simple-menu"
@@ -355,20 +362,25 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
+  const selectedTaskId = makeSelectSelectedTask()(state);
+
   const {
     taskDrawerOpen,
-    selectedTaskId
+    task,
+    projects,
+    users
   } = createStructuredSelector({
     taskDrawerOpen: makeSelectTaskDrawerOpen(),
-    selectedTaskId: makeSelectSelectedTask()
-  })(state.ptReducer);
+    task: makeSelectDataById('tasks', selectedTaskId),
+    projects: makeSelectFirestoreOrderedData('projects'),
+    users: makeSelectFirestoreOrderedData('users')
+  })(state);
 
   return {
     taskDrawerOpen,
-    selectedTaskId,
-    task: state.firestore.data.tasks && state.firestore.data.tasks[selectedTaskId],
-    projects: state.firestore.ordered.projects,
-    users: state.firestore.ordered.users
+    task,
+    projects,
+    users,
   }
 };
 
@@ -392,7 +404,4 @@ export default compose<React.ComponentClass<ITaskDrawerComponentProps>>(
   }),
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    {collection: 'projects'}
-  ])
 )(TaskDrawer);
