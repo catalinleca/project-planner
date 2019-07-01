@@ -23,7 +23,7 @@ import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
 import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
 import {createStructuredSelector} from "reselect";
-import {makeSelectProjects, makeSelectSelectedProject} from "../../store/selectors";
+import {makeSelectFirestoreOrderedData, makeSelectProjects, makeSelectSelectedProject} from "../../store/selectors";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -160,7 +160,6 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
 
     const steps = this.getSteps();
 
-
     return (
       <React.Fragment>
         <SwipeableDrawer
@@ -197,7 +196,6 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
                   </Step>
                 ))}
               </Stepper>
-
           }
         </SwipeableDrawer>
         <Button
@@ -220,27 +218,14 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
     },
   };
 }
-const mapStateToProps = (state: any) => {
 
-  const {
-    selectedProjectId
-  }: {
-    selectedProjectId: string
-  } =  createStructuredSelector({
-    selectedProjectId: makeSelectSelectedProject(),
-  })(state.ptReducer)
-
-  return {
-    users: state.firestore.ordered.users,
-    selectedProjectId
-  }
-}
+const mapStateToProps = createStructuredSelector({
+  selectedProjectId: makeSelectSelectedProject(),
+  users: makeSelectFirestoreOrderedData('users')
+})
 
 export default compose<React.ComponentClass<ICreateNewProjectComponentProps>>(
 
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    {collection: 'users'}
-  ]),
   withStyles(styles)
 )(CreateNewProject);

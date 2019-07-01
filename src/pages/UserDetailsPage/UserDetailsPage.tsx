@@ -53,8 +53,8 @@ const styles = (theme: Theme): StyleRules => ({
     width: '100%'
   },
   ripple: {
-    color: 'green !important',
-    backgroundColor: 'green !important'
+    color: 'blue',
+    backgroundColor: 'green'
   }
 });
 
@@ -157,6 +157,11 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
             const body = (
               <ListItem button={true}
                 onClick={() => userItem.action && userItem.action(this.deleteUser)}
+                TouchRippleProps={{
+                  classes: {
+                    ripple: classes.ripple
+                  }
+                }}
               >
                 <ListItemIcon classes={{
                   root: classes.listIcon
