@@ -12,7 +12,7 @@ import {
 } from 'redux';
 import {connect} from "react-redux";
 import {DeleteProjectAction, TrackUntrackProjectAction} from "../../store/action";
-import MaterialTable from 'material-table';
+import MaterialTable, {MaterialTableProps} from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Check from '@material-ui/icons/Check';
@@ -71,6 +71,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IProjectListPageComponentProps {
   customData?: any;
+  customMaterialTableProps?: MaterialTableProps;
 }
 
 //from state
@@ -162,6 +163,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     const {
       customData,
       projects,
+      customMaterialTableProps
     } = this.props;
 
     // console.log(this.props.projects);
@@ -171,28 +173,29 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
         {
           projects &&
           <MaterialTable
-              title="All Projects"
-              columns={this.columns}
-              data={customData || this.getTableData()}
-              onRowClick={(e, rowData) => {
-                this.handleRowClick(rowData)
-              }}
-              actions={[
-                rowData => ({
-                  icon: () => <FontAwesomeIcon
-                    icon={[this.iconStyle(rowData), 'bookmark']}
-                  />,
-                  tooltip: this.tooltip(rowData),
-                  onClick: (e, rowData) => this.trackUntrack(rowData)
-                }),
-                {
-                  icon: 'delete',
-                  tooltip: 'Delete Project',
-                  onClick: (e, rowData) => {
-                    this.onDeleteHandler(e, rowData)
-                  }
+            title='All Projects'
+            columns={this.columns}
+            data={customData || this.getTableData()}
+            onRowClick={(e, rowData) => {
+              this.handleRowClick(rowData)
+            }}
+            actions={[
+              rowData => ({
+                icon: () => <FontAwesomeIcon
+                  icon={[this.iconStyle(rowData), 'bookmark']}
+                />,
+                tooltip: this.tooltip(rowData),
+                onClick: (e, rowData) => this.trackUntrack(rowData)
+              }),
+              {
+                icon: 'delete',
+                tooltip: 'Delete Project',
+                onClick: (e, rowData) => {
+                  this.onDeleteHandler(e, rowData)
                 }
-              ]}
+              }
+            ]}
+            {...customMaterialTableProps}
           />
         }
       </React.Fragment>

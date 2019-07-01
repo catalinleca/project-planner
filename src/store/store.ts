@@ -45,7 +45,7 @@ export default function configureStore({
 } = {} as any) {
   const middlewares = [
     sagaMiddleware,
-    thunk.withExtraArgument({ getFirestore}),
+    thunk.withExtraArgument({getFirestore}),
     routerMiddleware(history)
   ]
 

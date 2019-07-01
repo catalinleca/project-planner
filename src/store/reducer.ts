@@ -10,6 +10,7 @@ export interface IPtReducer {
   selectedTask: string;
   selectedUser: string;
   taskDrawerOpen: boolean,
+  authError: string,
 
 }
 
@@ -20,6 +21,7 @@ const INITIAL_STATE = fromJS({
   selectedTask: '',
   selectedUser: '',
   taskDrawerOpen: false,
+  authError: ''
 });
 
 export const reducer = (state: IMap<IPtReducer> = INITIAL_STATE, action: any) => {
@@ -47,6 +49,14 @@ export const reducer = (state: IMap<IPtReducer> = INITIAL_STATE, action: any) =>
 
     case ActionTypes.CLOSE_TASK_DRAWER:
       return state.set('taskDrawerOpen', false);
+
+    case ActionTypes.LOGIN_ERROR:
+      console.log('LOGIN FAILED')
+      return state.set('authError', 'Login Failed');
+
+    case ActionTypes.LOGIN_SUCCESS:
+      console.log('LOGIN SUCCESS')
+      return state.set('authError', '');
 
     default:
       return state;

@@ -6,6 +6,7 @@ import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
 import {makeSelectSelectedProject, makeSelectSelectedTask, makeSelectSelectedUser} from "./selectors";
+import firebase from '../base'
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -18,7 +19,9 @@ export enum ActionTypes {
 	SELECT_TASK = 'SELECT_TASK',
 	SELECT_USER = 'SELECT_USER',
 	TOGGLE_TASK_DRAWER = 'TOGGLE_TASK_DRAWER',
-	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER'
+	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER',
+	LOGIN_ERROR = 'LOGIN_ERROR',
+	LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 }
 //
 
@@ -236,6 +239,17 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 		.catch( err => console.log(err))
 }
 
+export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	console.log("in signInAction credentials: ", credentials);
+	firebase.auth().signInWithEmailAndPassword(credentials.username, credentials.password)
+		.then( function() {
+			dispatch({ type: 'LOGIN_SUCCESS'})
+		}).catch( function(err){
+			console.log(err);
+			dispatch({ type: 'LOGIN_ERROR', err})
+	})
+}
 
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,

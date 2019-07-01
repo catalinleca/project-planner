@@ -15,6 +15,9 @@ import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import { Field, reduxForm } from 'redux-form';
 import LoginComponent from "../../components/LoginComponent/LoginComponent";
 import SignupComponent from "../../components/SignupComponent/SignupComponent";
+import {connect} from "react-redux";
+import {IAction} from "../../utils/interfaces";
+import {doTheThingAction, SignInAction} from "../../store/action";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -34,6 +37,7 @@ interface ILoginSignupComponentComponentProps {
 //from state
 interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps {
   handleSubmit?: any;
+  signIn?: any;
 }
 
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -52,6 +56,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 
   public handleLogin = ( values ) => {
     console.log('handleLogin: ', values)
+    this.props.signIn(values)
   }
 
   public handleSignup = ( values ) => {
@@ -66,12 +71,12 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
     return (
       <Grid>
         <Modal
-          open={false}
+          open={true}
         >
           <Grid style={this.getModalStyle()} className={classes.paper}>
-            <SignupComponent
+            <LoginComponent
               onHandleSubmit={this.props.handleSubmit}
-              onSubmit={this.handleSignup}
+              onSubmit={this.handleLogin}
             />
           </Grid>
         </Modal>
@@ -81,9 +86,23 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
   }
 }
 
+const mapStateToProps = (state) => {
+
+  return {
+
+  }
+}
+
+export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
+  return {
+    signIn: (creds) => { dispatch(SignInAction(creds)) }
+};
+}
+
 export default compose<React.ComponentClass<ILoginSignupComponentComponentProps>>(
   withStyles(styles),
   reduxForm({
     form: 'loginSignupForm'
   }),
+  connect(mapStateToProps, mapDispatchToProps)
 )(LoginSignupComponent);

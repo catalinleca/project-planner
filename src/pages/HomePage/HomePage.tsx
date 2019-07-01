@@ -126,9 +126,15 @@ class HomePage extends React.Component<HomePageType, {}> {
 
     return (
       <React.Fragment>
-        <ProjectListPage
-          customData={this.getTrackedProjects()}
-        />
+        {
+          projects &&
+          <ProjectListPage
+              customData={this.getTrackedProjects()}
+              customMaterialTableProps={{
+                title: 'Tracked Projects'
+              }}
+          />
+        }
       </React.Fragment>
     );
   }
