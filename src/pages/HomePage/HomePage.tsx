@@ -11,7 +11,7 @@ import {
   compose,
 } from 'redux';
 import {connect} from "react-redux";
-import {DeleteProjectAction, TrackUntrackProjectAction} from "../../store/action";
+import {DeleteProjectAction} from "../../store/action";
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -39,7 +39,7 @@ import {
   makeSelectSelectedTask,
   makeSelectTaskDrawerOpen
 } from "../../store/selectors";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import ProjectListPage from "../ProjectListPage/ProjectListPage";
 
 const tableIcons = {
   Add: AddBox,
@@ -69,24 +69,24 @@ const styles = (theme: Theme): StyleRules => ({
   }
 });
 
-interface IProjectListPageComponentProps {
-  customData?: any;
+interface IHomePageComponentProps {
+  projects: any;
+
+  deleteProject(id: number): void
 }
 
 //from state
-interface IProjectListPageProps extends IProjectListPageComponentProps {
-  dispatch?: any;
-  projects?: any;
+interface IHomePageProps extends IHomePageComponentProps {
+  dispatch: any;
 
   getProjects(): void;
 
-  deleteProject(id: number): void
-  trackUntrackProject(id: number, track: boolean): void
+  asd: any;
 }
 
-type ProjectListPageType = IProjectListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
+type HomePageType = IHomePageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class ProjectListPage extends React.Component<ProjectListPageType, {}> {
+class HomePage extends React.Component<HomePageType, {}> {
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
@@ -94,28 +94,12 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     {title: 'Sprint', field: 'sprint'},
   ]
 
-  // public getData = () => {
-  //   const {
-  //     projects
-  //   } = this.props;
-  //
-  //   return projects.map( project => {
-  //     let item = {};
-  //     this.columns.map ( columnType => {
-  //       const fieldName = columnType['field']
-  //       item[fieldName] = project[fieldName]
-  //     })
-  //     item['id'] = project['id'];
-  //     return item;
-  //   })
-  // }
-
-  public getTableData = () => {
+  public getTrackedProjects = () => {
     const {
       projects
     } = this.props;
 
-    return projects.map((project, index) => ({
+    return projects.filter( task => task.tracked === true).map((project, index) => ({
       ...project,
       tableData: {id: index}
     }))
@@ -133,68 +117,18 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     this.props.dispatch(push(`${PROJECT_DETAILS}/${rowData.id}`))
   }
 
-  public iconStyle = (rowData) => {
-    return rowData.tracked
-      ? 'fas'
-      : 'far'
-
-  }
-
-  public tooltip = (rowData) => {
-    return rowData.tracked
-      ? 'Untrack'
-      : 'Track'
-  }
-
-  public trackUntrack = (rowData) => {
-    console.log(rowData)
-    const {
-      trackUntrackProject
-    } = this.props;
-
-
-    const currentTrackStatus = rowData.tracked;
-
-    trackUntrackProject(rowData.id, !currentTrackStatus)
-  }
-
   render() {
     const {
-      customData,
-      projects,
+      projects
     } = this.props;
 
     // console.log(this.props.projects);
 
     return (
       <React.Fragment>
-        {
-          projects &&
-          <MaterialTable
-              title="All Projects"
-              columns={this.columns}
-              data={customData || this.getTableData()}
-              onRowClick={(e, rowData) => {
-                this.handleRowClick(rowData)
-              }}
-              actions={[
-                rowData => ({
-                  icon: () => <FontAwesomeIcon
-                    icon={[this.iconStyle(rowData), 'bookmark']}
-                  />,
-                  tooltip: this.tooltip(rowData),
-                  onClick: (e, rowData) => this.trackUntrack(rowData)
-                }),
-                {
-                  icon: 'delete',
-                  tooltip: 'Delete Project',
-                  onClick: (e, rowData) => {
-                    this.onDeleteHandler(e, rowData)
-                  }
-                }
-              ]}
-          />
-        }
+        <ProjectListPage
+          customData={this.getTrackedProjects()}
+        />
       </React.Fragment>
     );
   }
@@ -212,13 +146,10 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
     deleteProject: (id) => {
       dispatch(DeleteProjectAction(id))
     },
-    trackUntrackProject: (id, track) => {
-      dispatch(TrackUntrackProjectAction(id, track))
-  }
   };
 }
 
-export default compose<React.ComponentClass<any>>(
+export default compose<React.ComponentClass<IHomePageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-)(ProjectListPage);
+)(HomePage);

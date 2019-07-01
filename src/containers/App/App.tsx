@@ -26,6 +26,7 @@ import UserListPage from "../../pages/UserListPage/UserListPage";
 import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
 import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
 import {firestoreConnect} from "react-redux-firebase";
+import HomePage from "../../pages/HomePage/HomePage";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -56,7 +57,7 @@ const App: React.FC<AppProps> = (props) => {
   const { width } = props;
   const menuItems = <React.Fragment>
     <CustomMenuItem
-      to='/home'
+      to={HOME_PATH}
       iconProps={{icon: 'inbox'}}
       label='Home'
       width={width}
@@ -118,6 +119,7 @@ const App: React.FC<AppProps> = (props) => {
       >
         <Switch>
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
+          <Route path={`${HOME_PATH}`} component={HomePage}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
           <Route path={`${USER_DETAILS}/:id`} render={(props) => {

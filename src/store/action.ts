@@ -94,6 +94,8 @@ const cleanParams = (obj) => {
 	}
 }
 
+
+
 export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -165,6 +167,18 @@ export const ChangeProjectPhaseAction = (label, projectId) => (dispatch, getStat
 		projectPhase: label
 	}, {merge: true})
 }
+
+export const TrackUntrackProjectAction = (projectId, track) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	console.log(projectId, track);
+	const firestore = getFirestore();
+
+	const projectRef = firestore.collection('projects').doc(projectId);
+
+	const setWithMerge = projectRef.set({
+		tracked: track,
+	}, {merge: true})
+}
+
 export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
