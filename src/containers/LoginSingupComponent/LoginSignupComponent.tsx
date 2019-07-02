@@ -17,7 +17,7 @@ import LoginComponent from "../../components/LoginComponent/LoginComponent";
 import SignupComponent from "../../components/SignupComponent/SignupComponent";
 import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
-import {doTheThingAction, SignInAction} from "../../store/action";
+import {doTheThingAction, SignInAction, SignUpAction} from "../../store/action";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -38,6 +38,7 @@ interface ILoginSignupComponentComponentProps {
 interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps {
   handleSubmit?: any;
   signIn?: any;
+  signUp?: any;
 }
 
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -61,6 +62,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 
   public handleSignup = ( values ) => {
     console.log('handleSingup: ', values)
+    this.props.signUp(values);
   }
 
   render() {
@@ -74,9 +76,9 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
           open={true}
         >
           <Grid style={this.getModalStyle()} className={classes.paper}>
-            <LoginComponent
+            <SignupComponent
               onHandleSubmit={this.props.handleSubmit}
-              onSubmit={this.handleLogin}
+              onSubmit={this.handleSignup}
             />
           </Grid>
         </Modal>
@@ -95,7 +97,8 @@ const mapStateToProps = (state) => {
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
-    signIn: (creds) => { dispatch(SignInAction(creds)) }
+    signIn: (creds) => { dispatch(SignInAction(creds)) },
+    signUp: (newUser) => { dispatch(SignUpAction(newUser)) }
 };
 }
 

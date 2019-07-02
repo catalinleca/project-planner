@@ -7,6 +7,7 @@ import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
 import {makeSelectSelectedProject, makeSelectSelectedTask, makeSelectSelectedUser} from "./selectors";
 import firebase from '../base'
+import {userBase} from "../utils/interfaces/IUser/IUser";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -249,6 +250,27 @@ export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase,
 			console.log(err);
 			dispatch({ type: 'LOGIN_ERROR', err})
 	})
+}
+
+export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	console.log("in singUpAction: newUser: ", newUser);
+	const firestore = getFirestore();
+
+	firebase.auth().createUserWithEmailAndPassword(newUser.mail, newUser.password)
+		.then((resp: any) => {
+			// when we call add firebase automatically generates another id but we dont want that,
+			// we want to use the one that was created in the first place by createUser method so instead
+			// of ' .add ' we use ' .doc ' so we reference  a specific id
+			return firestore.collection('users').doc(resp.user.uid).set({
+				...userBase,
+				firstName: newUser.firstName,
+				lastName: newUser.lastName,
+			}).then( () => {
+				console.log('SIGN UP SUCCESS');
+			}).catch( err => {
+				console.log('SIGN UP ERROR: ', err);
+			})
+		})
 }
 
 export const FirstActionSucceeded = (payload: any) => ({

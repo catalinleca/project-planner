@@ -54,7 +54,6 @@ export default function configureStore({
   const enhancers = [
     applyMiddleware(...middlewares),
     reduxFirestore(firebase),
-    // reactReduxFirebase(firebase, userConfig)
   ];
 
 
