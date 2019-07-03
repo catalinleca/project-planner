@@ -204,6 +204,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 }
 
 const mapStateToProps = (state: any) => {
+  console.log('app state: ', state);
   return createStructuredSelector({
     projects: makeSelectFirestoreOrderedData('projects'),
   })(state);

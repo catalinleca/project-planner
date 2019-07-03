@@ -18,6 +18,10 @@ import SignupComponent from "../../components/SignupComponent/SignupComponent";
 import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
 import {doTheThingAction, SignInAction, SignUpAction} from "../../store/action";
+import {createStructuredSelector} from "reselect";
+import {makeSelectIsLoggedIn} from "../../store/selectors";
+import {push} from "connected-react-router";
+import {HOME_PATH} from "../../utils/constants";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -36,14 +40,20 @@ interface ILoginSignupComponentComponentProps {
 
 //from state
 interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps {
+  dispatch?: any;
   handleSubmit?: any;
   signIn?: any;
   signUp?: any;
+  isLoggedIn?: boolean;
 }
 
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}> {
+  public state = {
+    loggingIn: true
+  };
+
   public getModalStyle() {
     const top = 50;
     const left = 50;
@@ -56,47 +66,96 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
   }
 
   public handleLogin = ( values ) => {
+    const {
+      signIn,
+      dispatch
+    } = this.props;
+
     console.log('handleLogin: ', values)
-    this.props.signIn(values)
+    signIn(values)
+    dispatch(push(HOME_PATH))
   }
 
   public handleSignup = ( values ) => {
+
+    const {
+      signUp,
+      dispatch
+    } = this.props;
+
+
     console.log('handleSingup: ', values)
-    this.props.signUp(values);
+    signUp(values);
+    dispatch(push(HOME_PATH))
   }
 
+  public changeComponent = () => {
+    this.setState({
+      loggingIn: !this.state.loggingIn,
+    })
+  }
   render() {
     const {
-      classes
+      loggingIn
+    } = this.state;
+
+    const {
+      classes,
+      isLoggedIn
     } = this.props;
 
     return (
       <Grid>
-        <Modal
-          open={true}
-        >
-          <Grid style={this.getModalStyle()} className={classes.paper}>
-            <SignupComponent
-              onHandleSubmit={this.props.handleSubmit}
-              onSubmit={this.handleSignup}
-            />
-          </Grid>
-        </Modal>
+        {/*<Grid style={this.getModalStyle()} className={classes.paper}>*/}
+        <Grid>
+          <Typography>
+            {
+              loggingIn
+                ? 'No Account? Sign up'
+                : 'Go back to Log In'
+            }
+          </Typography>
+          <Button
+            variant='text'
+            color='primary'
+            onClick={this.changeComponent}
+          >
+            {
+              loggingIn
+                ? 'Sign Up'
+                : 'Log In'
+            }
+          </Button>
+        </Grid>
+        <Grid>
+          {
+            loggingIn
+              ?
+              <LoginComponent
+                onHandleSubmit={this.props.handleSubmit}
+                onSubmit={this.handleLogin}
+              />
+              :
+              <SignupComponent
+                onHandleSubmit={this.props.handleSubmit}
+                onSubmit={this.handleSignup}
+              />
+          }
+        </Grid>
 
       </Grid>
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = createStructuredSelector({
+  isLoggedIn: makeSelectIsLoggedIn()
+})
 
-  return {
-
-  }
-}
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
+    dispatch,
     signIn: (creds) => { dispatch(SignInAction(creds)) },
     signUp: (newUser) => { dispatch(SignUpAction(newUser)) }
 };

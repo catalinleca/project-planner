@@ -18,7 +18,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {HOME_PATH, PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
+import {AUTH_PATH, HOME_PATH, PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
@@ -27,6 +27,7 @@ import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
 import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
 import {firestoreConnect} from "react-redux-firebase";
 import HomePage from "../../pages/HomePage/HomePage";
+import {userIsAuthenticated, userIsNotAuthenticated} from "../../auth/auth";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -52,6 +53,12 @@ type AppProps = IAppComponentProps & WithWidth & IAppProps & WithStyles<keyof Re
 const submit = (values) => {
   console.log(values);
 }
+
+const AuthenticatedProjectListPage = userIsAuthenticated()(ProjectListPage);
+const AuthenticatedHomePage = userIsAuthenticated()(HomePage);
+const AuthenticatedProjectDetailsPage = userIsAuthenticated()(ProjectDetailsPage);
+const NotAuthenticatedLoginSignupComponent = userIsNotAuthenticated()(LoginSignupComponent);
+
 const App: React.FC<AppProps> = (props) => {
 
   const { width } = props;
@@ -112,21 +119,21 @@ const App: React.FC<AppProps> = (props) => {
   return (
     <React.Fragment>
       <Module/>
-      <LoginSignupComponent/>
       <AppMenu
         menuItems={menuItems}
         userMenuItems={userMenuItems}
       >
         <Switch>
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
-          <Route path={`${HOME_PATH}`} component={HomePage}/>
-          <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
-          <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
-          <Route path={`${USER_DETAILS}/:id`} render={(props) => {
-            return <Route path={`${USER_DETAILS}/:id`} render={() => <UserDetailsPage width={width} {...props}/>}/>
+          <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
+          <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
+          <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
+          <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>
+          {/*<Route path={`${USER_DETAILS}/:id`} render={(props) => {*/}
+          {/*  return <Route path={`${USER_DETAILS}/:id`} render={() => <UserDetailsPage width={width} {...props}/>}/>*/}
 
-          }}/>
-          <Route path={USER_LIST} component={UserListPage} exact={true}/>
+          {/*}}/>*/}
+          {/*<Route path={USER_LIST} component={UserListPage} exact={true}/>*/}
         </Switch>
         <CreateNewProject/>
       </AppMenu>

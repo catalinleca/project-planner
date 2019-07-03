@@ -252,6 +252,16 @@ export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase,
 	})
 }
 
+export const SignOutAction = () =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	firebase.auth().signOut()
+		.then( () => {
+			console.log('SIGNED OUT SUCCESS')
+		})
+		.catch(err => console.log('SIGNED OUT FAILED: ', err))
+
+}
+
 export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	console.log("in singUpAction: newUser: ", newUser);
 	const firestore = getFirestore();
