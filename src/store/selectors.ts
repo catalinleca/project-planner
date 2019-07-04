@@ -100,8 +100,7 @@ export const makeSelectDataById = (dataType: string, id: string) => createSelect
 export const makeSelectIsLoggedIn = () => createSelector(
   selectReducerState(),
   (state: any) => {
-    console.log('state.firebase.auth: ', state.firebase.auth);
-    return state.firebase.auth.uid
+    return Boolean(state.firebase.auth.uid)
   }
 )
 

@@ -10,18 +10,12 @@ import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 // connectedRouterRedirect
 export const userIsAuthenticated = (component?: any) => connectedReduxRedirect({
   redirectPath: AUTH_PATH,
-  authenticatedSelector: state => state.firebase.auth.uid,
+  // authenticatedSelector: state => state.firebase.auth.uid,
+  authenticatedSelector: state => makeSelectIsLoggedIn()(state),
   // authenticatingSelector: state => component != null && makeSelectIsLoggedIn()(state),
   wrapperDisplayName: 'UserIsAuthenticated',
   redirectAction: routerActions.replace,
 
-})
-
-export const userIsAuthenticatedRedir = connectedRouterRedirect({
-  authenticatedSelector: state => state.firebase.auth.uid,
-  wrapperDisplayName: 'UserIsAuthenticated',
-  redirectPath: AUTH_PATH,
-  redirectAction: replace,
 })
 
 const locationHelper = locationHelperBuilder({});
@@ -32,7 +26,7 @@ export const userIsNotAuthenticated = (component?: any) => connectedReduxRedirec
   redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || HOME_PATH,
   // This prevents us from adding the query parameter when we send the user away from the login page
   allowRedirectBack: false,
-  authenticatedSelector: state => !state.firebase.auth.uid,
+  authenticatedSelector: state => !(makeSelectIsLoggedIn()(state)),
   // If selector is true, wrapper will not redirect
   // So if there is no user data, then we show the page
   redirectAction: replace,

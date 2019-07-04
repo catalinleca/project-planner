@@ -54,10 +54,12 @@ const submit = (values) => {
   console.log(values);
 }
 
+const NotAuthenticatedLoginSignupComponent = userIsNotAuthenticated()(LoginSignupComponent);
 const AuthenticatedProjectListPage = userIsAuthenticated()(ProjectListPage);
 const AuthenticatedHomePage = userIsAuthenticated()(HomePage);
 const AuthenticatedProjectDetailsPage = userIsAuthenticated()(ProjectDetailsPage);
-const NotAuthenticatedLoginSignupComponent = userIsNotAuthenticated()(LoginSignupComponent);
+const AuthenticatedUserListPage = userIsAuthenticated()(UserListPage);
+const AuthenticatedUserDetailsPage = userIsAuthenticated()(UserDetailsPage);
 
 const App: React.FC<AppProps> = (props) => {
 
@@ -129,11 +131,9 @@ const App: React.FC<AppProps> = (props) => {
           <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>
-          {/*<Route path={`${USER_DETAILS}/:id`} render={(props) => {*/}
-          {/*  return <Route path={`${USER_DETAILS}/:id`} render={() => <UserDetailsPage width={width} {...props}/>}/>*/}
+          <Route path={`${USER_DETAILS}/:id`} render={(props) => <AuthenticatedUserDetailsPage width={width} {...props}/>}/>
 
-          {/*}}/>*/}
-          {/*<Route path={USER_LIST} component={UserListPage} exact={true}/>*/}
+          <Route path={USER_LIST} component={AuthenticatedUserListPage} exact={true}/>
         </Switch>
         <CreateNewProject/>
       </AppMenu>

@@ -96,6 +96,7 @@ class UserListPage extends React.Component<UserListPageType, {}> {
   }
 
   public handleRowClick = (rowData) => {
+    console.log('rowData.id: ', rowData.id);
     this.props.dispatch(push(`${USER_DETAILS}/${rowData.id}`))
   }
 
@@ -105,7 +106,7 @@ class UserListPage extends React.Component<UserListPageType, {}> {
       users
     } = this.props;
 
-    console.log(this.props);
+    console.log('UserListPage Props: ', this.props);
 
     return (
       <React.Fragment>

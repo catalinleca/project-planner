@@ -35,7 +35,7 @@ export const rrfProps = {
   firebase,
   config: userConfig,
   dispatch: store.dispatch,
-  createFirestoreInstance
+  createFirestoreInstance,
 }
 
 const app = (
