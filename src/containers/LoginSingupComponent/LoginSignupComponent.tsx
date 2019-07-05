@@ -36,6 +36,7 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ILoginSignupComponentComponentProps {
+  admin?: boolean
 }
 
 //from state
@@ -50,10 +51,6 @@ interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}> {
-  public state = {
-    loggingIn: true
-  };
-
   public getModalStyle() {
     const top = 50;
     const left = 50;
@@ -85,51 +82,46 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 
 
     console.log('handleSingup: ', values)
-    signUp(values);
+    signUp({
+      ...values,
+      isAdmin: true
+    });
     dispatch(push(HOME_PATH))
   }
 
-  public changeComponent = () => {
-    this.setState({
-      loggingIn: !this.state.loggingIn,
-    })
-  }
   render() {
     const {
-      loggingIn
-    } = this.state;
-
-    const {
       classes,
-      isLoggedIn
+      isLoggedIn,
+      admin
     } = this.props;
 
     return (
       <Grid>
         {/*<Grid style={this.getModalStyle()} className={classes.paper}>*/}
         <Grid>
-          <Typography>
-            {
-              loggingIn
-                ? 'No Account? Sign up'
-                : 'Go back to Log In'
-            }
-          </Typography>
-          <Button
-            variant='text'
-            color='primary'
-            onClick={this.changeComponent}
-          >
-            {
-              loggingIn
-                ? 'Sign Up'
-                : 'Log In'
-            }
-          </Button>
+          {/*<Typography>*/}
+          {/*  {*/}
+          {/*    loggingIn*/}
+          {/*      ? 'No Account? Sign up'*/}
+          {/*      : 'Go back to Log In'*/}
+          {/*  }*/}
+          {/*</Typography>*/}
+          {/*<Button*/}
+          {/*  variant='text'*/}
+          {/*  color='primary'*/}
+          {/*  onClick={this.changeComponent}*/}
+          {/*>*/}
+          {/*  {*/}
+          {/*    loggingIn*/}
+          {/*      ? 'Sign Up'*/}
+          {/*      : 'Log In'*/}
+          {/*  }*/}
+          {/*</Button>*/}
         </Grid>
         <Grid>
           {
-            loggingIn
+            !admin
               ?
               <LoginComponent
                 onHandleSubmit={this.props.handleSubmit}

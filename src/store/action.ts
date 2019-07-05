@@ -145,11 +145,8 @@ export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, ge
 	const firestore = getFirestore();
 
 	const currentState = getState();
-	// console.log('currentState: ', currentState)
-	const currentProjectState = currentState.ptReducer;
 
-	const selectedTaskId = (makeSelectSelectedTask())(currentProjectState)
-	// console.log('selectedTask: ', selectedTaskId);
+	const selectedTaskId = (makeSelectSelectedTask())(currentState)
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 
@@ -273,8 +270,7 @@ export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getF
 			// of ' .add ' we use ' .doc ' so we reference  a specific id
 			return firestore.collection('users').doc(resp.user.uid).set({
 				...userBase,
-				firstName: newUser.firstName,
-				lastName: newUser.lastName,
+				...newUser
 			}).then( () => {
 				console.log('SIGN UP SUCCESS');
 			}).catch( err => {

@@ -2,6 +2,7 @@ import {ProjectPhase, TaskStatus} from "../types/types";
 import {Map} from "immutable";
 
 export const AUTH_PATH = '/auth';
+export const CREATE_ADMIN_PATH = '/createNewAdmin';
 
 export const PROJECT_LIST = '/projectList';
 export const PROJECT_DETAILS = `${PROJECT_LIST}/details`;

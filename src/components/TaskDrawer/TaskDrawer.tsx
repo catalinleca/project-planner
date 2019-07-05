@@ -72,7 +72,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   changeTaskProject: any;
   projects: any;
   changeTaskStatus: any;
-  // selectedTaskId: any;
+  selectedTaskId: any;
   handleSubmit: any;
   users: any;
 }
@@ -121,8 +121,12 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   }
 
   public onChangeTaskStatus = (status) => {
+    const {
+      changeTaskStatus,
+      selectedTaskId
+    } = this.props
     // this.props.changeTaskStatus(this.props.selectedTaskId, status);
-    this.props.changeTaskStatus(this.props.task.id, status);
+    changeTaskStatus(selectedTaskId, status);
     this.setState({taskStatusAnchorEl: null});
 
   }
@@ -163,7 +167,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     } = this.state;
 
     // console.log(this.state);
-    // console.log('task: ', task)
 
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
@@ -377,6 +380,7 @@ const mapStateToProps = (state: any) => {
   })(state);
 
   return {
+    selectedTaskId,
     taskDrawerOpen,
     task,
     projects,

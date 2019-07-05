@@ -8,12 +8,11 @@ export interface IUser {
   username: any;
   password: any;
   registeredDate: any;
-
-  tasks: any; // possible, we ll seem MMNU
+  isAdmin: boolean;
 }
 
 export const userBase = {
-  id: null,
+  // id: null,
   email: null,
   firstName: null,
   jobTitle: null,
@@ -22,6 +21,5 @@ export const userBase = {
   username: null,
   password: null,
   registeredDate: null,
-
-  tasks: null /// MNU
+  isAdmin: false,
 }

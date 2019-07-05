@@ -15,7 +15,7 @@ import {
 import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
 import {createStructuredSelector} from "reselect";
-import {makeSelectIsLoggedIn} from "../../store/selectors";
+import {makeSelectIsAdmin, makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
 import {SignOutAction, toggleTaskDrawerAction} from "../../store/action";
 
 const styles = (theme: Theme): StyleRules => ({
@@ -67,7 +67,8 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isLoggedIn: makeSelectIsLoggedIn()
+  isLoggedIn: makeSelectIsLoggedIn(),
+  isAdmin: makeSelectIsAdmin(),
 })
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {

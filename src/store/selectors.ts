@@ -9,6 +9,7 @@ import {
 import {
   IMap,
 } from '../utils/interfaces';
+import {IUser} from "../utils/interfaces/IUser/IUser";
 
 let initTime;
 
@@ -93,7 +94,7 @@ export const makeSelectFirestoreData = (dataType: string) => createSelector(
 export const makeSelectDataById = (dataType: string, id: string) => createSelector(
   makeSelectFirestoreData(dataType),
   (state: any) => {
-    return state[id]
+    return state[id] || {}
   }
 )
 
@@ -104,7 +105,20 @@ export const makeSelectIsLoggedIn = () => createSelector(
   }
 )
 
+export const makeSelectLoggedInUserId = () => createSelector(
+  selectReducerState(),
+  (state: any) => {
+    return state.firebase.auth.uid || ''
+  }
+)
 
+export const makeSelectIsAdmin = () => createSelector(
+  makeSelectFirestoreData('users'),
+  makeSelectLoggedInUserId(),
+  (users: IUser[], loggedInUserId) => {
+    return users[loggedInUserId] && Boolean(users[loggedInUserId].isAdmin);
+  }
+)
 export default {
   selectReducerState
 }

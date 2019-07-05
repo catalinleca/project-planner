@@ -142,10 +142,6 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
       tasks
     } = this.props;
 
-
-    console.log('UserDetailsPage Props: ', this.props);
-    // console.log('user: ', user);
-
     const sideUserMenu = (
       <List
         classes={{

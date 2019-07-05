@@ -18,7 +18,15 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import {AUTH_PATH, HOME_PATH, PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
+import {
+  AUTH_PATH,
+  CREATE_ADMIN_PATH,
+  HOME_PATH,
+  PROJECT_DETAILS,
+  PROJECT_LIST,
+  USER_DETAILS,
+  USER_LIST
+} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
@@ -127,8 +135,9 @@ const App: React.FC<AppProps> = (props) => {
       >
         <Switch>
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
-          <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
           <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
+          <Route path={`${CREATE_ADMIN_PATH}`} render={(props) => <NotAuthenticatedLoginSignupComponent {...props} admin={true}/>}/>
+          <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>
           <Route path={`${USER_DETAILS}/:id`} render={(props) => <AuthenticatedUserDetailsPage width={width} {...props}/>}/>
