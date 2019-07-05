@@ -19,7 +19,7 @@ import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
 import {doTheThingAction, SignInAction, SignUpAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectIsLoggedIn} from "../../store/selectors";
+import {makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
 import {push} from "connected-react-router";
 import {HOME_PATH} from "../../utils/constants";
 
@@ -36,7 +36,7 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ILoginSignupComponentComponentProps {
-  admin?: boolean
+  admin?: boolean,
 }
 
 //from state
@@ -77,14 +77,15 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 
     const {
       signUp,
-      dispatch
+      dispatch,
+      admin,
     } = this.props;
 
+    const signedUpBy =
 
-    console.log('handleSingup: ', values)
     signUp({
       ...values,
-      isAdmin: true
+      isAdmin: admin
     });
     dispatch(push(HOME_PATH))
   }
@@ -121,7 +122,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
         </Grid>
         <Grid>
           {
-            !admin
+            (!admin && !isLoggedIn)
               ?
               <LoginComponent
                 onHandleSubmit={this.props.handleSubmit}
@@ -141,7 +142,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 }
 
 const mapStateToProps = createStructuredSelector({
-  isLoggedIn: makeSelectIsLoggedIn()
+  isLoggedIn: makeSelectIsLoggedIn(),
 })
 
 

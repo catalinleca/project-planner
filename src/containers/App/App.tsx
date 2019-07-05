@@ -19,6 +19,7 @@ import {
   Switch,
 } from 'react-router-dom';
 import {
+  ADD_USER,
   AUTH_PATH,
   CREATE_ADMIN_PATH,
   HOME_PATH,
@@ -63,6 +64,7 @@ const submit = (values) => {
 }
 
 const NotAuthenticatedLoginSignupComponent = userIsNotAuthenticated()(LoginSignupComponent);
+const AuthenticatedLoginSignupComponent = userIsAuthenticated()(LoginSignupComponent)
 const AuthenticatedProjectListPage = userIsAuthenticated()(ProjectListPage);
 const AuthenticatedHomePage = userIsAuthenticated()(HomePage);
 const AuthenticatedProjectDetailsPage = userIsAuthenticated()(ProjectDetailsPage);
@@ -137,6 +139,7 @@ const App: React.FC<AppProps> = (props) => {
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
           <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
           <Route path={`${CREATE_ADMIN_PATH}`} render={(props) => <NotAuthenticatedLoginSignupComponent {...props} admin={true}/>}/>
+          <Route path={`${ADD_USER}`} render={(props) => <AuthenticatedLoginSignupComponent {...props} admin={false}/>} exact={true}/>
           <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>

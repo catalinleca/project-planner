@@ -5,7 +5,12 @@ import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
-import {makeSelectSelectedProject, makeSelectSelectedTask, makeSelectSelectedUser} from "./selectors";
+import {
+	makeSelectIsLoggedIn, makeSelectLoggedInUserId,
+	makeSelectSelectedProject,
+	makeSelectSelectedTask,
+	makeSelectSelectedUser
+} from "./selectors";
 import firebase from '../base'
 import {userBase} from "../utils/interfaces/IUser/IUser";
 
@@ -263,6 +268,10 @@ export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getF
 	console.log("in singUpAction: newUser: ", newUser);
 	const firestore = getFirestore();
 
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const signedUpBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
 	firebase.auth().createUserWithEmailAndPassword(newUser.mail, newUser.password)
 		.then((resp: any) => {
 			// when we call add firebase automatically generates another id but we dont want that,
@@ -270,7 +279,8 @@ export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getF
 			// of ' .add ' we use ' .doc ' so we reference  a specific id
 			return firestore.collection('users').doc(resp.user.uid).set({
 				...userBase,
-				...newUser
+				...newUser,
+				signedUpBy
 			}).then( () => {
 				console.log('SIGN UP SUCCESS');
 			}).catch( err => {

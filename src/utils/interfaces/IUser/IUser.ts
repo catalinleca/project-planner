@@ -9,6 +9,7 @@ export interface IUser {
   password: any;
   registeredDate: any;
   isAdmin: boolean;
+  signedUpBy: string;
 }
 
 export const userBase = {
@@ -22,4 +23,6 @@ export const userBase = {
   password: null,
   registeredDate: null,
   isAdmin: false,
+  signedUpBy: ''
+  // hai sa facem adminul contul companiei
 }

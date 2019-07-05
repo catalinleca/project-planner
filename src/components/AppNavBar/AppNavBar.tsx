@@ -17,6 +17,8 @@ import {IAction} from "../../utils/interfaces";
 import {createStructuredSelector} from "reselect";
 import {makeSelectIsAdmin, makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
 import {SignOutAction, toggleTaskDrawerAction} from "../../store/action";
+import {push} from "connected-react-router";
+import {ADD_USER} from "../../utils/constants";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -28,7 +30,9 @@ interface IAppNavBarComponentProps {
 //from state
 interface IAppNavBarProps extends IAppNavBarComponentProps {
   isLoggedIn: boolean
+  isAdmin: boolean
   logOut: any;
+  dispatch: any;
 }
 
 type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -37,10 +41,35 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
   public logOutHandler = () => {
     this.props.logOut();
   }
+
+  public createNewUser = () => {
+    this.props.dispatch(push(ADD_USER))
+  }
+
   render() {
     const {
-      isLoggedIn
+      isLoggedIn,
+      isAdmin
     } = this.props;
+
+    const logoutButton = isLoggedIn && (
+      <Button
+        variant='outlined'
+        color='primary'
+        onClick={this.logOutHandler}
+      >
+        Log Out
+      </Button>)
+
+    const addUserButton = isAdmin && (
+      <Button
+        variant='outlined'
+        color='secondary'
+        onClick={this.createNewUser}
+      >
+        Add User
+      </Button>
+    )
 
     return (
       <Grid
@@ -50,17 +79,8 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
         <Button>
           sugi puliica
         </Button>
-        {
-          isLoggedIn &&
-            <Button
-              variant='outlined'
-              color='primary'
-              onClick={this.logOutHandler}
-            >
-              Log Out
-            </Button>
-
-        }
+        {logoutButton}
+        {addUserButton}
       </Grid>
     );
   }

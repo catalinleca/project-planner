@@ -94,7 +94,7 @@ export const makeSelectFirestoreData = (dataType: string) => createSelector(
 export const makeSelectDataById = (dataType: string, id: string) => createSelector(
   makeSelectFirestoreData(dataType),
   (state: any) => {
-    return state[id] || {}
+    return state[id]
   }
 )
 
