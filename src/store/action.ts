@@ -9,7 +9,7 @@ import {
 	makeSelectIsLoggedIn, makeSelectLoggedInUserId,
 	makeSelectSelectedProject,
 	makeSelectSelectedTask,
-	makeSelectSelectedUser
+	makeSelectSelectedUser, makeSelectUserTrackedProjects
 } from "./selectors";
 import firebase from '../base'
 import {userBase} from "../utils/interfaces/IUser/IUser";
@@ -182,6 +182,25 @@ export const TrackUntrackProjectAction = (projectId, track) => (dispatch, getSta
 
 	const setWithMerge = projectRef.set({
 		tracked: track,
+	}, {merge: true})
+
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const loggedInUserId = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
+	const userTrackedProjects: Array<string> = makeSelectUserTrackedProjects()(currentState)
+
+	/**
+	 * nu merge cu splice in loc de filter
+	 */
+	const updatedTrackedProjects = userTrackedProjects.indexOf(projectId) !== -1
+		?	userTrackedProjects.filter( item => item !== projectId)
+		:	userTrackedProjects.concat(projectId)
+
+	const userRef = firestore.collection('users').doc(loggedInUserId)
+
+	const userWithMerge = userRef.set({
+		trackedProjects: updatedTrackedProjects
 	}, {merge: true})
 }
 

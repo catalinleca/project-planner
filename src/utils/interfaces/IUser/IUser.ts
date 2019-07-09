@@ -10,6 +10,7 @@ export interface IUser {
   registeredDate: any;
   isAdmin: boolean;
   signedUpBy: string;
+  trackedProjects: string[]
 }
 
 export const userBase = {
@@ -24,5 +25,6 @@ export const userBase = {
   registeredDate: null,
   isAdmin: false,
   signedUpBy: '',
+  trackedProjects: []
   // hai sa facem adminul contul companiei
 }

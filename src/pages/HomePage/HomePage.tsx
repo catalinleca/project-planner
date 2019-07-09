@@ -37,7 +37,7 @@ import {createStructuredSelector} from "reselect";
 import {
   makeSelectFirestoreOrderedData,
   makeSelectSelectedTask,
-  makeSelectTaskDrawerOpen
+  makeSelectTaskDrawerOpen, makeSelectUserTrackedProjects
 } from "../../store/selectors";
 import ProjectListPage from "../ProjectListPage/ProjectListPage";
 
@@ -78,6 +78,7 @@ interface IHomePageComponentProps {
 //from state
 interface IHomePageProps extends IHomePageComponentProps {
   dispatch: any;
+  userTrackedProject: string[];
 
   getProjects(): void;
 
@@ -96,10 +97,13 @@ class HomePage extends React.Component<HomePageType, {}> {
 
   public getTrackedProjects = () => {
     const {
+      userTrackedProject,
       projects
     } = this.props;
 
-    return projects.filter( task => task.tracked === true).map((project, index) => ({
+    console.log(userTrackedProject)
+
+    return projects.filter( project => userTrackedProject.indexOf(project.id) !== -1 ).map((project, index) => ({
       ...project,
       tableData: {id: index}
     }))
@@ -119,7 +123,8 @@ class HomePage extends React.Component<HomePageType, {}> {
 
   render() {
     const {
-      projects
+      projects,
+      userTrackedProject
     } = this.props;
 
     // console.log(this.props.projects);
@@ -143,6 +148,7 @@ class HomePage extends React.Component<HomePageType, {}> {
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
     projects: makeSelectFirestoreOrderedData('projects'),
+    userTrackedProject: makeSelectUserTrackedProjects()
   })(state);
 }
 

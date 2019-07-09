@@ -134,6 +134,14 @@ export const makeSelectUserParent = () => createSelector(
     return user && user.signedUpBy;
   }
 )
+
+export const makeSelectUserTrackedProjects = () => createSelector(
+  makeSelectLoggedInUser(),
+  (user: IUser): Array<string> => {
+    return (user && user.trackedProjects) || [];
+  }
+)
+
 export default {
   selectReducerState
 }
