@@ -161,8 +161,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
       tasks,
     } = this.props
 
-    console.log('tasks: ', tasks);
-
     return (
       <React.Fragment>
         <TaskDrawer

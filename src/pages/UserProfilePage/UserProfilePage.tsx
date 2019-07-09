@@ -16,10 +16,16 @@ import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {makeSelectDataById, makeSelectFirestoreOrderedData, selectReducerState} from "../../store/selectors";
+import {
+  makeSelectDataById,
+  makeSelectFirestoreOrderedData,
+  makeSelectIsAdmin,
+  selectReducerState
+} from "../../store/selectors";
 import {IAction} from "../../utils/interfaces";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {firestoreConnect} from "react-redux-firebase";
+import DisplayEdit from "../../components/DisplayEdit/DisplayEdit";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -41,6 +47,7 @@ interface IUserProfilePageProps extends IUserProfilePageComponentProps {
   handleSubmit: any;
   initialize: any;
   user: any
+  isAdmin: boolean
 }
 
 type UserProfilePageType = IUserProfilePageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -77,7 +84,8 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
     const {
       classes,
       handleSubmit,
-      user
+      user,
+      isAdmin
     } = this.props;
 
     const fullname = user && [user.firstName, user.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
@@ -225,7 +233,8 @@ const mapStateToProps = (state: any, ownProps) => {
   // to increase performance because of the memoization
 
   return createStructuredSelector({
-    user: makeSelectDataById('users', currentUserId)
+    user: makeSelectDataById('users', currentUserId),
+    isAdmin: makeSelectIsAdmin()
   })(state);
 
 };

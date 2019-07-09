@@ -86,7 +86,6 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       selectedProjectId
     } = this.props;
 
-    console.log('taskData: ', taskData);
     const newTaskData = {
       ...taskData,
       dueDate: taskData.dueDate
