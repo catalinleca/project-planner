@@ -61,7 +61,7 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	// 	name: 'First Real Test Name Project',
 	// 	createdBy: 453,
 	// 	createdDate: new Date(),
-	// 	leadSource: [
+	// 	: [
 	// 		'Jimmy lead 1',
 	// 		'Jimmy lead 2',
 	// 	],
@@ -216,10 +216,15 @@ export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFireba
 
 export const CreateProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
 		...projectBase,
-		...project
+		...project,
+		createdBy
 	}).then( (resp) => {
 		dispatch(SelectProjectAction(resp.id))
 	}).catch( err => {

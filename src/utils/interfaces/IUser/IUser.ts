@@ -23,6 +23,6 @@ export const userBase = {
   password: null,
   registeredDate: null,
   isAdmin: false,
-  signedUpBy: ''
+  signedUpBy: '',
   // hai sa facem adminul contul companiei
 }

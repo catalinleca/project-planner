@@ -200,8 +200,10 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
         </SwipeableDrawer>
         <Button
           onClick={() => this.setState({open: true})}
+          variant='outlined'
+          color='primary'
         >
-          Open
+          Create A New Project
         </Button>
       </React.Fragment>
     );

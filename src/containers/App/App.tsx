@@ -147,7 +147,6 @@ const App: React.FC<AppProps> = (props) => {
 
           <Route path={USER_LIST} component={AuthenticatedUserListPage} exact={true}/>
         </Switch>
-        <CreateNewProject/>
       </AppMenu>
     </React.Fragment>
   );

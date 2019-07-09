@@ -119,6 +119,21 @@ export const makeSelectIsAdmin = () => createSelector(
     return users[loggedInUserId] && Boolean(users[loggedInUserId].isAdmin);
   }
 )
+
+export const makeSelectLoggedInUser = () => createSelector(
+  makeSelectFirestoreData('users'),
+  makeSelectLoggedInUserId(),
+  (users: IUser[], loggedInUserId) => {
+    return users[loggedInUserId];
+  }
+)
+
+export const makeSelectUserParent = () => createSelector(
+  makeSelectLoggedInUser(),
+  (user: IUser) => {
+    return user && user.signedUpBy;
+  }
+)
 export default {
   selectReducerState
 }

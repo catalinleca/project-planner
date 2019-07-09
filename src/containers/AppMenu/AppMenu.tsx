@@ -409,13 +409,6 @@ class AppMenu extends React.Component<AppMenuProps> {
             >
               <div className={classes.content}>
                 {this.props.children}
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={this.buttonHandler}
-                  >
-                    Gica
-                  </Button>
                 </div>
             </div>
           </ContentWrapper>

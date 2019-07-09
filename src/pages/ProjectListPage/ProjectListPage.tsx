@@ -36,10 +36,17 @@ import {PROJECT_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
 import {
   makeSelectFirestoreOrderedData,
+  makeSelectIsAdmin,
+  makeSelectIsLoggedIn,
+  makeSelectLoggedInUser,
+  makeSelectLoggedInUserId,
   makeSelectSelectedTask,
-  makeSelectTaskDrawerOpen
+  makeSelectTaskDrawerOpen,
+  makeSelectUserParent
 } from "../../store/selectors";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import CreateNewProject from "../../containers/CreateNewProject/CreateNewProject";
+import AppMenu from "../../containers/AppMenu/AppMenu";
 
 const tableIcons = {
   Add: AddBox,
@@ -78,6 +85,9 @@ interface IProjectListPageComponentProps {
 interface IProjectListPageProps extends IProjectListPageComponentProps {
   dispatch?: any;
   projects?: any;
+  isAdmin?: boolean;
+  loggedInUserParent?: string;
+  loggedInUserId?: string;
 
   getProjects(): void;
 
@@ -113,10 +123,13 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
   public getTableData = () => {
     const {
-      projects
+      projects,
+      loggedInUserParent,
+      isAdmin,
+      loggedInUserId
     } = this.props;
 
-    return projects.map((project, index) => ({
+    return projects.filter( project => !isAdmin ? project.createdBy === loggedInUserParent : project.createdBy === loggedInUserId).map((project, index) => ({
       ...project,
       tableData: {id: index}
     }))
@@ -138,7 +151,6 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     return rowData.tracked
       ? 'fas'
       : 'far'
-
   }
 
   public tooltip = (rowData) => {
@@ -153,7 +165,6 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       trackUntrackProject
     } = this.props;
 
-
     const currentTrackStatus = rowData.tracked;
 
     trackUntrackProject(rowData.id, !currentTrackStatus)
@@ -163,13 +174,18 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     const {
       customData,
       projects,
-      customMaterialTableProps
+      customMaterialTableProps,
+      isAdmin
     } = this.props;
 
     // console.log(this.props.projects);
 
+    const newProjectButton = isAdmin && (
+      <CreateNewProject/>
+    )
     return (
       <React.Fragment>
+        {newProjectButton}
         {
           projects &&
           <MaterialTable
@@ -207,6 +223,9 @@ const mapStateToProps = (state: any) => {
   console.log('app state: ', state);
   return createStructuredSelector({
     projects: makeSelectFirestoreOrderedData('projects'),
+    isAdmin: makeSelectIsAdmin(),
+    loggedInUserParent: makeSelectUserParent(),
+    loggedInUserId: makeSelectLoggedInUserId()
   })(state);
 }
 
