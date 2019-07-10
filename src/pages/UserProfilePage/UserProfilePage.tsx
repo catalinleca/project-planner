@@ -19,7 +19,7 @@ import {createStructuredSelector} from "reselect";
 import {
   makeSelectDataById,
   makeSelectFirestoreOrderedData,
-  makeSelectIsAdmin,
+  makeSelectIsAdmin, makeSelectLoggedInUserId,
   selectReducerState
 } from "../../store/selectors";
 import {IAction} from "../../utils/interfaces";
@@ -47,7 +47,9 @@ interface IUserProfilePageProps extends IUserProfilePageComponentProps {
   handleSubmit: any;
   initialize: any;
   user: any
-  isAdmin: boolean
+  isAdmin: boolean,
+  loggedInUserId: string,
+  currentUserId: string
 }
 
 type UserProfilePageType = IUserProfilePageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -62,7 +64,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
       "firstName": user.firstName,
       "lastName": user.lastName,
       "username": user.username,
-      "email": user.email,
+      "email": user.mail,
       "jobTitle": user.jobTitle,
       "mobilePhone": user.mobilePhone,
     }
@@ -85,9 +87,20 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
       classes,
       handleSubmit,
       user,
-      isAdmin
+      isAdmin,
+      loggedInUserId,
+      currentUserId
     } = this.props;
 
+
+    const isOwnProps = currentUserId === loggedInUserId;
+
+    const readOnlyProps = !isAdmin && !isOwnProps && {
+      variant: 'outlined',
+      InputProps: {
+        readOnly: true
+      }
+    }
     const fullname = user && [user.firstName, user.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
     return (
       <Grid
@@ -149,6 +162,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    {...readOnlyProps}
                   />
                 </Grid>
                 <Grid item={true} xs={12} md={5}>
@@ -159,6 +173,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    {...readOnlyProps}
                   />
                 </Grid>
               </Grid>
@@ -170,6 +185,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -180,6 +196,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -190,6 +207,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -200,6 +218,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem}>
@@ -232,10 +251,22 @@ const mapStateToProps = (state: any, ownProps) => {
   // then, considering the change of rerunning the selector with the same state values again will lead
   // to increase performance because of the memoization
 
-  return createStructuredSelector({
+  const {
+    user,
+    isAdmin,
+    loggedInUserId,
+  } =  createStructuredSelector({
     user: makeSelectDataById('users', currentUserId),
-    isAdmin: makeSelectIsAdmin()
+    isAdmin: makeSelectIsAdmin(),
+    loggedInUserId: makeSelectLoggedInUserId(),
   })(state);
+
+  return {
+    user,
+    isAdmin,
+    loggedInUserId,
+    currentUserId
+  }
 
 };
 

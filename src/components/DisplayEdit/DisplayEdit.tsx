@@ -39,6 +39,20 @@ interface IDisplayEditProps extends IDisplayEditComponentProps {
 
 type DisplayEditType = IDisplayEditProps & WithStyles<keyof ReturnType<typeof styles>>;
 
+interface IShowContent {
+  displayValue: any
+}
+
+const ShowContent: React.FC<IShowContent> = ({displayValue}) => (
+  React.isValidElement(displayValue)
+  ? displayValue
+  : (
+      <Typography color='inherit' variant='body2'>
+        {displayValue}
+      </Typography>
+    )
+)
+
 const DisplayEdit: React.FC<DisplayEditType> = (props) => {
   const {
     edit,
@@ -49,6 +63,7 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
   } = props;
 
   // console.log('DisplayEdit: ',props);
+
   return edit
     ? (
       <Field
@@ -60,11 +75,9 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
         }}
       />
     )
-    : (
-      <Typography color='inherit' variant='body2'>
-        {displayValue}
-      </Typography>
-    );
+    : (<ShowContent
+      displayValue={displayValue}
+    />)
 }
 
 export default compose<React.ComponentClass<IDisplayEditComponentProps>>(
