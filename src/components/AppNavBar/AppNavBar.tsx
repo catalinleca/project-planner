@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button,
-  Grid, Menu, MenuItem,
+  Grid, ListItem, ListItemIcon, ListItemText, Menu, MenuItem,
   Theme,
   withStyles,
   WithStyles,
@@ -18,7 +18,10 @@ import {createStructuredSelector} from "reselect";
 import {makeSelectIsAdmin, makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
 import {SignOutAction, toggleTaskDrawerAction} from "../../store/action";
 import {push} from "connected-react-router";
-import {ADD_USER} from "../../utils/constants";
+import {ADD_USER, USER_DETAILS} from "../../utils/constants";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Link, LinkProps} from "react-router-dom";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -33,6 +36,7 @@ interface IAppNavBarProps extends IAppNavBarComponentProps {
   isAdmin: boolean
   logOut: any;
   dispatch: any;
+  loggedInUserId: string;
 }
 
 type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -50,11 +54,21 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
     this.props.dispatch(push(ADD_USER))
   };
 
-  public handleClick = event => {
-    this.setState(prevState => ({
+  public handleOpen = event => {
+    this.setState({
       anchorEl: event.currentTarget
-    }));
+    });
   }
+
+  public handleClick = (value) => {
+    const {
+      dispatch,
+      loggedInUserId
+    } = this.props;
+
+   dispatch(push(`${USER_DETAILS}/${loggedInUserId}/${value.path}`))
+  }
+
 
   public handleClose = () => {
     this.setState({anchorEl: null});
@@ -66,13 +80,31 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       isAdmin
     } = this.props;
 
+    const options = [
+      {
+        text: 'My Tasks',
+        icon: 'tasks',
+        path: 'tasks'
+      },
+      {
+        text: 'My Account',
+        icon: 'user',
+        path: 'profile'
+      },
+      {
+        text: 'Settings',
+        icon: 'cog',
+        path: 'settings'
+      }
+    ]
+
     const {
       anchorEl
     } = this.state;
 
     const myAccountButton = (
       <div>
-        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}>
+        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={e => this.handleOpen(e)}>
           Open Menu
         </Button>
         <Menu
@@ -82,9 +114,23 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
           open={Boolean(anchorEl)}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-          <MenuItem onClick={this.handleClose}>My account</MenuItem>
-          <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+          {
+            options.map( (value, index) => (
+              <MenuItem
+                key={`${value.text}${index}`}
+                onClick={() => this.handleClick(value)}
+              >
+                <ListItemIcon>
+                  <FontAwesomeIcon
+                    icon={value.icon as IconProp}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={value.text}/>
+              </MenuItem>
+
+            ))
+          }
+
         </Menu>
       </div>
     )
@@ -124,6 +170,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
 const mapStateToProps = createStructuredSelector({
   isLoggedIn: makeSelectIsLoggedIn(),
   isAdmin: makeSelectIsAdmin(),
+  loggedInUserId: makeSelectLoggedInUserId()
 })
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
