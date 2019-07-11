@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button,
-  Grid,
+  Grid, Menu, MenuItem,
   Theme,
   withStyles,
   WithStyles,
@@ -38,12 +38,26 @@ interface IAppNavBarProps extends IAppNavBarComponentProps {
 type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class AppNavBar extends React.Component<AppNavBarType, {}> {
+  public state = {
+    anchorEl: null
+  };
+
   public logOutHandler = () => {
     this.props.logOut();
-  }
+  };
 
   public createNewUser = () => {
     this.props.dispatch(push(ADD_USER))
+  };
+
+  public handleClick = event => {
+    this.setState(prevState => ({
+      anchorEl: event.currentTarget
+    }));
+  }
+
+  public handleClose = () => {
+    this.setState({anchorEl: null});
   }
 
   render() {
@@ -51,6 +65,29 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       isLoggedIn,
       isAdmin
     } = this.props;
+
+    const {
+      anchorEl
+    } = this.state;
+
+    const myAccountButton = (
+      <div>
+        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}>
+          Open Menu
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={this.handleClose}
+        >
+          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+          <MenuItem onClick={this.handleClose}>My account</MenuItem>
+          <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+        </Menu>
+      </div>
+    )
 
     const logoutButton = isLoggedIn && (
       <Button
@@ -76,9 +113,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
         container={true}
         direction='row-reverse'
       >
-        <Button>
-          sugi puliica
-        </Button>
+        {myAccountButton}
         {logoutButton}
         {addUserButton}
       </Grid>
