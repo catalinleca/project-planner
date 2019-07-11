@@ -9,6 +9,7 @@ import { firebaseReducer } from 'react-redux-firebase';
 import firebase from '../base';
 import thunk from 'redux-thunk';
 import { reducer as formReducer } from 'redux-form';
+import {connect} from "react-redux";
 
 
 const sagaMiddleware = createSagaMiddleware();

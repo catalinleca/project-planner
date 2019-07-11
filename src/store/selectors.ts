@@ -128,6 +128,15 @@ export const makeSelectLoggedInUser = () => createSelector(
   }
 )
 
+/**Refactor all with this, think more about it*/
+export const makeSelectCurrentUserProperty = (property: any) => createSelector(
+  makeSelectLoggedInUser(),
+  (user: IUser) => {
+    return user && user[property]
+  }
+
+)
+
 export const makeSelectUserParent = () => createSelector(
   makeSelectLoggedInUser(),
   (user: IUser) => {

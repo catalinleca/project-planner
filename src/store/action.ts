@@ -117,7 +117,8 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 export const EditUserAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
+	const currentState = getState();
+	const selectedUserId = (makeSelectSelectedUser())(currentState)
 
 	const userRef = firestore.collection('users').doc(selectedUserId);
 
@@ -313,6 +314,29 @@ export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getF
 		})
 }
 
+export const UploadFileAction = (file) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const firestore = getFirestore()
+	const currentState = getState();
+	const loggedInUserId = makeSelectLoggedInUserId()(currentState);
+
+	const userRef = firestore.collection('users').doc(loggedInUserId);
+
+	console.log('in action: ', file);
+
+	const storageRef = firebase.storage().ref()
+	const mainImage = storageRef.child(loggedInUserId)
+	mainImage.put(file).then( snap => {
+		console.log(snap);
+		mainImage.getDownloadURL().then( url => {
+			const setWithMerge = userRef.set({
+				avatar: url,
+			}, {merge: true})
+		}).catch(err => console.log(err))
+	}).catch(err => console.log(err));
+
+	// storageRef.put(file).then(snap => console.log('Uploaded, ', snap))
+}
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
 	payload

@@ -37,6 +37,8 @@ import {Link} from "react-router-dom";
 import {USER_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
 import {makeSelectFirestoreOrderedData} from "../../store/selectors";
+import AvatarButton from "../../components/AvatarButton/AvatarButton";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const tableIcons = {
   Add: AddBox,
@@ -84,7 +86,6 @@ class UserListPage extends React.Component<UserListPageType, {}> {
     {title: 'First Name', field: 'firstName'},
     {title: 'Last Name', field: 'lastName'},
     {title: 'Job Title', field: 'jobTitle'},
-    {title: 'Sprint', field: 'sprint'},
   ]
 
   public onDeleteHandler = (e,rowData) => {
@@ -118,13 +119,12 @@ class UserListPage extends React.Component<UserListPageType, {}> {
             }))}
 						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
 						actions={[
-              {
-                icon: 'bookmark',
-                tooltip: 'Save User',
-                onClick: (e, rowData) => {
-                  console.log(rowData);
-                }
-              },
+              rowData => ({
+                icon: () => <AvatarButton
+                  img={rowData.avatar}
+                />,
+                onClick: (e, rowData) => console.log('pula')
+              }),
               {
                 icon: 'delete',
                 tooltip: 'Delete User',

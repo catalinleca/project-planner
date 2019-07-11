@@ -15,13 +15,19 @@ import {
 import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
 import {createStructuredSelector} from "reselect";
-import {makeSelectIsAdmin, makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
+import {
+  makeSelectCurrentUserProperty,
+  makeSelectIsAdmin,
+  makeSelectIsLoggedIn,
+  makeSelectLoggedInUserId
+} from "../../store/selectors";
 import {SignOutAction, toggleTaskDrawerAction} from "../../store/action";
 import {push} from "connected-react-router";
 import {ADD_USER, USER_DETAILS} from "../../utils/constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link, LinkProps} from "react-router-dom";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
+import AvatarButton from "../AvatarButton/AvatarButton";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -37,6 +43,7 @@ interface IAppNavBarProps extends IAppNavBarComponentProps {
   logOut: any;
   dispatch: any;
   loggedInUserId: string;
+  userAvatar: string;
 }
 
 type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -63,7 +70,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
   public handleClick = (value) => {
     const {
       dispatch,
-      loggedInUserId
+      loggedInUserId,
     } = this.props;
 
    dispatch(push(`${USER_DETAILS}/${loggedInUserId}/${value.path}`))
@@ -77,7 +84,8 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
   render() {
     const {
       isLoggedIn,
-      isAdmin
+      isAdmin,
+      userAvatar
     } = this.props;
 
     const options = [
@@ -104,9 +112,12 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
 
     const myAccountButton = (
       <div>
-        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={e => this.handleOpen(e)}>
-          Open Menu
-        </Button>
+        <AvatarButton
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          img={userAvatar}
+          onClick={e => this.handleOpen(e)}
+        />
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}
@@ -170,7 +181,8 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
 const mapStateToProps = createStructuredSelector({
   isLoggedIn: makeSelectIsLoggedIn(),
   isAdmin: makeSelectIsAdmin(),
-  loggedInUserId: makeSelectLoggedInUserId()
+  loggedInUserId: makeSelectLoggedInUserId(),
+  userAvatar: makeSelectCurrentUserProperty('avatar')
 })
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {

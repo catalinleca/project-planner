@@ -35,6 +35,7 @@ import UserTasksPage from "../UserTasksPage/UserTasksPage";
 import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import {push} from "connected-react-router";
 import {ITask} from "../../utils/interfaces/ITask/ITask";
+import UserSettingsPage from "../UserSettingsPage/UserSettingsPage";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -220,7 +221,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
             <Redirect from={`${USER_DETAILS}/:id`} to={`${USER_DETAILS}/:id/tasks`} exact={true}/>
             {tasks && <Route path={`${USER_DETAILS}/:id/tasks`} render={(props) => <UserTasksPage {...props} tasks={this.getUserTasks()}/>}/>}
             <Route path={`${USER_DETAILS}/:id/profile`} render={(props) => <UserProfilePage {...props} onSubmit={this.handleEditUserProfile}/>}/>
-            <Route path={`${USER_DETAILS}/:id/settings`} render={(props) => { console.log(props); return (<Grid>Ma sugi de pl</Grid>)}}/>
+            <Route path={`${USER_DETAILS}/:id/settings`} component={UserSettingsPage}/>
           </Switch>
         </Grid>
       </Grid>
