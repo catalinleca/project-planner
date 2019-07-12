@@ -80,7 +80,7 @@ const AvatarButton: React.FC<AvatarButtonType> = props => {
     </Avatar>
   )
 
-  return userData
+  return userData.avatar
     ? userAvatar
     : userInitials
 }
