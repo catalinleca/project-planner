@@ -30,7 +30,10 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import AvatarButton from "../AvatarButton/AvatarButton";
 
 const styles = (theme: Theme): StyleRules => ({
-  root: {}
+  root: {},
+  avatarButton: {
+    marginLeft: '6px'
+  }
 });
 
 interface IAppNavBarComponentProps {
@@ -87,7 +90,8 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
     const {
       isLoggedIn,
       isAdmin,
-      userData
+      userData,
+      classes
     } = this.props;
 
     const options = [
@@ -121,6 +125,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
               aria-haspopup="true"
               userData={userData}
               onClickHandler={e => this.handleOpen(e)}
+              className={classes.avatarButton}
           />
         }
         <Menu

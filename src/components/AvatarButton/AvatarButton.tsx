@@ -23,7 +23,6 @@ const styles = (theme: Theme): StyleRules => ({
     backgroundColor: 'rgba(0, 119, 173)',
     // color: 'white',
     padding: '6px',
-    marginLeft: '6px',
     '&:hover': {
       backgroundColor: 'rgba(0, 119, 173, 0.84)'
 
