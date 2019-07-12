@@ -15,23 +15,29 @@ import {
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {ButtonProps} from "@material-ui/core/Button";
+import classnames from 'classnames';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
   avatarIcon: {
-    backgroundColor: '#0077AD',
-    color: 'white',
+    backgroundColor: 'rgba(0, 119, 173)',
+    // color: 'white',
     padding: '6px',
-    margin: '6px'
+    marginLeft: '6px',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 119, 173, 0.84)'
+
+    }
   },
-  pzdms: {
-    backgroundColor: 'rgba(0, 0, 0, 0.84)'
+  avatarStyle: {
+
   }
 });
 
 interface IAvatarButtonComponentProps {
-  onClick?: any;
+  onClickHandler?: any;
   img: string;
+  disableRipple?: boolean
 }
 
 //from state
@@ -44,21 +50,24 @@ class AvatarButton extends React.Component<AvatarButtonType, {}> {
 
   render() {
     const {
-      onClick,
+      onClickHandler,
       children,
       img,
-      classes
+      classes,
+      ...rest
     } = this.props;
 
     console.log(this.props);
 
     return (
-      <Fab
+      <IconButton
         color='primary'
-        onClick={onClick}
+        onClick={onClickHandler}
+        className={classes.avatarIcon}
+        {...rest}
       >
         <Avatar alt={img} src={img}/>
-      </Fab>
+      </IconButton>
     )
   }
 }

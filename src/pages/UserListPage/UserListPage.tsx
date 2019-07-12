@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Avatar,
   Grid, Paper,
   Theme,
   withStyles,
@@ -120,9 +121,7 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
 						actions={[
               rowData => ({
-                icon: () => <AvatarButton
-                  img={rowData.avatar}
-                />,
+                icon: () => <Avatar alt={rowData.avatar} src={rowData.avatar}/>,
                 onClick: (e, rowData) => console.log('pula')
               }),
               {

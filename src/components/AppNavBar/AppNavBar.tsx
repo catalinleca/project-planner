@@ -116,7 +116,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
           aria-controls="simple-menu"
           aria-haspopup="true"
           img={userAvatar}
-          onClick={e => this.handleOpen(e)}
+          onClickHandler={e => this.handleOpen(e)}
         />
         <Menu
           id="simple-menu"
