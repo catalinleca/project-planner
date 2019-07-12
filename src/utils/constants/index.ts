@@ -1,5 +1,6 @@
 import {ProjectPhase, TaskStatus} from "../types/types";
 import {Map} from "immutable";
+import {UserProps} from "../interfaces/IUser/IUser";
 
 export const AUTH_PATH = '/auth';
 export const CREATE_ADMIN_PATH = '/createNewAdmin';
@@ -16,8 +17,6 @@ export const USER_PROFILE_PATH = `${USER_DETAILS}/profile`;
 export const USER_SETTINGS_PATH = `${USER_DETAILS}/settings`;
 
 export const HOME_PATH = '/home';
-
-
 
 export const projectPhases: ProjectPhase[] = ['initial', 'planning', 'execution', 'closure'];
 
@@ -36,5 +35,14 @@ export const formatStringDate = (date: any) => {
   } else {
     return null
   }
+}
+
+export const pick = (obj, props: Array<any>) => {
+  if (!obj || !props) return;
+  let picked = {}
+
+  props.forEach( prop => picked[prop] = obj[prop])
+
+  return picked;
 }
 

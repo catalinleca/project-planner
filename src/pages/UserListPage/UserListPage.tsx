@@ -35,11 +35,13 @@ import {
   push
 } from 'connected-react-router'
 import {Link} from "react-router-dom";
-import {USER_DETAILS} from "../../utils/constants";
+import {pick, USER_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
 import {makeSelectFirestoreOrderedData} from "../../store/selectors";
 import AvatarButton from "../../components/AvatarButton/AvatarButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
+import _ from 'lodash';
 
 const tableIcons = {
   Add: AddBox,
@@ -121,7 +123,10 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
 						actions={[
               rowData => ({
-                icon: () => <Avatar alt={rowData.avatar} src={rowData.avatar}/>,
+                icon: () => {
+                  console.log(pick(rowData, ['avatar', 'firstName', 'lastName']))
+                  return <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>
+                },
                 onClick: (e, rowData) => console.log('pula')
               }),
               {

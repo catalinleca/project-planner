@@ -43,7 +43,9 @@ interface IAppNavBarProps extends IAppNavBarComponentProps {
   logOut: any;
   dispatch: any;
   loggedInUserId: string;
-  userAvatar: string;
+  userData: {
+    [key: string]: any
+  };
 }
 
 type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -85,7 +87,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
     const {
       isLoggedIn,
       isAdmin,
-      userAvatar
+      userData
     } = this.props;
 
     const options = [
@@ -112,12 +114,15 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
 
     const myAccountButton = (
       <div>
-        <AvatarButton
-          aria-controls="simple-menu"
-          aria-haspopup="true"
-          img={userAvatar}
-          onClickHandler={e => this.handleOpen(e)}
-        />
+        {
+          userData &&
+          <AvatarButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              userData={userData}
+              onClickHandler={e => this.handleOpen(e)}
+          />
+        }
         <Menu
           id="simple-menu"
           anchorEl={anchorEl}
@@ -182,7 +187,7 @@ const mapStateToProps = createStructuredSelector({
   isLoggedIn: makeSelectIsLoggedIn(),
   isAdmin: makeSelectIsAdmin(),
   loggedInUserId: makeSelectLoggedInUserId(),
-  userAvatar: makeSelectCurrentUserProperty('avatar')
+  userData: makeSelectCurrentUserProperty(['avatar', 'firstName', 'lastName'])
 })
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {

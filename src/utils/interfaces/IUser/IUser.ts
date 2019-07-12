@@ -1,6 +1,21 @@
+export type UserProps =
+  'id' |
+  'email' |
+  'firstName' |
+  'jobTitle' |
+  'lastName' |
+  'mobilePhone' |
+  'username' |
+  'password' |
+  'registeredDate' |
+  'isAdmin' |
+  'signedUpBy' |
+  'trackedProjects' |
+  'avatar'
+
 export interface IUser {
   id: number;
-  email:	any;
+  email: any;
   firstName: any;
   jobTitle: any;
   lastName: any;

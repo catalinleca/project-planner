@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Avatar,
-  Button, Fab, IconButton,
+  Button, Fab, Grid, IconButton,
   Theme,
   withStyles,
   WithStyles,
@@ -36,7 +36,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IAvatarButtonComponentProps {
   onClickHandler?: any;
-  img: string;
+  userData: any
   disableRipple?: boolean
 }
 
@@ -46,41 +46,45 @@ interface IAvatarButtonProps extends IAvatarButtonComponentProps {
 
 type AvatarButtonType = IAvatarButtonProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class AvatarButton extends React.Component<AvatarButtonType, {}> {
+const AvatarButton: React.FC<AvatarButtonType> = props => {
 
-  render() {
-    const {
-      onClickHandler,
-      children,
-      img,
-      classes,
-      ...rest
-    } = this.props;
+  const {
+    onClickHandler,
+    children,
+    userData,
+    classes,
+    ...rest
+  } = props;
 
-    console.log(this.props);
+  console.log(props);
 
-    return (
-      <IconButton
-        color='primary'
-        onClick={onClickHandler}
-        className={classes.avatarIcon}
-        {...rest}
-      >
-        <Avatar alt={img} src={img}/>
-      </IconButton>
-    )
+  const getFirstLetter = (val: string) => {
+    if (!val) return
+    return val.trim().charAt(0).toUpperCase()
   }
+
+  const userAvatar = (
+    <IconButton
+      color='primary'
+      onClick={onClickHandler}
+      className={classes.avatarIcon}
+      {...rest}
+    >
+      <Avatar alt={userData.avatar} src={userData.avatar}/>
+    </IconButton>
+  )
+
+  const userInitials = (
+    <Avatar>
+      {`${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`}
+    </Avatar>
+  )
+
+  return userData
+    ? userAvatar
+    : userInitials
 }
 
-const mapStateToProps = createStructuredSelector({
-})
-
-export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
-  return {
-    dispatch,
-  };
-}
 export default compose<React.ComponentClass<IAvatarButtonComponentProps>>(
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps)
 )(AvatarButton);

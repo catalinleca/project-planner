@@ -9,8 +9,9 @@ import {
 import {
   IMap,
 } from '../utils/interfaces';
-import {IUser} from "../utils/interfaces/IUser/IUser";
-
+import {IUser, UserProps} from "../utils/interfaces/IUser/IUser";
+import {pick} from "../utils/constants";
+import _ from 'lodash';
 let initTime;
 
 export const selectReducerState = () => (state: any) => {
@@ -129,10 +130,16 @@ export const makeSelectLoggedInUser = () => createSelector(
 )
 
 /**Refactor all with this, think more about it*/
-export const makeSelectCurrentUserProperty = (property: any) => createSelector(
+export const makeSelectCurrentUserProperty = (properties: UserProps[]) => createSelector(
   makeSelectLoggedInUser(),
   (user: IUser) => {
-    return user && user[property]
+
+    const data = user && pick(user, properties)
+
+    console.log('data: ', data);
+
+    return data;
+    // return user && user[property]
   }
 
 )
