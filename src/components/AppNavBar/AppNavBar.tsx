@@ -120,13 +120,16 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       <div>
         {
           userData &&
-          <AvatarButton
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              userData={userData}
-              onClickHandler={e => this.handleOpen(e)}
+            <Grid
               className={classes.avatarButton}
-          />
+            >
+              <AvatarButton
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  userData={userData}
+                  onClickHandler={e => this.handleOpen(e)}
+              />
+            </Grid>
         }
         <Menu
           id="simple-menu"
