@@ -17,6 +17,9 @@ import {ButtonProps} from "@material-ui/core/Button";
 import Dropzone from "react-dropzone";
 import {UploadFileAction} from "../../store/action";
 import {makeSelectDataById, makeSelectIsAdmin, makeSelectLoggedInUserId} from "../../store/selectors";
+import {Field, reduxForm, InjectedFormProps} from 'redux-form'
+import FieldTextField from "../../components/FieldTextField/FieldTextField";
+
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -31,6 +34,7 @@ interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
   onFilesDropAction?: any
   loggedInUserId: string
   currentUserId: string
+  handleSubmit: any
 }
 
 type UserSettingsPageType = IUserSettingsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -41,11 +45,16 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     this.props.onFilesDropAction(files[0])
   }
 
+  public changePassword = values => {
+    console.log(values);
+  }
+
   render() {
     const {
       children,
       loggedInUserId,
-      currentUserId
+      currentUserId,
+      handleSubmit
     } = this.props;
 
     console.log(this.props);
@@ -62,10 +71,68 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
         )}
       </Dropzone>
     )
+    
+    const changePassword = (
+      <form onSubmit={handleSubmit(this.changePassword)}>
+        <Grid
+          container={true}
+          justify='center'
+        >
+          <Grid
+            item={true}
+            xs={8}
+            container={true}
+            direction='column'
+            justify='space-evenly'
+            alignItems='center'
+          >
+            <Field
+              name='currentPassword'
+              component={FieldTextField}
+              label='Current Password'
+              formControlProps={{
+                fullWidth: true,
+              }}
+              props={{
+                type: 'password'
+              }}
+            />
+            <Field
+              name='newPassword'
+              component={FieldTextField}
+              label='New Password'
+              formControlProps={{
+                fullWidth: true,
+              }}
+              props={{
+                type: 'password'
+              }}
+            />
+            <Field
+              name='confirmNewPassword'
+              component={FieldTextField}
+              label='Confirm New Password'
+              formControlProps={{
+                fullWidth: true,
+              }}
+              props={{
+                type: 'password'
+              }}
+            />
+            <Button
+              type='submit'
+            >
+              Button
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    )
 
     return (
       <Grid>
         {profilePicUpload}
+        {changePassword}
       </Grid>
     )
   }
@@ -103,6 +170,9 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   };
 }
 export default compose<React.ComponentClass<IUserSettingsPageComponentProps>>(
+  reduxForm({
+    form: 'changePassword'
+  }),
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps)
 )(UserSettingsPage);
