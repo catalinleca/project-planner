@@ -116,28 +116,40 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+export const ChangeUserPasswordAction = (currentPassword, newPassword) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
-export const CheckCurrentPasswordAction = (password) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const checkCurrentPassword = (password) => {
+		const currentUser = firebase.auth().currentUser
 
-	const currentUser = firebase.auth().currentUser
-
-	return new Promise( (resolve, reject) => {
-		currentUser &&
-		currentUser.email &&
+		return new Promise( (resolve, reject) => {
+			currentUser &&
+			currentUser.email &&
 			currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(currentUser.email, password))
 				.then( response => resolve(response.operationType === 'reauthenticate'))
 				.catch( err => resolve(false))
 
 		})
+	}
 
-}
+	const changeUserPassword = (newPassword) => {
+		const user = firebase.auth().currentUser;
+		console.log('newPassword: ', newPassword)
+		user && user.updatePassword(newPassword).then( () => {
+			console.log('password updated')
+		}).catch(err => console.log(err))
+	}
 
-export const ChangeUserPasswordAction = (newPassword) => (dispatch, getState, {getFirebase, getFirestore}) => {
-	const user = firebase.auth().currentUser;
-	console.log('newPassword: ', newPassword)
-	user && user.updatePassword(newPassword).then( () => {
-		console.log('password updated')
-	}).catch(err => console.log(err))
+
+	return checkCurrentPassword(currentPassword)
+		.then((response) => {
+			console.log('response: ', response)
+			if (!response) {
+				console.log('aasd');
+				throw new SubmissionError({ currentPassword: 'Wrong Password', _error: 'Wrong Password' })
+			} else {
+				changeUserPassword(newPassword)
+			}
+		});
 }
 
 export const EditUserAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {

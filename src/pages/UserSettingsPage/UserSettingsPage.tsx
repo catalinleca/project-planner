@@ -17,7 +17,6 @@ import {ButtonProps} from "@material-ui/core/Button";
 import Dropzone from "react-dropzone";
 import {
   ChangeUserPasswordAction,
-  CheckCurrentPasswordAction,
   UploadFileAction
 } from "../../store/action";
 import {
@@ -65,38 +64,15 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     this.props.onFilesDropAction(files[0])
   }
 
-  public checkCurrentPassword = (currentPassword, newPassword) => {
-    const {
-      checkCurrentPasswordAction,
-      changeUserPassword
-    } = this.props
-
-    console.log(currentPassword)
-    console.log(newPassword)
-   return checkCurrentPasswordAction(currentPassword)
-      .then((response) => {
-        console.log('response: ', response)
-        if (!response) {
-          console.log('aasd');
-          throw new SubmissionError({ currentPassword: 'Wrong Password', _error: 'Wrong Password' })
-        } else {
-          changeUserPassword(newPassword)
-        }
-      });
-  }
-
-
-  public sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-
 
   public submit = values => {
     const {
-      checkCurrentPasswordAction
+      changeUserPassword
     } = this.props;
 
     console.log('values: ', values);
 
-    return this.checkCurrentPassword(values.currentPassword, values.confirmedNewPassword)
+    return changeUserPassword(values.currentPassword, values.newPassword)
   }
 
   public static validateNewPassword = (values: NewPassword) => {
@@ -104,8 +80,6 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     if(values.newPassword !== values.confirmedNewPassword) {
       errors.confirmedNewPassword = 'New Passwords Does Not Match'
     }
-
-
 
     return errors;
   }
@@ -236,8 +210,7 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
     dispatch,
     onFilesDropAction: (files) => dispatch(UploadFileAction(files)),
-    changeUserPassword: (newPassword) => dispatch(ChangeUserPasswordAction(newPassword)),
-    checkCurrentPasswordAction: (values) => dispatch(CheckCurrentPasswordAction(values))
+    changeUserPassword: (currentPassword, newPassword) => dispatch(ChangeUserPasswordAction(currentPassword, newPassword)),
   };
 }
 export default compose<React.ComponentClass<IUserSettingsPageComponentProps>>(
