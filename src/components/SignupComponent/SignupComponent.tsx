@@ -54,7 +54,7 @@ const SignupComponent: React.FC<SignupComponentType> = (props) => {
           type='password'
         />
         <Field
-          name='mail'
+          name='email'
           component={FieldTextField}
           label='Mail'
           type='mail'

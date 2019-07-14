@@ -127,6 +127,9 @@ const App: React.FC<AppProps> = (props) => {
       width={width}
     />
   </React.Fragment>
+  /**
+   * Trimite mail dupa ce a schimat parola. Was that you? If not blah blah!
+   */
 
   return (
     <React.Fragment>

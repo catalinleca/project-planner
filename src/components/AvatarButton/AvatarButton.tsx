@@ -12,10 +12,6 @@ import {
 import {
   compose,
 } from 'redux';
-import {connect} from "react-redux";
-import {createStructuredSelector} from "reselect";
-import {ButtonProps} from "@material-ui/core/Button";
-import classnames from 'classnames';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -25,8 +21,10 @@ const styles = (theme: Theme): StyleRules => ({
     padding: '6px',
     '&:hover': {
       backgroundColor: 'rgba(0, 119, 173, 0.84)'
-
-    }
+    },
+    color: 'white',
+    width: '52px',
+    height: '52px'
   },
   avatarStyle: {
 
@@ -45,6 +43,16 @@ interface IAvatarButtonProps extends IAvatarButtonComponentProps {
 
 type AvatarButtonType = IAvatarButtonProps & WithStyles<keyof ReturnType<typeof styles>>;
 
+const UserProfilePic: React.FC<any> = ({onClickHandler, classes, rest, children}) => (
+  <IconButton
+    color='primary'
+    onClick={onClickHandler}
+    className={classes.avatarIcon}
+    {...rest}
+  >
+    {children}
+  </IconButton>
+)
 const AvatarButton: React.FC<AvatarButtonType> = props => {
 
   const {
@@ -62,26 +70,51 @@ const AvatarButton: React.FC<AvatarButtonType> = props => {
     return val.trim().charAt(0).toUpperCase()
   }
 
-  const userAvatar = (
-    <IconButton
-      color='primary'
-      onClick={onClickHandler}
-      className={classes.avatarIcon}
-      {...rest}
+  const userAvatar = <Avatar alt={userData.avatar} src={userData.avatar}/>
+
+  const userInitials = `${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`
+  //
+  // const userProfilePic = (component) => (
+  //   <IconButton
+  //     color='primary'
+  //     onClick={onClickHandler}
+  //     className={classes.avatarIcon}
+  //     {...rest}
+  //   >
+  //     {component}
+  //   </IconButton>
+  // )
+
+  // }
+  //
+  // const userAvatar = (
+  //   <IconButton
+  //     color='primary'
+  //     onClick={onClickHandler}
+  //     className={classes.avatarIcon}
+  //     {...rest}
+  //   >
+  //     <Avatar alt={userData.avatar} src={userData.avatar}/>
+  //   </IconButton>
+  // )
+  //
+  // const userInitials = (
+  //   <Avatar>
+  //     {`${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`}
+  //   </Avatar>
+  // )
+
+  return (
+    <UserProfilePic
+      {...props}
     >
-      <Avatar alt={userData.avatar} src={userData.avatar}/>
-    </IconButton>
+      {
+        userData.avatar
+            ? userAvatar
+            : userInitials
+      }
+    </UserProfilePic>
   )
-
-  const userInitials = (
-    <Avatar>
-      {`${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`}
-    </Avatar>
-  )
-
-  return userData.avatar
-    ? userAvatar
-    : userInitials
 }
 
 export default compose<React.ComponentClass<IAvatarButtonComponentProps>>(

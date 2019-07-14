@@ -12,7 +12,7 @@ import {
 	makeSelectSelectedUser, makeSelectUserTrackedProjects
 } from "./selectors";
 import firebase from '../base'
-import {userBase} from "../utils/interfaces/IUser/IUser";
+import {IUser, userBase} from "../utils/interfaces/IUser/IUser";
 import {NewPassword} from "../utils/types/types";
 import { SubmissionError } from 'redux-form'
 
@@ -120,7 +120,6 @@ export const ChangeUserPasswordAction = (currentPassword, newPassword) => (dispa
 
 	const checkCurrentPassword = (password) => {
 		const currentUser = firebase.auth().currentUser
-
 		return new Promise( (resolve, reject) => {
 			currentUser &&
 			currentUser.email &&
@@ -327,7 +326,7 @@ export const SignOutAction = () =>  (dispatch, getState, {getFirebase, getFirest
 
 }
 
-export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	console.log("in singUpAction: newUser: ", newUser);
 	const firestore = getFirestore();
 
@@ -335,7 +334,7 @@ export const SignUpAction = (newUser) => (dispatch, getState, {getFirebase, getF
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
 	const signedUpBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
 
-	firebase.auth().createUserWithEmailAndPassword(newUser.mail, newUser.password)
+	firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
 		.then((resp: any) => {
 			// when we call add firebase automatically generates another id but we dont want that,
 			// we want to use the one that was created in the first place by createUser method so instead

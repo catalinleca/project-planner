@@ -64,7 +64,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
       "firstName": user.firstName,
       "lastName": user.lastName,
       "username": user.username,
-      "email": user.mail,
+      "email": user.email,
       "jobTitle": user.jobTitle,
       "mobilePhone": user.mobilePhone,
     }
