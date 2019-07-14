@@ -14,7 +14,12 @@ import {
 import {connect} from "react-redux";
 import {firestoreConnect} from "react-redux-firebase";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreData, makeSelectFirestoreOrderedData, makeSelectSelectedUser} from "../../store/selectors";
+import {
+  makeSelectFirestoreData,
+  makeSelectFirestoreOrderedData, makeSelectIsAdmin,
+  makeSelectLoggedInUserId,
+  makeSelectSelectedUser
+} from "../../store/selectors";
 import {DeleteUserAction, EditUserAction, SelectUserAction} from "../../store/action";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {
@@ -73,6 +78,9 @@ interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   dispatch: any;
   deleteUser: any;
   tasks: ITask[];
+  loggedInUserId: string;
+  currentUserId: string;
+  isAdmin: boolean;
 }
 
 type UserDetailsPageType = IUserDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -87,7 +95,7 @@ interface IUserItemMenu {
 }
 
 class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
-  private userItemMenu: IUserItemMenu[] = [
+  private userItemMenuDefault: IUserItemMenu[] = [
     {
       icon: 'tasks',
       label: 'Tasks',
@@ -98,11 +106,17 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
       label: 'Profile',
       to: `${this.props.match.url}/profile`
     },
+  ]
+
+  private userItemMenuCogExtension: IUserItemMenu[] = [
     {
       icon: 'cog',
       label: 'Change Password',
       to: `${this.props.match.url}/settings`
     },
+    ]
+
+  private userItemMenuTrashExtension: IUserItemMenu[] = [
     {
       icon: 'trash',
       label: 'Delete Account',
@@ -140,8 +154,22 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
       user,
       classes,
       width,
-      tasks
+      tasks,
+      loggedInUserId,
+      currentUserId,
+      isAdmin
     } = this.props;
+
+    /**
+     * vezi cand schimba userii daca iti schimba si taskurile
+     */
+    const isOwnProps = loggedInUserId === currentUserId;
+
+    const userItemMenu = isOwnProps
+      ? this.userItemMenuDefault.concat(this.userItemMenuCogExtension).concat(this.userItemMenuTrashExtension)
+      : isAdmin
+        ? this.userItemMenuDefault.concat(this.userItemMenuTrashExtension)
+        : this.userItemMenuDefault
 
     const sideUserMenu = (
       <List
@@ -150,7 +178,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
         }}
       >
         {
-          this.userItemMenu.map( (userItem, index) => {
+          userItemMenu.map( (userItem, index) => {
             const body = (
               <ListItem button={true}
                 onClick={() => userItem.action && userItem.action(this.deleteUser)}
@@ -229,25 +257,34 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
   }
 }
 
-export const mapStateToProps = (state: any) => {
+export const mapStateToProps = (state: any, ownProps: any) => {
+  const currentUserId = ownProps.match.params.id;
   const {
     selectedUserId,
+    loggedInUserId,
     users,
-    tasks
+    tasks,
+    isAdmin
   }: {
     selectedUserId: string
+    loggedInUserId: string;
+    isAdmin: boolean,
     users: IUser[],
-    tasks: ITask[]
+    tasks: ITask[],
   } =  createStructuredSelector({
     selectedUserId: makeSelectSelectedUser(),
     users: makeSelectFirestoreData('users'),
-    tasks: makeSelectFirestoreOrderedData('tasks')
+    tasks: makeSelectFirestoreOrderedData('tasks'),
+    loggedInUserId: makeSelectLoggedInUserId(),
+    isAdmin: makeSelectIsAdmin()
   })(state)
 
   return {
-    selectedUserId,
     user:  users ? users[selectedUserId] : null,
-    tasks
+    tasks,
+    loggedInUserId,
+    currentUserId,
+    isAdmin
   }
 }
 

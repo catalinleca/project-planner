@@ -16,7 +16,7 @@ import {createStructuredSelector} from "reselect";
 import {ButtonProps} from "@material-ui/core/Button";
 import Dropzone from "react-dropzone";
 import {
-  ChangeUserPasswordAction,
+  ChangeUserCredentialsAction,
   UploadFileAction
 } from "../../store/action";
 import {
@@ -26,9 +26,11 @@ import {
 } from "../../store/selectors";
 import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
-import {NewPassword} from "../../utils/types/types";
+import {NewCredentials} from "../../utils/types/types";
 import { SubmissionError } from 'redux-form'
 import {min} from "moment";
+import {push} from "connected-react-router";
+import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
 
 
 const styles = (theme: Theme): StyleRules => ({
@@ -49,8 +51,9 @@ interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
   loggedInUserId: string
   currentUserId: string
   handleSubmit: any
-  changeUserPassword: any
+  changeUserCredentials: any
   checkCurrentPasswordAction: any
+  dispatch: any
 }
 
 type UserSettingsPageType = IUserSettingsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -67,26 +70,41 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
 
   public submit = values => {
     const {
-      changeUserPassword
+      changeUserCredentials
     } = this.props;
 
     console.log('values: ', values);
 
-    return changeUserPassword(values.currentPassword, values.newPassword)
+    return changeUserCredentials(values)
   }
 
-  public static validateNewPassword = (values: NewPassword) => {
-    const errors: NewPassword = {};
+  public static validateForm = (values: NewCredentials) => {
+    const errors: NewCredentials = {};
     if(values.newPassword !== values.confirmedNewPassword) {
       errors.confirmedNewPassword = 'New Passwords Does Not Match'
+    }
+    if(!values.newMail && !values.newPassword && !values.confirmedNewPassword) {
+      errors.newMail = 'You have to change the password or the mail!'
     }
 
     return errors;
   }
 
+  componentDidMount() {
+    const {
+      loggedInUserId,
+      currentUserId,
+      dispatch
+    } = this.props
+
+    if (loggedInUserId !== currentUserId ) {
+     dispatch(push(`${USER_DETAILS}/${loggedInUserId}/settings`))
+    }
+  }
+
+
   render() {
     const {
-      children,
       loggedInUserId,
       currentUserId,
       handleSubmit
@@ -108,7 +126,7 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
         )}
       </Dropzone>
     )
-    
+
     const changePassword = (
       <form onSubmit={handleSubmit(this.submit)}>
         <Grid
@@ -145,9 +163,8 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
               }}
               props={{
                 type: 'password',
-                required: true
               }}
-              validate={[required, minLength]}
+              validate={[minLength]}
             />
             <Field
               name='confirmedNewPassword'
@@ -158,9 +175,19 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
               }}
               props={{
                 type: 'password',
-                required: true
               }}
-              validate={[required, minLength]}
+              validate={[minLength]}
+            />
+            <Field
+              name='newMail'
+              component={FieldTextField}
+              label='New Mail'
+              formControlProps={{
+                fullWidth: true,
+              }}
+              props={{
+                type: 'mail',
+              }}
             />
             <Button
               type='submit'
@@ -210,13 +237,13 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
     dispatch,
     onFilesDropAction: (files) => dispatch(UploadFileAction(files)),
-    changeUserPassword: (currentPassword, newPassword) => dispatch(ChangeUserPasswordAction(currentPassword, newPassword)),
+    changeUserCredentials: (values) => dispatch(ChangeUserCredentialsAction(values)),
   };
 }
 export default compose<React.ComponentClass<IUserSettingsPageComponentProps>>(
   reduxForm({
     form: 'changePassword',
-    validate: UserSettingsPage.validateNewPassword
+    validate: UserSettingsPage.validateForm
   }),
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps)

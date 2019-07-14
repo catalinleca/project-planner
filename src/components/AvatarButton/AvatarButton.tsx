@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Avatar,
-  Button, Fab, Grid, IconButton,
+  IconButton,
   Theme,
   withStyles,
   WithStyles,
@@ -49,24 +49,21 @@ interface IUserProfilePic {
   classes?: any
 }
 
-const UserProfilePic: React.FC<IUserProfilePic> = ({onClickHandler, classes, children, ...rest}) => (
+
+const UserProfilePic: React.FC<IUserProfilePic> = ({onClickHandler, classes, children}) => (
   <IconButton
     color='primary'
     onClick={onClickHandler}
     className={classes.avatarIcon}
-    {...rest}
   >
     {children}
   </IconButton>
 )
 
 const AvatarButton: React.FC<AvatarButtonType> = props => {
-
   const {
     userData,
   } = props;
-
-  console.log(props);
 
   const getFirstLetter = (val: string) => {
     if (!val) return
@@ -76,36 +73,6 @@ const AvatarButton: React.FC<AvatarButtonType> = props => {
   const userAvatar = <Avatar alt={userData.avatar} src={userData.avatar}/>
 
   const userInitials = `${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`
-  //
-  // const userProfilePic = (component) => (
-  //   <IconButton
-  //     color='primary'
-  //     onClick={onClickHandler}
-  //     className={classes.avatarIcon}
-  //     {...rest}
-  //   >
-  //     {component}
-  //   </IconButton>
-  // )
-
-  // }
-  //
-  // const userAvatar = (
-  //   <IconButton
-  //     color='primary'
-  //     onClick={onClickHandler}
-  //     className={classes.avatarIcon}
-  //     {...rest}
-  //   >
-  //     <Avatar alt={userData.avatar} src={userData.avatar}/>
-  //   </IconButton>
-  // )
-  //
-  // const userInitials = (
-  //   <Avatar>
-  //     {`${getFirstLetter(userData.firstName)}${getFirstLetter(userData.lastName)}`}
-  //   </Avatar>
-  // )
 
   return (
     <UserProfilePic

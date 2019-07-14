@@ -1,10 +1,11 @@
 // export type TaskStatus = 'toDo' | 'inProgress' | 'completed' | 'rejected' | 'accepted';
 export type ProjectPhase = 'initial' | 'planning' | 'execution' | 'closure';
 
-export interface NewPassword {
+export interface NewCredentials {
   currentPassword?: string;
   newPassword?: string;
-  confirmedNewPassword?: string;
+  confirmedNewPassword?: string
+  newMail?: string;
 }
 export enum TaskStatus {
   toDo = 'To Do',

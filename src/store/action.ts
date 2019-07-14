@@ -13,7 +13,7 @@ import {
 } from "./selectors";
 import firebase from '../base'
 import {IUser, userBase} from "../utils/interfaces/IUser/IUser";
-import {NewPassword} from "../utils/types/types";
+import {NewCredentials} from "../utils/types/types";
 import { SubmissionError } from 'redux-form'
 
 export enum ActionTypes {
@@ -116,7 +116,7 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
-export const ChangeUserPasswordAction = (currentPassword, newPassword) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const ChangeUserCredentialsAction = ({currentPassword, newPassword, newMail}) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const checkCurrentPassword = (password) => {
 		const currentUser = firebase.auth().currentUser
@@ -138,6 +138,17 @@ export const ChangeUserPasswordAction = (currentPassword, newPassword) => (dispa
 		}).catch(err => console.log(err))
 	}
 
+	const changeUserMail = (newMail, newPassword?: string) => {
+		const user = firebase.auth().currentUser;
+		console.log('newMail: ', newMail)
+		user && user.updateEmail(newMail).then( () => {
+			console.log('mail updated')
+			if (newPassword) {
+				changeUserPassword(newPassword)
+			}
+		}).catch(err => console.log(err))
+	}
+
 
 	return checkCurrentPassword(currentPassword)
 		.then((response) => {
@@ -146,7 +157,10 @@ export const ChangeUserPasswordAction = (currentPassword, newPassword) => (dispa
 				console.log('aasd');
 				throw new SubmissionError({ currentPassword: 'Wrong Password', _error: 'Wrong Password' })
 			} else {
-				changeUserPassword(newPassword)
+				if (newPassword && !newMail) {
+					changeUserPassword(newPassword)
+				} else
+					changeUserMail(newMail, newPassword)
 			}
 		});
 }

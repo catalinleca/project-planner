@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button, Divider,
-  Grid, Paper,
+  Grid, IconButton, Paper,
   Theme, Typography,
   withStyles,
   WithStyles,
@@ -26,6 +26,9 @@ import {IAction} from "../../utils/interfaces";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {firestoreConnect} from "react-redux-firebase";
 import DisplayEdit from "../../components/DisplayEdit/DisplayEdit";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
+import {push} from "connected-react-router";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -50,6 +53,7 @@ interface IUserProfilePageProps extends IUserProfilePageComponentProps {
   isAdmin: boolean,
   loggedInUserId: string,
   currentUserId: string
+  dispatch: any
 }
 
 type UserProfilePageType = IUserProfilePageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -70,6 +74,14 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
     }
 
     this.props.initialize(initData);
+  }
+
+  public handleEditMail = () => {
+    const {
+      loggedInUserId
+    } = this.props;
+
+    this.props.dispatch(push(`${USER_DETAILS}/${loggedInUserId}/settings`))
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -102,6 +114,16 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
       }
     }
     const fullname = user && [user.firstName, user.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    const changeMail = isOwnProps && (
+      <IconButton
+        onClick={this.handleEditMail}
+      >
+        <FontAwesomeIcon
+          icon='pen'
+        />
+      </IconButton>
+    )
     return (
       <Grid
         container={true}
@@ -193,10 +215,16 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   name='email'
                   component={FieldTextField}
                   label='Email'
+                  variant='outlined'
                   formControlProps={{
                     fullWidth: true,
                   }}
-                  {...readOnlyProps}
+                  inputProps={{
+                    readOnly: true
+                  }}
+                  InputProps={{
+                    endAdornment: changeMail
+                  }}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -270,10 +298,16 @@ const mapStateToProps = (state: any, ownProps) => {
 
 };
 
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
+  return {
+    dispatch,
+  };
+}
+
 export default compose<React.ComponentClass<IUserProfilePageComponentProps>>(
   reduxForm({
     form: 'userProfilePage'
   }),
   withStyles(styles),
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
 )(UserProfilePage);
