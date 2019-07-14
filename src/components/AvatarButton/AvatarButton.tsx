@@ -43,7 +43,13 @@ interface IAvatarButtonProps extends IAvatarButtonComponentProps {
 
 type AvatarButtonType = IAvatarButtonProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-const UserProfilePic: React.FC<any> = ({onClickHandler, classes, rest, children}) => (
+interface IUserProfilePic {
+  onClickHandler?: any;
+  disableRipple?: boolean;
+  classes?: any
+}
+
+const UserProfilePic: React.FC<IUserProfilePic> = ({onClickHandler, classes, children, ...rest}) => (
   <IconButton
     color='primary'
     onClick={onClickHandler}
@@ -53,14 +59,11 @@ const UserProfilePic: React.FC<any> = ({onClickHandler, classes, rest, children}
     {children}
   </IconButton>
 )
+
 const AvatarButton: React.FC<AvatarButtonType> = props => {
 
   const {
-    onClickHandler,
-    children,
     userData,
-    classes,
-    ...rest
   } = props;
 
   console.log(props);
