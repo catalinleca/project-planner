@@ -15,10 +15,21 @@ import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {ButtonProps} from "@material-ui/core/Button";
 import Dropzone from "react-dropzone";
-import {UploadFileAction} from "../../store/action";
-import {makeSelectDataById, makeSelectIsAdmin, makeSelectLoggedInUserId} from "../../store/selectors";
+import {
+  ChangeUserPasswordAction,
+  CheckCurrentPasswordAction,
+  UploadFileAction
+} from "../../store/action";
+import {
+  makeSelectDataById,
+  makeSelectIsAdmin,
+  makeSelectLoggedInUserId
+} from "../../store/selectors";
 import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
+import {NewPassword} from "../../utils/types/types";
+import { SubmissionError } from 'redux-form'
+import {min} from "moment";
 
 
 const styles = (theme: Theme): StyleRules => ({
@@ -29,15 +40,24 @@ interface IUserSettingsPageComponentProps {
   onClick: any;
 }
 
+// type DataShape = {[fieldName:string]: any};
+//
+// type FormErrors<FormData extends DataShape> = FormData & { _error?: string };
+
 //from state
 interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
   onFilesDropAction?: any
   loggedInUserId: string
   currentUserId: string
   handleSubmit: any
+  changeUserPassword: any
+  checkCurrentPasswordAction: any
 }
 
 type UserSettingsPageType = IUserSettingsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
+
+const required = value => value ? undefined : 'Required'
+const minLength = value => value && value.length < 6 ? `Password must have minimum 6 charaters` : undefined
 
 class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
   public onFilesDrop = files => {
@@ -45,8 +65,49 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     this.props.onFilesDropAction(files[0])
   }
 
-  public changePassword = values => {
-    console.log(values);
+  public checkCurrentPassword = (currentPassword, newPassword) => {
+    const {
+      checkCurrentPasswordAction,
+      changeUserPassword
+    } = this.props
+
+    console.log(currentPassword)
+    console.log(newPassword)
+   return checkCurrentPasswordAction(currentPassword)
+      .then((response) => {
+        console.log('response: ', response)
+        if (!response) {
+          console.log('aasd');
+          throw new SubmissionError({ currentPassword: 'Wrong Password', _error: 'Wrong Password' })
+        } else {
+          changeUserPassword(newPassword)
+        }
+      });
+  }
+
+
+  public sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+
+  public submit = values => {
+    const {
+      checkCurrentPasswordAction
+    } = this.props;
+
+    console.log('values: ', values);
+
+    return this.checkCurrentPassword(values.currentPassword, values.confirmedNewPassword)
+  }
+
+  public static validateNewPassword = (values: NewPassword) => {
+    const errors: NewPassword = {};
+    if(values.newPassword !== values.confirmedNewPassword) {
+      errors.confirmedNewPassword = 'New Passwords Does Not Match'
+    }
+
+
+
+    return errors;
   }
 
   render() {
@@ -58,6 +119,8 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     } = this.props;
 
     console.log(this.props);
+    console.log('this.state: ', this.state);
+
 
     const profilePicUpload = (loggedInUserId === currentUserId) && (
       <Dropzone onDrop={this.onFilesDrop}>
@@ -73,7 +136,7 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     )
     
     const changePassword = (
-      <form onSubmit={handleSubmit(this.changePassword)}>
+      <form onSubmit={handleSubmit(this.submit)}>
         <Grid
           container={true}
           justify='center'
@@ -94,8 +157,10 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
                 fullWidth: true,
               }}
               props={{
-                type: 'password'
+                type: 'password',
+                required: true
               }}
+              validate={[required, minLength]}
             />
             <Field
               name='newPassword'
@@ -105,19 +170,23 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
                 fullWidth: true,
               }}
               props={{
-                type: 'password'
+                type: 'password',
+                required: true
               }}
+              validate={[required, minLength]}
             />
             <Field
-              name='confirmNewPassword'
+              name='confirmedNewPassword'
               component={FieldTextField}
               label='Confirm New Password'
               formControlProps={{
                 fullWidth: true,
               }}
               props={{
-                type: 'password'
+                type: 'password',
+                required: true
               }}
+              validate={[required, minLength]}
             />
             <Button
               type='submit'
@@ -166,12 +235,15 @@ const mapStateToProps = (state: any, ownProps) => {
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
     dispatch,
-    onFilesDropAction: (files) => dispatch(UploadFileAction(files))
+    onFilesDropAction: (files) => dispatch(UploadFileAction(files)),
+    changeUserPassword: (newPassword) => dispatch(ChangeUserPasswordAction(newPassword)),
+    checkCurrentPasswordAction: (values) => dispatch(CheckCurrentPasswordAction(values))
   };
 }
 export default compose<React.ComponentClass<IUserSettingsPageComponentProps>>(
   reduxForm({
-    form: 'changePassword'
+    form: 'changePassword',
+    validate: UserSettingsPage.validateNewPassword
   }),
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps)

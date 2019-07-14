@@ -13,6 +13,8 @@ import {
 } from "./selectors";
 import firebase from '../base'
 import {userBase} from "../utils/interfaces/IUser/IUser";
+import {NewPassword} from "../utils/types/types";
+import { SubmissionError } from 'redux-form'
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -112,6 +114,30 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 
 	firestore.collection('users').doc(selectedUserId).delete()
 
+}
+
+
+export const CheckCurrentPasswordAction = (password) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const currentUser = firebase.auth().currentUser
+
+	return new Promise( (resolve, reject) => {
+		currentUser &&
+		currentUser.email &&
+			currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(currentUser.email, password))
+				.then( response => resolve(response.operationType === 'reauthenticate'))
+				.catch( err => resolve(false))
+
+		})
+
+}
+
+export const ChangeUserPasswordAction = (newPassword) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	const user = firebase.auth().currentUser;
+	console.log('newPassword: ', newPassword)
+	user && user.updatePassword(newPassword).then( () => {
+		console.log('password updated')
+	}).catch(err => console.log(err))
 }
 
 export const EditUserAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
