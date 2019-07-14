@@ -31,7 +31,6 @@ interface IUserTasksPageProps extends IUserTasksPageComponentProps {
 type UserTasksPageType = IUserTasksPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 const UserTasksPage: React.FC<UserTasksPageType> = props => {
-  // console.log('props in userTaskPage: ', props);
   return (
     <Grid>
       {props.tasks &&

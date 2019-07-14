@@ -124,7 +124,8 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 						actions={[
               rowData => ({
                 icon: () => {
-                  return <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>
+                  // return <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>
+                  return <Grid>plm</Grid>
                 },
                 onClick: (e, rowData) => console.log('pula')
               }),

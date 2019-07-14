@@ -71,8 +71,6 @@ interface IUserDetailsPageComponentProps {
 //from state
 interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   user: IUser;
-  selectUser: any;
-  selectedUserId: any;
   match: any;
   editUser: any;
   dispatch: any;
@@ -99,12 +97,12 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     {
       icon: 'tasks',
       label: 'Tasks',
-      to: `${this.props.match.url}/tasks`
+      to: `tasks`
     },
     {
       icon: 'user',
       label: 'Profile',
-      to: `${this.props.match.url}/profile`
+      to: `profile`
     },
   ]
 
@@ -112,7 +110,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     {
       icon: 'cog',
       label: 'Change Password',
-      to: `${this.props.match.url}/settings`
+      to: `settings`
     },
     ]
 
@@ -123,10 +121,6 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
       action: (callback) => callback()
     },
   ]
-
-  componentDidMount() {
-    this.props.selectUser();
-  }
 
   public handleEditUserProfile = (values) => {
     console.log(values);
@@ -143,10 +137,10 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
   public getUserTasks = (): ITask[] => {
     const {
       tasks,
-      selectedUserId
+      currentUserId,
     } = this.props;
 
-    return tasks.filter( (task: ITask) => task.assignedTo.id === selectedUserId)
+    return tasks.filter( (task: ITask) => task.assignedTo.id === currentUserId)
   }
 
   render() {
@@ -260,19 +254,16 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
 export const mapStateToProps = (state: any, ownProps: any) => {
   const currentUserId = ownProps.match.params.id;
   const {
-    selectedUserId,
     loggedInUserId,
     users,
     tasks,
     isAdmin
   }: {
-    selectedUserId: string
     loggedInUserId: string;
     isAdmin: boolean,
     users: IUser[],
     tasks: ITask[],
   } =  createStructuredSelector({
-    selectedUserId: makeSelectSelectedUser(),
     users: makeSelectFirestoreData('users'),
     tasks: makeSelectFirestoreOrderedData('tasks'),
     loggedInUserId: makeSelectLoggedInUserId(),
@@ -280,11 +271,11 @@ export const mapStateToProps = (state: any, ownProps: any) => {
   })(state)
 
   return {
-    user:  users ? users[selectedUserId] : null,
+    user:  users ? users[currentUserId] : null,
     tasks,
     loggedInUserId,
     currentUserId,
-    isAdmin
+    isAdmin,
   }
 }
 
@@ -292,7 +283,6 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   const userId = ownProps.match.params.id;
   return {
     dispatch,
-    selectUser: () => dispatch(SelectUserAction(userId)),
     editUser: (values) => dispatch(EditUserAction(values)),
     deleteUser: () => dispatch(DeleteUserAction())
   };

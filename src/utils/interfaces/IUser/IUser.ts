@@ -14,7 +14,7 @@ export type UserProps =
   'avatar'
 
 export interface IUser {
-  id: number;
+  id: string;
   email: any;
   firstName: any;
   jobTitle: any;
