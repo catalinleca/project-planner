@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Avatar,
-  Grid, Paper,
+  Grid, IconButton, Paper,
   Theme,
   withStyles,
   WithStyles,
@@ -37,7 +37,7 @@ import {
 import {Link} from "react-router-dom";
 import {pick, USER_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData} from "../../store/selectors";
+import {makeSelectFirestoreOrderedData, makeSelectIsAdmin} from "../../store/selectors";
 import AvatarButton from "../../components/AvatarButton/AvatarButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -73,6 +73,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IUserListPageComponentProps {
   users: any;
+  isAdmin: boolean;
   deleteUser(id: number): void
 }
 
@@ -85,7 +86,9 @@ interface IUserListPageProps extends IUserListPageComponentProps {
 type UserListPageType = IUserListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class UserListPage extends React.Component<UserListPageType, {}> {
-  private columns =  [
+
+  public columnsDefault =  [
+    {title: 'Avatar', filed: 'avatar', render: rowData => <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>, cellStyle: {width: '131px'}, headerStyle: {marginLeft: '4px'}},
     {title: 'First Name', field: 'firstName'},
     {title: 'Last Name', field: 'lastName'},
     {title: 'Job Title', field: 'jobTitle'},
@@ -99,6 +102,15 @@ class UserListPage extends React.Component<UserListPageType, {}> {
     deleteUser(rowData.id)
   }
 
+  public userActions = rowData => <IconButton onClick={e => this.onDeleteHandler(e, rowData)}><FontAwesomeIcon icon='trash'/></IconButton>
+
+  public columnsAdminExtension = [
+    {title: 'Actions', field: '', render: this.userActions, cellStyle: {width: '131px'}},
+  ]
+
+
+
+
   public handleRowClick = (rowData) => {
     this.props.dispatch(push(`${USER_DETAILS}/${rowData.id}`))
   }
@@ -106,8 +118,16 @@ class UserListPage extends React.Component<UserListPageType, {}> {
   render() {
     const {
       classes,
-      users
+      users,
+      isAdmin
     } = this.props;
+
+    const columns = isAdmin
+      ? [
+        ...this.columnsDefault,
+        ...this.columnsAdminExtension
+      ]
+      : this.columnsDefault
 
     return (
       <React.Fragment>
@@ -115,26 +135,12 @@ class UserListPage extends React.Component<UserListPageType, {}> {
           users &&
 					<MaterialTable
 						title="All Users"
-						columns={this.columns}
+						columns={columns}
 						data={users.map( (user, index) => ({
               ...user,
               tableData: {id: index}
             }))}
 						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
-						actions={[
-              rowData => ({
-                icon: () => {
-                  // return <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>
-                  return <Grid>plm</Grid>
-                },
-                onClick: (e, rowData) => console.log('pula')
-              }),
-              {
-                icon: 'delete',
-                tooltip: 'Delete User',
-                onClick: (e,rowData) => {this.onDeleteHandler(e,rowData)}
-              }
-            ]}
 					/>
         }
       </React.Fragment>
@@ -144,7 +150,8 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
-    users: makeSelectFirestoreOrderedData('users')
+    users: makeSelectFirestoreOrderedData('users'),
+    isAdmin: makeSelectIsAdmin()
   })(state)
 }
 

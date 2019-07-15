@@ -189,20 +189,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                   }
                 }
               ]}
-              detailPanel={[
-                {
-                  tooltip: 'Show crew orders',
-                  render: (agent) => {
-                    console.log('agent: ', agent)
-                    return (
-                      <div style={{ overflowY: 'auto', height: '300px' }}>
-                        BLAH
-                        <div>{agent.name}</div>
-                      </div>
-                    )
-                  },
-                },
-              ]}
+
 
               components={{
                 Container: props => <Paper {...props} elevation={0}/>,
