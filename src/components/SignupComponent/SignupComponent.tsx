@@ -40,9 +40,6 @@ const SignupComponent: React.FC<SignupComponentType> = (props) => {
           name='username'
           component={FieldTextField}
           label='Username'
-          formControlProps={{
-            fullWidth: true,
-          }}
         />
         <Field
           name='password'
@@ -57,10 +54,20 @@ const SignupComponent: React.FC<SignupComponentType> = (props) => {
           type='password'
         />
         <Field
-          name='mail'
+          name='email'
           component={FieldTextField}
           label='Mail'
           type='mail'
+        />
+        <Field
+          name='firstName'
+          component={FieldTextField}
+          label='First Name'
+        />
+        <Field
+          name='lastName'
+          component={FieldTextField}
+          label='Last Name'
         />
         <Field
           name='jobTitle'

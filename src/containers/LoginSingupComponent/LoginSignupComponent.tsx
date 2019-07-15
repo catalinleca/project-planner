@@ -15,6 +15,13 @@ import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import { Field, reduxForm } from 'redux-form';
 import LoginComponent from "../../components/LoginComponent/LoginComponent";
 import SignupComponent from "../../components/SignupComponent/SignupComponent";
+import {connect} from "react-redux";
+import {IAction} from "../../utils/interfaces";
+import {doTheThingAction, SignInAction, SignUpAction} from "../../store/action";
+import {createStructuredSelector} from "reselect";
+import {makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
+import {push} from "connected-react-router";
+import {HOME_PATH} from "../../utils/constants";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -29,11 +36,16 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ILoginSignupComponentComponentProps {
+  admin?: boolean,
 }
 
 //from state
 interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps {
+  dispatch?: any;
   handleSubmit?: any;
+  signIn?: any;
+  signUp?: any;
+  isLoggedIn?: boolean;
 }
 
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -51,34 +63,95 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
   }
 
   public handleLogin = ( values ) => {
+    const {
+      signIn,
+      dispatch
+    } = this.props;
+
     console.log('handleLogin: ', values)
+    signIn(values)
+    dispatch(push(HOME_PATH))
   }
 
   public handleSignup = ( values ) => {
-    console.log('handleSingup: ', values)
+
+    const {
+      signUp,
+      dispatch,
+      admin,
+    } = this.props;
+
+    const signedUpBy =
+
+    signUp({
+      ...values,
+      isAdmin: admin
+    });
+    dispatch(push(HOME_PATH))
   }
 
   render() {
     const {
-      classes
+      classes,
+      isLoggedIn,
+      admin
     } = this.props;
 
     return (
       <Grid>
-        <Modal
-          open={false}
-        >
-          <Grid style={this.getModalStyle()} className={classes.paper}>
-            <SignupComponent
-              onHandleSubmit={this.props.handleSubmit}
-              onSubmit={this.handleSignup}
-            />
-          </Grid>
-        </Modal>
+        {/*<Grid style={this.getModalStyle()} className={classes.paper}>*/}
+        <Grid>
+          {/*<Typography>*/}
+          {/*  {*/}
+          {/*    loggingIn*/}
+          {/*      ? 'No Account? Sign up'*/}
+          {/*      : 'Go back to Log In'*/}
+          {/*  }*/}
+          {/*</Typography>*/}
+          {/*<Button*/}
+          {/*  variant='text'*/}
+          {/*  color='primary'*/}
+          {/*  onClick={this.changeComponent}*/}
+          {/*>*/}
+          {/*  {*/}
+          {/*    loggingIn*/}
+          {/*      ? 'Sign Up'*/}
+          {/*      : 'Log In'*/}
+          {/*  }*/}
+          {/*</Button>*/}
+        </Grid>
+        <Grid>
+          {
+            (!admin && !isLoggedIn)
+              ?
+              <LoginComponent
+                onHandleSubmit={this.props.handleSubmit}
+                onSubmit={this.handleLogin}
+              />
+              :
+              <SignupComponent
+                onHandleSubmit={this.props.handleSubmit}
+                onSubmit={this.handleSignup}
+              />
+          }
+        </Grid>
 
       </Grid>
     );
   }
+}
+
+const mapStateToProps = createStructuredSelector({
+  isLoggedIn: makeSelectIsLoggedIn(),
+})
+
+
+export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
+  return {
+    dispatch,
+    signIn: (creds) => { dispatch(SignInAction(creds)) },
+    signUp: (newUser) => { dispatch(SignUpAction(newUser)) }
+};
 }
 
 export default compose<React.ComponentClass<ILoginSignupComponentComponentProps>>(
@@ -86,4 +159,5 @@ export default compose<React.ComponentClass<ILoginSignupComponentComponentProps>
   reduxForm({
     form: 'loginSignupForm'
   }),
+  connect(mapStateToProps, mapDispatchToProps)
 )(LoginSignupComponent);

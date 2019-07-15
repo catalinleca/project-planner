@@ -5,7 +5,16 @@ import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
-import {makeSelectSelectedProject, makeSelectSelectedTask, makeSelectSelectedUser} from "./selectors";
+import {
+	makeSelectIsLoggedIn, makeSelectLoggedInUserId,
+	makeSelectSelectedProject,
+	makeSelectSelectedTask,
+	makeSelectSelectedUser, makeSelectUserTrackedProjects
+} from "./selectors";
+import firebase from '../base'
+import {IUser, userBase} from "../utils/interfaces/IUser/IUser";
+import {NewCredentials} from "../utils/types/types";
+import { SubmissionError } from 'redux-form'
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -18,7 +27,9 @@ export enum ActionTypes {
 	SELECT_TASK = 'SELECT_TASK',
 	SELECT_USER = 'SELECT_USER',
 	TOGGLE_TASK_DRAWER = 'TOGGLE_TASK_DRAWER',
-	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER'
+	CLOSE_TASK_DRAWER = 'CLOSE_TASK_DRAWER',
+	LOGIN_ERROR = 'LOGIN_ERROR',
+	LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 }
 //
 
@@ -52,7 +63,7 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 	// 	name: 'First Real Test Name Project',
 	// 	createdBy: 453,
 	// 	createdDate: new Date(),
-	// 	leadSource: [
+	// 	: [
 	// 		'Jimmy lead 1',
 	// 		'Jimmy lead 2',
 	// 	],
@@ -94,6 +105,8 @@ const cleanParams = (obj) => {
 	}
 }
 
+
+
 export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -103,10 +116,60 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
+export const ChangeUserCredentialsAction = ({currentPassword, newPassword, newMail}) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const checkCurrentPassword = (password) => {
+		const currentUser = firebase.auth().currentUser
+		return new Promise( (resolve, reject) => {
+			currentUser &&
+			currentUser.email &&
+			currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(currentUser.email, password))
+				.then( response => resolve(response.operationType === 'reauthenticate'))
+				.catch( err => resolve(false))
+
+		})
+	}
+
+	const changeUserPassword = (newPassword) => {
+		const user = firebase.auth().currentUser;
+		console.log('newPassword: ', newPassword)
+		user && user.updatePassword(newPassword).then( () => {
+			console.log('password updated')
+		}).catch(err => console.log(err))
+	}
+
+	const changeUserMail = (newMail, newPassword?: string) => {
+		const user = firebase.auth().currentUser;
+		console.log('newMail: ', newMail)
+		user && user.updateEmail(newMail).then( () => {
+			console.log('mail updated')
+			if (newPassword) {
+				changeUserPassword(newPassword)
+			}
+		}).catch(err => console.log(err))
+	}
+
+
+	return checkCurrentPassword(currentPassword)
+		.then((response) => {
+			console.log('response: ', response)
+			if (!response) {
+				console.log('aasd');
+				throw new SubmissionError({ currentPassword: 'Wrong Password', _error: 'Wrong Password' })
+			} else {
+				if (newPassword && !newMail) {
+					changeUserPassword(newPassword)
+				} else
+					changeUserMail(newMail, newPassword)
+			}
+		});
+}
+
 export const EditUserAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
+	const currentState = getState();
+	const selectedUserId = (makeSelectSelectedUser())(currentState)
 
 	const userRef = firestore.collection('users').doc(selectedUserId);
 
@@ -139,11 +202,8 @@ export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, ge
 	const firestore = getFirestore();
 
 	const currentState = getState();
-	// console.log('currentState: ', currentState)
-	const currentProjectState = currentState.ptReducer;
 
-	const selectedTaskId = (makeSelectSelectedTask())(currentProjectState)
-	// console.log('selectedTask: ', selectedTaskId);
+	const selectedTaskId = (makeSelectSelectedTask())(currentState)
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 
@@ -165,6 +225,37 @@ export const ChangeProjectPhaseAction = (label, projectId) => (dispatch, getStat
 		projectPhase: label
 	}, {merge: true})
 }
+
+export const TrackUntrackProjectAction = (projectId, track) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	console.log(projectId, track);
+	const firestore = getFirestore();
+
+	const projectRef = firestore.collection('projects').doc(projectId);
+
+	const setWithMerge = projectRef.set({
+		tracked: track,
+	}, {merge: true})
+
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const loggedInUserId = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
+	const userTrackedProjects: Array<string> = makeSelectUserTrackedProjects()(currentState)
+
+	/**
+	 * nu merge cu splice in loc de filter
+	 */
+	const updatedTrackedProjects = userTrackedProjects.indexOf(projectId) !== -1
+		?	userTrackedProjects.filter( item => item !== projectId)
+		:	userTrackedProjects.concat(projectId)
+
+	const userRef = firestore.collection('users').doc(loggedInUserId)
+
+	const userWithMerge = userRef.set({
+		trackedProjects: updatedTrackedProjects
+	}, {merge: true})
+}
+
 export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -196,10 +287,15 @@ export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFireba
 
 export const CreateProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
 		...projectBase,
-		...project
+		...project,
+		createdBy
 	}).then( (resp) => {
 		dispatch(SelectProjectAction(resp.id))
 	}).catch( err => {
@@ -222,7 +318,76 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 		.catch( err => console.log(err))
 }
 
+export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
 
+	console.log("in signInAction credentials: ", credentials);
+	firebase.auth().signInWithEmailAndPassword(credentials.username, credentials.password)
+		.then( function() {
+			dispatch({ type: 'LOGIN_SUCCESS'})
+		}).catch( function(err){
+			console.log(err);
+			dispatch({ type: 'LOGIN_ERROR', err})
+	})
+}
+
+export const SignOutAction = () =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	firebase.auth().signOut()
+		.then( () => {
+			console.log('SIGNED OUT SUCCESS')
+		})
+		.catch(err => console.log('SIGNED OUT FAILED: ', err))
+
+}
+
+export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	console.log("in singUpAction: newUser: ", newUser);
+	const firestore = getFirestore();
+
+	const currentState = getState();
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const signedUpBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
+	firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
+		.then((resp: any) => {
+			// when we call add firebase automatically generates another id but we dont want that,
+			// we want to use the one that was created in the first place by createUser method so instead
+			// of ' .add ' we use ' .doc ' so we reference  a specific id
+			return firestore.collection('users').doc(resp.user.uid).set({
+				...userBase,
+				...newUser,
+				signedUpBy
+			}).then( () => {
+				console.log('SIGN UP SUCCESS');
+			}).catch( err => {
+				console.log('SIGN UP ERROR: ', err);
+			})
+		})
+}
+
+export const UploadFileAction = (file) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const firestore = getFirestore()
+	const currentState = getState();
+	const loggedInUserId = makeSelectLoggedInUserId()(currentState);
+
+	const userRef = firestore.collection('users').doc(loggedInUserId);
+
+	console.log('in action: ', file);
+
+	const storageRef = firebase.storage().ref()
+	const mainImage = storageRef.child(loggedInUserId)
+	mainImage.put(file).then( snap => {
+		console.log(snap);
+		mainImage.getDownloadURL().then( url => {
+			const setWithMerge = userRef.set({
+				avatar: url,
+			}, {merge: true})
+		}).catch(err => console.log(err))
+	}).catch(err => console.log(err));
+
+	// storageRef.put(file).then(snap => console.log('Uploaded, ', snap))
+}
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,
 	payload

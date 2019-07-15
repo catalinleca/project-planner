@@ -5,15 +5,6 @@ import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
 import {createBrowserHistory} from 'history';
 import {library} from "@fortawesome/fontawesome-svg-core";
-import {
-  faTrash,
-  faInbox,
-  faEnvelope,
-  faChevronLeft,
-  faChevronRight,
-  faBars,
-  faCalendarAlt, faTasks, faUsers, faCog, faUser
-} from "@fortawesome/free-solid-svg-icons";
 import AppWrapper from "./containers/AppWrapper/AppWrapper";
 import configureStore from './store/store';
 import {reducer} from './store/reducer';
@@ -21,7 +12,12 @@ import firebase from './base';
 import userConfig from './base';
 import {createFirestoreInstance} from "redux-firestore";
 
-library.add(faUser, faCog, faTasks, faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars, faCalendarAlt, faUsers)
+// library.add(faUser, faCog, faTasks, faTrash, faInbox, faEnvelope, faChevronLeft, faChevronRight, faBars, faCalendarAlt, faUsers, faBookmark, {far})
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+
+// Add all icons to the library so you can use it in your page
+library.add(fas, far)
 
 const initialState: object = {};
 const history = createBrowserHistory({basename: '/'})
@@ -39,7 +35,7 @@ export const rrfProps = {
   firebase,
   config: userConfig,
   dispatch: store.dispatch,
-  createFirestoreInstance
+  createFirestoreInstance,
 }
 
 const app = (

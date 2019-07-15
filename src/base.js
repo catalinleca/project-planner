@@ -11,8 +11,10 @@ export const firebaseConfig = {
 };
 
 export const userConfig = {
+    enableLogging: false,
+    useFirestoreForProfile: true,
     userProfile: 'users',
-    enableLogging: false
+    attachAuthIsReady: true
 }
 
 firebase.initializeApp(firebaseConfig);

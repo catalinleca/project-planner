@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  FormControl, TextField,
+  FormControl, FormHelperText, TextField,
   Theme,
   withStyles,
   WithStyles,
@@ -54,6 +54,7 @@ const FieldTextField: React.FC<FieldTextFieldType> = (props) => {
         {...input}
         {...rest}
       />
+      <FormHelperText id='helper-text'>{touched && (error || warning)}</FormHelperText>
     </FormControl>
   );
 }

@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-  Avatar,
-  Grid, IconButton, Paper,
   Theme,
   withStyles,
   WithStyles,
@@ -13,7 +11,7 @@ import {
   compose,
 } from 'redux';
 import {connect} from "react-redux";
-// import {DeleteUserAction} from "../../store/action";
+import {DeleteProjectAction} from "../../store/action";
 import MaterialTable from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -34,14 +32,14 @@ import {firestoreConnect} from "react-redux-firebase";
 import {
   push
 } from 'connected-react-router'
-import {Link} from "react-router-dom";
-import {pick, USER_DETAILS} from "../../utils/constants";
+import {PROJECT_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectIsAdmin} from "../../store/selectors";
-import AvatarButton from "../../components/AvatarButton/AvatarButton";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
-import _ from 'lodash';
+import {
+  makeSelectFirestoreOrderedData,
+  makeSelectSelectedTask,
+  makeSelectTaskDrawerOpen, makeSelectUserTrackedProjects
+} from "../../store/selectors";
+import ProjectListPage from "../ProjectListPage/ProjectListPage";
 
 const tableIcons = {
   Add: AddBox,
@@ -71,77 +69,76 @@ const styles = (theme: Theme): StyleRules => ({
   }
 });
 
-interface IUserListPageComponentProps {
-  users: any;
-  isAdmin: boolean;
-  deleteUser(id: number): void
+interface IHomePageComponentProps {
+  projects: any;
+
+  deleteProject(id: number): void
 }
 
 //from state
-interface IUserListPageProps extends IUserListPageComponentProps {
+interface IHomePageProps extends IHomePageComponentProps {
   dispatch: any;
+  userTrackedProject: string[];
+
+  getProjects(): void;
+
   asd: any;
 }
 
-type UserListPageType = IUserListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
+type HomePageType = IHomePageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class UserListPage extends React.Component<UserListPageType, {}> {
-
-  public columnsDefault =  [
-    {title: 'Avatar', filed: 'avatar', render: rowData => <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>, cellStyle: {width: '131px'}, headerStyle: {marginLeft: '4px'}},
-    {title: 'First Name', field: 'firstName'},
-    {title: 'Last Name', field: 'lastName'},
-    {title: 'Job Title', field: 'jobTitle'},
+class HomePage extends React.Component<HomePageType, {}> {
+  private columns = [
+    {title: 'Name', field: 'name'},
+    {title: 'Project Phase', field: 'projectPhase'},
+    {title: 'Status', field: 'status'},
+    {title: 'Sprint', field: 'sprint'},
   ]
 
-  public onDeleteHandler = (e,rowData) => {
+  public getTrackedProjects = () => {
     const {
-      deleteUser
+      userTrackedProject,
+      projects
     } = this.props;
 
-    deleteUser(rowData.id)
+    console.log(userTrackedProject)
+
+    return projects.filter( project => userTrackedProject.indexOf(project.id) !== -1 ).map((project, index) => ({
+      ...project,
+      tableData: {id: index}
+    }))
   }
 
-  public userActions = rowData => <IconButton onClick={e => this.onDeleteHandler(e, rowData)}><FontAwesomeIcon icon='trash'/></IconButton>
+  public onDeleteHandler = (e, rowData) => {
+    const {
+      deleteProject
+    } = this.props;
 
-  public columnsAdminExtension = [
-    {title: 'Actions', field: '', render: this.userActions, cellStyle: {width: '131px'}},
-  ]
-
-
-
+    deleteProject(rowData.id)
+  }
 
   public handleRowClick = (rowData) => {
-    this.props.dispatch(push(`${USER_DETAILS}/${rowData.id}`))
+    this.props.dispatch(push(`${PROJECT_DETAILS}/${rowData.id}`))
   }
 
   render() {
     const {
-      classes,
-      users,
-      isAdmin
+      projects,
+      userTrackedProject
     } = this.props;
 
-    const columns = isAdmin
-      ? [
-        ...this.columnsDefault,
-        ...this.columnsAdminExtension
-      ]
-      : this.columnsDefault
+    // console.log(this.props.projects);
 
     return (
       <React.Fragment>
         {
-          users &&
-					<MaterialTable
-						title="All Users"
-						columns={columns}
-						data={users.map( (user, index) => ({
-              ...user,
-              tableData: {id: index}
-            }))}
-						onRowClick={ ( e, rowData) => { this.handleRowClick(rowData) } }
-					/>
+          projects &&
+          <ProjectListPage
+              customData={this.getTrackedProjects()}
+              customMaterialTableProps={{
+                title: 'Tracked Projects'
+              }}
+          />
         }
       </React.Fragment>
     );
@@ -150,18 +147,21 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
-    users: makeSelectFirestoreOrderedData('users'),
-    isAdmin: makeSelectIsAdmin()
-  })(state)
+    projects: makeSelectFirestoreOrderedData('projects'),
+    userTrackedProject: makeSelectUserTrackedProjects()
+  })(state);
 }
 
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
+    deleteProject: (id) => {
+      dispatch(DeleteProjectAction(id))
+    },
   };
 }
 
-export default compose<React.ComponentClass<IUserListPageComponentProps>>(
+export default compose<React.ComponentClass<IHomePageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-)(UserListPage);
+)(HomePage);

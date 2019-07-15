@@ -17,7 +17,7 @@ import {
 import {
   compose
 } from 'redux';
-import reducer, { ISpecification } from './reducer';
+import reducer, { IPtReducer } from './reducer';
 import saga from './sagas';
 
 import {
@@ -33,7 +33,7 @@ interface IAccountModuleComponentProps {
 }
 
 interface IAccountModuleProps extends IAccountModuleComponentProps {
-  reducerState: IMap<ISpecification>;
+  reducerState: IMap<IPtReducer>;
   dispatch: React.Dispatch<IAction>;
 }
 

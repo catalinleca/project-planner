@@ -1,6 +1,21 @@
+export type UserProps =
+  'id' |
+  'email' |
+  'firstName' |
+  'jobTitle' |
+  'lastName' |
+  'mobilePhone' |
+  'username' |
+  'password' |
+  'registeredDate' |
+  'isAdmin' |
+  'signedUpBy' |
+  'trackedProjects' |
+  'avatar'
+
 export interface IUser {
-  id: number;
-  email:	any;
+  id: string;
+  email: any;
   firstName: any;
   jobTitle: any;
   lastName: any;
@@ -8,12 +23,14 @@ export interface IUser {
   username: any;
   password: any;
   registeredDate: any;
-
-  tasks: any; // possible, we ll seem MMNU
+  isAdmin: boolean;
+  signedUpBy: string;
+  trackedProjects: string[]
+  avatar: string;
 }
 
 export const userBase = {
-  id: null,
+  // id: null,
   email: null,
   firstName: null,
   jobTitle: null,
@@ -22,6 +39,9 @@ export const userBase = {
   username: null,
   password: null,
   registeredDate: null,
-
-  tasks: null /// MNU
+  isAdmin: false,
+  signedUpBy: '',
+  trackedProjects: [],
+  avatar: null,
+  // hai sa facem adminul contul companiei
 }

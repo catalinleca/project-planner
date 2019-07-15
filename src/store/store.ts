@@ -9,6 +9,7 @@ import { firebaseReducer } from 'react-redux-firebase';
 import firebase from '../base';
 import thunk from 'redux-thunk';
 import { reducer as formReducer } from 'redux-form';
+import {connect} from "react-redux";
 
 
 const sagaMiddleware = createSagaMiddleware();
@@ -39,21 +40,13 @@ export type PTStore = Store & {
 //   return store;
 // }
 
-function* helloSaga(getFirebase) {
-  try {
-    yield getFirebase().push('/some/path', { nice: 'work!' })
-  } catch(err) {
-    console.log('Error in saga!:', err)
-  }
-}
-
 export default function configureStore({
   initialState = {},
   history,
 } = {} as any) {
   const middlewares = [
     sagaMiddleware,
-    thunk.withExtraArgument({ getFirestore}),
+    thunk.withExtraArgument({getFirestore}),
     routerMiddleware(history)
   ]
 
@@ -62,7 +55,6 @@ export default function configureStore({
   const enhancers = [
     applyMiddleware(...middlewares),
     reduxFirestore(firebase),
-    // reactReduxFirebase(firebase, userConfig)
   ];
 
 

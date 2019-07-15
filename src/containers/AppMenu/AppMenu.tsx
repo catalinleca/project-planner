@@ -31,7 +31,7 @@ import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {CreateProjectAction, doTheThingAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
+import {makeSelectIsLoggedIn, makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import AppNavBar from "../../components/AppNavBar/AppNavBar";
@@ -303,6 +303,7 @@ interface IAppMenuProps extends IAppMenuComponentProps{
   projects: any;
   projectTitle: any;
   menuItems: any;
+  isLoggedIn: boolean;
 }
 
 
@@ -349,7 +350,7 @@ class AppMenu extends React.Component<AppMenuProps> {
   )
 
   render() {
-    const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint } = this.props;
+    const { classes, theme, projects, projectTitle, menuItems, width: widthBreakpoint, isLoggedIn } = this.props;
 
     const {isOpen} = this.state;
     //
@@ -386,7 +387,7 @@ class AppMenu extends React.Component<AppMenuProps> {
           </List>
         </ResponsiveDrawer>
         <ResponsiveContentContainer
-          widthBreakpoint={widthBreakpoint}
+            widthBreakpoint={widthBreakpoint}
         >
           <MobileMenu
             menuOpen={isOpen}
@@ -407,15 +408,8 @@ class AppMenu extends React.Component<AppMenuProps> {
               className={classNames('footerWrapper', classes.footerWrapper)}
             >
               <div className={classes.content}>
-                { this.props.children }
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={this.buttonHandler}
-                >
-                  Gica
-                </Button>
-              </div>
+                {this.props.children}
+                </div>
             </div>
           </ContentWrapper>
         </ResponsiveContentContainer>
@@ -436,7 +430,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
-    // projects: makeSelectProjects(),
+    isLoggedIn: makeSelectIsLoggedIn(),
     // projectTitle: makeSelectProjectTitle()
   })(state)
 }

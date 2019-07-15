@@ -28,6 +28,7 @@ import {
 import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
 import {createStructuredSelector} from "reselect";
 import {makeSelectSelectedProject, makeSelectSelectedTask} from "../../store/selectors";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -38,8 +39,9 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ITaskComponentComponentProps {
-  type: any;
-  typeId: any;
+  type?: any;
+  typeId?: any;
+  tasks: ITask[];
 }
 
 //from state
@@ -70,48 +72,45 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     {title: 'Due Date', field: 'dueDate'},
   ]
 
-  private asd = [
-  ]
-
-  public getData = () => {
-    const {
-      orderedTasks,
-      // unorderedTasks
-    } = this.props;
-
-    // const john = orderedTasks.map(task => {
-    //   let item = {};
-    //   this.columns.map(columnType => {
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = task[fieldName]
-    //   })
-    //   item['id'] = task['id'];
-    //   return item;
-    // })
-
-    // console.log(typeof unorderedTasks);
-    //
-    // const keys = Object.keys(unorderedTasks)
-    //
-    // const john = keys.map(id => {
-    //   let item = {};
-    //   const task = unorderedTasks[id];
-    //   // console.log('task: ', task);
-    //   this.columns.map(columnType => {
-    //     // console.log('columnType: ', columnType);
-    //     const fieldName = columnType['field']
-    //     item[fieldName] = task[fieldName]
-    //   })
-    //   item['id'] = id;
-    //   return item;
-    // })
-    // //
-    // // console.log('-----john-----', john);
-    //
-    // // console.log(data.toJS())
-    // // return data.toJS();
-    // return john;
-  }
+  // public getData = () => {
+  //   const {
+  //     orderedTasks,
+  //     // unorderedTasks
+  //   } = this.props;
+  //
+  //   // const john = orderedTasks.map(task => {
+  //   //   let item = {};
+  //   //   this.columns.map(columnType => {
+  //   //     const fieldName = columnType['field']
+  //   //     item[fieldName] = task[fieldName]
+  //   //   })
+  //   //   item['id'] = task['id'];
+  //   //   return item;
+  //   // })
+  //
+  //   // console.log(typeof unorderedTasks);
+  //   //
+  //   // const keys = Object.keys(unorderedTasks)
+  //   //
+  //   // const john = keys.map(id => {
+  //   //   let item = {};
+  //   //   const task = unorderedTasks[id];
+  //   //   // console.log('task: ', task);
+  //   //   this.columns.map(columnType => {
+  //   //     // console.log('columnType: ', columnType);
+  //   //     const fieldName = columnType['field']
+  //   //     item[fieldName] = task[fieldName]
+  //   //   })
+  //   //   item['id'] = id;
+  //   //   return item;
+  //   // })
+  //   // //
+  //   // // console.log('-----john-----', john);
+  //   //
+  //   // // console.log(data.toJS())
+  //   // // return data.toJS();
+  //   // return john;
+  // }
 
   public onChangeTaskStatus = (taskId, status) => {
     this.props.changeTaskStatus(taskId, status);
@@ -148,39 +147,19 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
   public getTableData = () => {
     const {
-      type,
-      typeId,
+      tasks
     } = this.props;
 
-    return this.props.orderedTasks.filter( task => {
-      if (type === 'user') {
-        return task.assignedTo.id === typeId
-      }
-      if (type === 'project') {
-        return task.projectId === typeId
-      }
-    }).map( (task, index) => ({
+    return tasks.map( (task, index) => ({
       ...task,
       tableData: {id: index}
-    }))
+    }));
   }
 
   render() {
     const {
-      orderedTasks,
-      // unorderedTasks,
-      toggleTaskDrawer,
-      classes,
+      tasks,
     } = this.props
-
-    // console.log('orderedTasks: ', orderedTasks)
-    // console.log('unorderedTasks: ', unorderedTasks)
-
-    // const tableData = unorderedTasks && this.getData();
-
-    // console.log('***tableData*** ', tableData)
-    // console.log('***orderedTasks*** ', orderedTasks)
-
 
     return (
       <React.Fragment>
@@ -188,7 +167,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
           onSubmit={this.handleCreateNewTask}
         />
         {
-          orderedTasks &&
+          tasks &&
           <MaterialTable
               title="All Project Tasks"
               columns={this.columns}
@@ -210,20 +189,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                   }
                 }
               ]}
-              detailPanel={[
-                {
-                  tooltip: 'Show crew orders',
-                  render: (agent) => {
-                    console.log('agent: ', agent)
-                    return (
-                      <div style={{ overflowY: 'auto', height: '300px' }}>
-                        BLAH
-                        <div>{agent.name}</div>
-                      </div>
-                    )
-                  },
-                },
-              ]}
+
 
               components={{
                 Container: props => <Paper {...props} elevation={0}/>,
@@ -267,13 +233,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
   }
 }
 
-const mapStateToProps = (state: any) => {
-  return {
-    orderedTasks: state.firestore.ordered.tasks,
-    // unorderedTasks: state.firestore.data.tasks,
-  }
-}
-
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     changeTaskStatus: (taskId, status) => { dispatch(ChangeTaskStatusAction(taskId, status)) },
@@ -285,8 +244,5 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 export default compose<React.ComponentClass<ITaskComponentComponentProps>>(
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    {collection: 'tasks'}
-  ])
+  connect(null, mapDispatchToProps),
 )(TaskComponent);

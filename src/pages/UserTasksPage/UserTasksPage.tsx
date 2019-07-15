@@ -12,10 +12,8 @@ import {
 import {
   compose,
 } from 'redux';
-import TableRow from "@material-ui/core/TableRow";
-import TaskElement from "../../containers/TaskComponent/TaskElement/TaskElement";
-import MaterialTable from "material-table";
 import TaskComponent from "../../containers/TaskComponent/TaskComponent";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -23,6 +21,7 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface IUserTasksPageComponentProps {
   match?: any;
+  tasks?: ITask[]
 }
 
 //from state
@@ -31,19 +30,19 @@ interface IUserTasksPageProps extends IUserTasksPageComponentProps {
 
 type UserTasksPageType = IUserTasksPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-class UserTasksPage extends React.Component<UserTasksPageType, {}> {
-  render() {
-    console.log('this.props in userTaskPage: ', this.props);
-    return (
-      <Grid>
-        <TaskComponent
-          type='user'
-          typeId={this.props.match.params.id}
-        />
-      </Grid>
+const UserTasksPage: React.FC<UserTasksPageType> = props => {
+  return (
+    <Grid>
+      {props.tasks &&
+			<TaskComponent
+				type='user'
+				typeId={props.match.params.id}
+				tasks={props.tasks}
+			/>
+      }
+    </Grid>
 
-    );
-  }
+  );
 }
 
 export default compose<React.ComponentClass<IUserTasksPageComponentProps>>(

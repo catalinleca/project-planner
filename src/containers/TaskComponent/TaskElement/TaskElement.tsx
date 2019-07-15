@@ -8,7 +8,7 @@ import {
   Divider,
   withStyles,
   WithStyles,
-  Theme,
+  Theme, ListItem,
 } from '@material-ui/core';
 import {
   StyleRules
@@ -38,6 +38,8 @@ const styles = (theme: Theme): StyleRules => ({
     paddingTop: 0,
     paddingBottom: 0,
     // overflow: 'hidden',
+    marginBottom: '8px'
+
   },
   sideVerticalDivider: {
     borderLeft: 'solid',
@@ -111,11 +113,15 @@ const styles = (theme: Theme): StyleRules => ({
   bar: {
     borderLeft: '2px solid',
     paddingLeft: `${theme.spacing.unit}px`
+  },
+  taskElement: {
+    width: 'calc(100% + 8px)',
+    marginLeft: '-8px'
   }
+
 });
 
 type TaskElementProps =  WithStyles<keyof ReturnType<typeof styles>>;
-
 
 class TaskElement extends React.Component<any> {
   public state = {
@@ -175,6 +181,7 @@ class TaskElement extends React.Component<any> {
 
 
     return (
+
       <Grid
         item={true}
         // className={classNames(classes.tableRow, classes[taskStatus])}
@@ -183,94 +190,87 @@ class TaskElement extends React.Component<any> {
         direction='column'
         wrap='nowrap'
       >
-        <Grid
-          container={true}
-          direction='row'
-        >
+      <ListItem
+        button={true}
+        className={classes.taskElement}
+      >
           <Grid
             container={true}
-            item={true}
-            direction='column'
-            xs={8}
+            direction='row'
           >
             <Grid
+              container={true}
               item={true}
-              // style={{marginRight: '-8px'}}
+              direction='column'
+              xs={8}
             >
-              <ButtonBase
-                color='primary'
-                onClick={toggler}
+              <Grid
+                item={true}
+                // style={{marginRight: '-8px'}}
               >
-                <Typography variant='body2'>
-                  {task.title}
+                <ButtonBase
+                  color='primary'
+                  onClick={toggler}
+                >
+                  <Typography variant='body2'>
+                    {task.title}
+                  </Typography>
+                </ButtonBase>
+              </Grid>
+              <Grid
+                item={true}
+                container={true}
+                direction='row'
+                className={classNames(classes.noWrap, classes.marginTopBot)}
+                alignItems='center'
+              >
+                <StatusChip
+                  status={task.taskStatus}
+                  anchorEl={anchorEl}
+                  options={taskStatusValues}
+                  changeStatus={this.changeStatus}
+                  handleOpen={this.handleOpen}
+                  handleClose={this.handleClose}
+                />
+                {formatted_date}
+              </Grid>
+            </Grid>
+            <Grid
+              container={true}
+              item={true}
+              direction='column'
+              justify='space-between'
+              alignItems='flex-end'
+              xs={4}
+            >
+              <Grid
+                container={true}
+                direction='row-reverse'
+                alignItems='center'
+              >
+                <Typography
+                  inline={true}
+                  color='primary'
+                  variant='caption'
+                >
+                  {fullName}
                 </Typography>
-              </ButtonBase>
-            </Grid>
-            <Grid
-              item={true}
-              container={true}
-              direction='row'
-              className={classNames(classes.noWrap, classes.marginTopBot)}
-              alignItems='center'
-            >
-              <StatusChip
-                status={task.taskStatus}
-                anchorEl={anchorEl}
-                options={taskStatusValues}
-                changeStatus={this.changeStatus}
-                handleOpen={this.handleOpen}
-                handleClose={this.handleClose}
-              />
-              {/*<StatusChip*/}
-              {/*  status={task.get('taskStatus')}*/}
-              {/*  anchorEl={anchorEl}*/}
-              {/*  handleOpen={this.handleMenuOpen}*/}
-              {/*  handleExit={this.handleMenuExit}*/}
-              {/*  handleClose={this.handleMenuClose}*/}
-              {/*  changeStatus={this.changeStatus}*/}
-              {/*  Statuses={CriteriaStatus}*/}
-              {/*  TypographyProps={{*/}
-              {/*    variant: 'caption'*/}
-              {/*  }}*/}
-              {/*/>*/}
-              {formatted_date}
+                <Typography
+                  style={{marginRight: '4px'}}
+                  variant='caption'
+                >
+                  Assigned To:
+                </Typography>
+              </Grid>
+              {/*<Grid*/}
+              {/*  item={true}*/}
+              {/*  className={classes.avatarItems}*/}
+              {/*>*/}
+              {/*  {this.getAvatars(classes.orangeAvatar)}*/}
+              {/*</Grid>*/}
             </Grid>
           </Grid>
-          <Grid
-            container={true}
-            item={true}
-            direction='column'
-            justify='space-between'
-            alignItems='flex-end'
-            xs={4}
-          >
-            <Grid
-              container={true}
-              direction='row-reverse'
-              alignItems='center'
-            >
-              <Typography
-                inline={true}
-                color='primary'
-                variant='caption'
-              >
-                {fullName}
-              </Typography>
-              <Typography
-                style={{marginRight: '4px'}}
-                variant='caption'
-              >
-                Assigned To:
-              </Typography>
-            </Grid>
-            {/*<Grid*/}
-            {/*  item={true}*/}
-            {/*  className={classes.avatarItems}*/}
-            {/*>*/}
-            {/*  {this.getAvatars(classes.orangeAvatar)}*/}
-            {/*</Grid>*/}
-          </Grid>
-        </Grid>
+          </ListItem>
         <Divider/>
       </Grid>
     );

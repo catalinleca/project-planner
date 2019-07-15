@@ -14,16 +14,29 @@ import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import Module from "../../store/Module";
 import withWidth, { isWidthUp, isWidthDown, WithWidth } from '@material-ui/core/withWidth';
 import {
+  Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
-import {PROJECT_DETAILS, PROJECT_LIST, USER_DETAILS, USER_LIST} from "../../utils/constants";
+import {
+  ADD_USER,
+  AUTH_PATH,
+  CREATE_ADMIN_PATH,
+  HOME_PATH,
+  PROJECT_DETAILS,
+  PROJECT_LIST,
+  USER_DETAILS,
+  USER_LIST
+} from "../../utils/constants";
 import ProjectDetailsPage from '../../pages/ProjectDetailsPage/ProjectDetailsPage';
 import ProjectListPage from "../../pages/ProjectListPage/ProjectListPage";
 import CreateNewProject from "../CreateNewProject/CreateNewProject";
 import UserListPage from "../../pages/UserListPage/UserListPage";
 import UserDetailsPage from "../../pages/UserDetailsPage/UserDetailsPage";
 import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
+import {firestoreConnect} from "react-redux-firebase";
+import HomePage from "../../pages/HomePage/HomePage";
+import {userIsAuthenticated, userIsNotAuthenticated} from "../../auth/auth";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -49,12 +62,21 @@ type AppProps = IAppComponentProps & WithWidth & IAppProps & WithStyles<keyof Re
 const submit = (values) => {
   console.log(values);
 }
+
+const NotAuthenticatedLoginSignupComponent = userIsNotAuthenticated()(LoginSignupComponent);
+const AuthenticatedLoginSignupComponent = userIsAuthenticated()(LoginSignupComponent)
+const AuthenticatedProjectListPage = userIsAuthenticated()(ProjectListPage);
+const AuthenticatedHomePage = userIsAuthenticated()(HomePage);
+const AuthenticatedProjectDetailsPage = userIsAuthenticated()(ProjectDetailsPage);
+const AuthenticatedUserListPage = userIsAuthenticated()(UserListPage);
+const AuthenticatedUserDetailsPage = userIsAuthenticated()(UserDetailsPage);
+
 const App: React.FC<AppProps> = (props) => {
 
   const { width } = props;
   const menuItems = <React.Fragment>
     <CustomMenuItem
-      to='/'
+      to={HOME_PATH}
       iconProps={{icon: 'inbox'}}
       label='Home'
       width={width}
@@ -105,25 +127,29 @@ const App: React.FC<AppProps> = (props) => {
       width={width}
     />
   </React.Fragment>
+  /**
+   * Trimite mail dupa ce a schimat parola. Was that you? If not blah blah!
+   */
 
   return (
     <React.Fragment>
       <Module/>
-      <LoginSignupComponent/>
       <AppMenu
         menuItems={menuItems}
         userMenuItems={userMenuItems}
       >
         <Switch>
-          <Route path={`${PROJECT_DETAILS}/:id`} component={ProjectDetailsPage}/>
-          <Route path={PROJECT_LIST} component={ProjectListPage} exact={true}/>
-          <Route path={`${USER_DETAILS}/:id`} render={(props) => {
-            return <Route path={`${USER_DETAILS}/:id`} render={() => <UserDetailsPage width={width} {...props}/>}/>
+          <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
+          <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
+          <Route path={`${CREATE_ADMIN_PATH}`} render={(props) => <NotAuthenticatedLoginSignupComponent {...props} admin={true}/>}/>
+          <Route path={`${ADD_USER}`} render={(props) => <AuthenticatedLoginSignupComponent {...props} admin={false}/>} exact={true}/>
+          <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
+          <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
+          <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>
+          <Route path={`${USER_DETAILS}/:id`} render={(props) => <AuthenticatedUserDetailsPage width={width} {...props}/>}/>
 
-          }}/>
-          <Route path={USER_LIST} component={UserListPage} exact={true}/>
+          <Route path={USER_LIST} component={AuthenticatedUserListPage} exact={true}/>
         </Switch>
-        <CreateNewProject/>
       </AppMenu>
     </React.Fragment>
   );
@@ -132,5 +158,8 @@ const App: React.FC<AppProps> = (props) => {
 
 export default compose<React.ComponentClass<any>>(
   withWidth(),
-  withStyles(styles, {withTheme: true})
+  withStyles(styles, {withTheme: true}),
+  firestoreConnect([
+    'projects', 'tasks', 'users'
+  ])
 )(App);

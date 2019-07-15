@@ -18,16 +18,22 @@ import {
 import WidgetDetailStyle from "../../components/WidgetDetailStyle/WidgetDetailStyle";
 import TaskComponent from "../../containers/TaskComponent/TaskComponent";
 import ProjectInfoSection from "../../containers/ProjectInfoSection/ProjectInfoSection";
-import {IAction} from "../../utils/interfaces";
+import {IAction, IProject} from "../../utils/interfaces";
 import {connect} from "react-redux";
 import {SelectProjectAction} from "../../store/action";
 import {ChangeProjectPhaseAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectSelectedProject} from "../../store/selectors";
+import {
+  makeSelectFirestoreData,
+  makeSelectFirestoreOrderedData,
+  makeSelectSelectedProject
+} from "../../store/selectors";
 import {firestoreConnect} from "react-redux-firebase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {projectPhases} from "../../utils/constants";
 import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
+import {ITask} from "../../utils/interfaces/ITask/ITask";
+import DueDates from "../../containers/DueDates/DueDates";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -58,6 +64,7 @@ interface IProjectDetailsPageProps extends IProjectDetailsPageComponentProps {
   projects: any;
   changeProjectPhase: any;
   selectedProjectId: any;
+  tasks: ITask[];
 }
 
 type ProjectDetailsPageType = IProjectDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -84,11 +91,22 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
     this.handleClose();
   }
 
+  public getProjectTasks = (): ITask[] => {
+    const {
+      tasks,
+      selectedProjectId
+    } = this.props;
+
+    return tasks.filter( task => task.projectId === selectedProjectId);
+
+  }
+
   render() {
     const {
       classes,
       project,
-      selectedProjectId
+      selectedProjectId,
+      tasks
     } = this.props;
 
     const {
@@ -238,16 +256,12 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                         </Grid>
                       }
                     >
-                      <Grid
-                        container={true}
-                        direction='column'
-                      >
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                      </Grid>
+                      {
+                        tasks &&
+												<DueDates
+													tasks={this.getProjectTasks()}
+												/>
+                      }
                     </WidgetDetailStyle>
                   </Paper>
                 </Grid>
@@ -280,10 +294,13 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                         </Grid>
                       }
                     >
-                      <TaskComponent
-                        type='project'
-                        typeId={selectedProjectId}
-                      />
+                      {tasks &&
+                        <TaskComponent
+                          type='project'
+                          typeId={selectedProjectId}
+                          tasks={this.getProjectTasks()}
+                        />
+                      }
                     </WidgetDetailStyle>
                   </Paper>
                 </Grid>
@@ -296,24 +313,6 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
   }
 }
 
-export const mapStateToProps = (state: any) => {
-  // console.log(state);
-  const {
-    selectedProjectId
-  }: {
-    selectedProjectId: string
-  } =  createStructuredSelector({
-    selectedProjectId: makeSelectSelectedProject(),
-  })(state.ptReducer)
-
-  const projects = state.firestore.data.projects;
-
-  return {
-    selectedProjectId,
-    project:  projects ? projects[selectedProjectId] : null,
-  }
-}
-
 export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   const projectId = ownProps.match.params.id;
   return {
@@ -323,10 +322,31 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   };
 }
 
+export const mapStateToProps = (state: any) => {
+  // console.log(state);
+  const {
+    selectedProjectId,
+    projects,
+    tasks
+  }: {
+    selectedProjectId: string,
+    projects: IProject[],
+    tasks: ITask[],
+  } =  createStructuredSelector({
+    selectedProjectId: makeSelectSelectedProject(),
+    projects: makeSelectFirestoreData('projects'),
+    tasks: makeSelectFirestoreOrderedData('tasks')
+  })(state)
+
+
+  return {
+    selectedProjectId,
+    project:  projects ? projects[selectedProjectId] : null,
+    tasks
+  }
+}
+
 export default compose<React.ComponentClass<IProjectDetailsPageComponentProps>>(
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([
-    { collection: 'projects'}
-  ])
 )(ProjectDetailsPage);

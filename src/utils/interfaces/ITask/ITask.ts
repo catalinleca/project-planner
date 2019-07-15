@@ -1,4 +1,5 @@
 import {TaskStatus} from "../../types/types";
+import {IUser} from "../IUser/IUser";
 
 export interface ITask {
   id: string;
@@ -12,7 +13,7 @@ export interface ITask {
   taskStatus: TaskStatus;
   projectName: string;
   projectId: string;
-  assignedTo: string; //userId
+  assignedTo: Partial<IUser>; //userId
 }
 
 /**

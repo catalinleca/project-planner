@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button, Divider,
-  Grid, Paper,
+  Grid, IconButton, Paper,
   Theme, Typography,
   withStyles,
   WithStyles,
@@ -16,8 +16,19 @@ import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../components/FieldTextField/FieldTextField";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {selectReducerState} from "../../store/selectors";
+import {
+  makeSelectDataById,
+  makeSelectFirestoreOrderedData,
+  makeSelectIsAdmin, makeSelectLoggedInUserId,
+  selectReducerState
+} from "../../store/selectors";
 import {IAction} from "../../utils/interfaces";
+import {IUser} from "../../utils/interfaces/IUser/IUser";
+import {firestoreConnect} from "react-redux-firebase";
+import DisplayEdit from "../../components/DisplayEdit/DisplayEdit";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
+import {push} from "connected-react-router";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -39,6 +50,10 @@ interface IUserProfilePageProps extends IUserProfilePageComponentProps {
   handleSubmit: any;
   initialize: any;
   user: any
+  isAdmin: boolean,
+  loggedInUserId: string,
+  currentUserId: string
+  dispatch: any
 }
 
 type UserProfilePageType = IUserProfilePageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -61,6 +76,14 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
     this.props.initialize(initData);
   }
 
+  public handleEditMail = () => {
+    const {
+      loggedInUserId
+    } = this.props;
+
+    this.props.dispatch(push(`${USER_DETAILS}/${loggedInUserId}/settings`))
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.user !== this.props.user) {
       this.handleInitialize()
@@ -75,12 +98,32 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
     const {
       classes,
       handleSubmit,
-      user
+      user,
+      isAdmin,
+      loggedInUserId,
+      currentUserId
     } = this.props;
 
-    console.log('user: ', user && user)
 
+    const isOwnProps = currentUserId === loggedInUserId;
+
+    const readOnlyProps = !isAdmin && !isOwnProps && {
+      variant: 'outlined',
+      InputProps: {
+        readOnly: true
+      }
+    }
     const fullname = user && [user.firstName, user.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
+
+    const changeMail = isOwnProps && (
+      <IconButton
+        onClick={this.handleEditMail}
+      >
+        <FontAwesomeIcon
+          icon='pen'
+        />
+      </IconButton>
+    )
     return (
       <Grid
         container={true}
@@ -141,6 +184,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    {...readOnlyProps}
                   />
                 </Grid>
                 <Grid item={true} xs={12} md={5}>
@@ -151,6 +195,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                     formControlProps={{
                       fullWidth: true,
                     }}
+                    {...readOnlyProps}
                   />
                 </Grid>
               </Grid>
@@ -162,6 +207,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -169,8 +215,15 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   name='email'
                   component={FieldTextField}
                   label='Email'
+                  variant='outlined'
                   formControlProps={{
                     fullWidth: true,
+                  }}
+                  inputProps={{
+                    readOnly: true
+                  }}
+                  InputProps={{
+                    endAdornment: changeMail
                   }}
                 />
               </Grid>
@@ -182,6 +235,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem} style={{width: '100%'}}>
@@ -192,6 +246,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                   formControlProps={{
                     fullWidth: true,
                   }}
+                  {...readOnlyProps}
                 />
               </Grid>
               <Grid item={true} className={classes.profileItem}>
@@ -214,12 +269,36 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
 
 const mapStateToProps = (state: any, ownProps) => {
   const currentUserId = ownProps.match.params.id;
+
+  // doesn't use ownProps so technically there is no need for memoization
+  // if the arguments do not change then the function will return the previous value
+  // the argument is the state, that means each time the selector is called, that state is changed
+  // because otherwise mapStateToProps wouldn't have been called in the first place, but but but,
+  // if memoization keeps only the last value then, YES indeed there is no need for memoization
+  //, but if the memoization will do it's job for all the values that the function was called in the past
+  // then, considering the change of rerunning the selector with the same state values again will lead
+  // to increase performance because of the memoization
+
+  const {
+    user,
+    isAdmin,
+    loggedInUserId,
+  } =  createStructuredSelector({
+    user: makeSelectDataById('users', currentUserId),
+    isAdmin: makeSelectIsAdmin(),
+    loggedInUserId: makeSelectLoggedInUserId(),
+  })(state);
+
   return {
-    user: state.firestore.data.users && state.firestore.data.users[currentUserId]
+    user,
+    isAdmin,
+    loggedInUserId,
+    currentUserId
   }
+
 };
 
-export function mapDispatchToProps(dispatch: React.Dispatch<IAction>) {
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
   };
@@ -230,5 +309,5 @@ export default compose<React.ComponentClass<IUserProfilePageComponentProps>>(
     form: 'userProfilePage'
   }),
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
 )(UserProfilePage);
