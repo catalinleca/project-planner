@@ -33,6 +33,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {projectPhases} from "../../utils/constants";
 import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
 import {ITask} from "../../utils/interfaces/ITask/ITask";
+import DueDates from "../../containers/DueDates/DueDates";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -255,16 +256,12 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                         </Grid>
                       }
                     >
-                      <Grid
-                        container={true}
-                        direction='column'
-                      >
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                        <Grid>PLT</Grid>
-                      </Grid>
+                      {
+                        tasks &&
+												<DueDates
+													tasks={this.getProjectTasks()}
+												/>
+                      }
                     </WidgetDetailStyle>
                   </Paper>
                 </Grid>
