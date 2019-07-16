@@ -468,7 +468,10 @@ class AppMenu extends React.Component<AppMenuProps> {
           >
             {logo}
           </AppBar>
-          <List>
+          <List
+            style={{
+            }}
+          >
             {showMenuItems}
           </List>
         </ResponsiveDrawer>

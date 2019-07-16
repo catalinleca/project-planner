@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Theme,
+  Theme, Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -32,7 +32,7 @@ import {firestoreConnect} from "react-redux-firebase";
 import {
   push
 } from 'connected-react-router'
-import {PROJECT_DETAILS} from "../../utils/constants";
+import {formatStringDate, PROJECT_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
 import {
   makeSelectFirestoreOrderedData,
@@ -47,6 +47,7 @@ import {
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import CreateNewProject from "../../containers/CreateNewProject/CreateNewProject";
 import AppMenu from "../../containers/AppMenu/AppMenu";
+import DueDateComponent from "../../components/DueDateComponent/DueDateComponent";
 
 const tableIcons = {
   Add: AddBox,
@@ -101,7 +102,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
-    {title: 'Status', field: 'status'},
+    {title: 'Due Date', field: 'dueDate', render: rowData => <DueDateComponent dateAsString={rowData.dueDate} type='project'/>},
     {title: 'Sprint', field: 'sprint'},
   ]
 
@@ -147,7 +148,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     this.props.dispatch(push(`${PROJECT_DETAILS}/${rowData.id}`))
   }
 
-  public iconStyle = (rowData) => {
+  public getIconStyle = (rowData) => {
     return rowData.tracked
       ? 'fas'
       : 'far'
@@ -198,7 +199,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
             actions={[
               rowData => ({
                 icon: () => <FontAwesomeIcon
-                  icon={[this.iconStyle(rowData), 'bookmark']}
+                  icon={[this.getIconStyle(rowData), 'bookmark']}
                 />,
                 tooltip: this.tooltip(rowData),
                 onClick: (e, rowData) => this.trackUntrack(rowData)

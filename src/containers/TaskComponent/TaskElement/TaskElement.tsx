@@ -30,6 +30,7 @@ import StatusChip from "../../../components/StatusChip/StatusChip";
 import {TaskStatus} from "../../../utils/types/types";
 import classnames from 'classnames';
 import {taskStatusValues} from "../../../utils/constants";
+import DueDateComponent from "../../../components/DueDateComponent/DueDateComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -232,7 +233,10 @@ class TaskElement extends React.Component<any> {
                   handleOpen={this.handleOpen}
                   handleClose={this.handleClose}
                 />
-                {formatted_date}
+                <DueDateComponent
+                  dateAsString={task.dueDate}
+                  type='task'
+                />
               </Grid>
             </Grid>
             <Grid
