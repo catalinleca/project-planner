@@ -35,7 +35,9 @@ import {makeSelectIsLoggedIn, makeSelectProjects, makeSelectProjectTitle} from "
 import { default as styledj } from 'styled-jss';
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import AppNavBar from "../../components/AppNavBar/AppNavBar";
-
+import blueLogo from '../../images/blueLogo.svg';
+import whitePlaneNoBackground from '../../images/whitePlaneNoBackground.svg';
+import whiteText from '../../images/whiteText.svg';
 const drawerWidth = 240;
 
 
@@ -114,22 +116,21 @@ const styles = (theme: Theme): StyleRules => ({
     overflow: 'hidden;',
     flex: '1 0 0px',
   },
-
-
-
   flex: {
     flex: 1,
   },
   hideMobile: {
+    height: '100%',
     transition: `all ${ANIMATION_SPEED}s`,
-    opacity: 1,
+    opacity: 0,
     [theme.breakpoints.up('md')]: {
-      opacity: 0,
+      opacity: 1,
     },
   },
   showMobile: {
+    height: '100%',
     transition: `all ${ANIMATION_SPEED}s`,
-    opacity: 0,
+    opacity: 1,
     [theme.breakpoints.up('md')]: {
       opacity: 1,
     },
@@ -165,6 +166,22 @@ const styles = (theme: Theme): StyleRules => ({
     width: '100%',
     bottom: 0,
   },
+  screenLogo: {
+    height: '100%',
+    // margin: 'auto',
+    width: 'calc(100% - 24px)',
+    objectFit: 'cover',
+  },
+  mobileLogo: {
+    height: '64px',
+    width: '100%',
+    objectFit: 'cover'
+  },
+  logoContainer: {
+    marginLeft: '8px',
+    paddingRight: '8px',
+    overflow: 'hidden'
+  }
 });
 
 export const HEADER_HEIGHT_UNIT_MULTIPLIER = 7;
@@ -356,6 +373,66 @@ class AppMenu extends React.Component<AppMenuProps> {
     //
     // console.log('projects: ', projects);
     // console.log('projectTitle: ', projectTitle);
+
+    // const logo = (
+    //   <div
+    //     className={classes.showMobile}
+    //   >
+    //     <img
+    //       src={blueLogo}
+    //       alt="logo"
+    //       className={classes.screenLogo}
+    //     />
+    //   </div>
+    // )
+    //
+    // const plane = (
+    //   <div
+    //     className={classes.hideMobile}
+    //   >
+    //     <img
+    //       src={bluePlane}
+    //       alt="logo"
+    //       className={classes.mobileLogo}
+    //     />
+    //   </div>
+    // )
+
+    const logo = (
+      <Grid
+        container={true}
+        direction='row'
+        alignItems='center'
+        className={classes.logoContainer}
+      >
+        <Grid
+          item={true}
+          xs={8}
+          md={3}
+          className={classes.showMobile}
+        >
+          <img
+            src={whitePlaneNoBackground}
+            alt="asd"
+            className={classes.mobileLogo}
+          />
+        </Grid>
+        <Grid
+          item={true}
+          xs={9}
+          className={classes.hideMobile}
+        >
+          <img
+            src={whiteText}
+            alt="dsa"
+            className={classes.mobileLogo}
+
+          />
+        </Grid>
+      </Grid>
+    )
+
+    const showMenuItems = isLoggedIn && menuItems
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -382,8 +459,17 @@ class AppMenu extends React.Component<AppMenuProps> {
           }}
           anchor='left'
         >
+          <AppBar
+            position='static'
+            color='primary'
+            style={{
+              height: '64px',
+            }}
+          >
+            {logo}
+          </AppBar>
           <List>
-            {menuItems}
+            {showMenuItems}
           </List>
         </ResponsiveDrawer>
         <ResponsiveContentContainer
@@ -397,7 +483,7 @@ class AppMenu extends React.Component<AppMenuProps> {
             }}
           >
             <List>
-              {menuItems}
+              {showMenuItems}
             </List>
           </MobileMenu>
           <ContentWrapper

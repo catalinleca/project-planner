@@ -37,7 +37,7 @@ export const ANIMATION_SPEED = 0.5;
 const styles = (theme: Theme): StyleRules => ({
   menuItem: {
     justifyContent: 'center',
-    height: theme.spacing.unit * 6,
+    height: theme.spacing.unit * 8,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit,
   },

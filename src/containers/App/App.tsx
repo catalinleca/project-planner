@@ -37,6 +37,7 @@ import LoginSignupComponent from "../LoginSingupComponent/LoginSignupComponent";
 import {firestoreConnect} from "react-redux-firebase";
 import HomePage from "../../pages/HomePage/HomePage";
 import {userIsAuthenticated, userIsNotAuthenticated} from "../../auth/auth";
+import {connect} from "react-redux";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
@@ -101,32 +102,6 @@ const App: React.FC<AppProps> = (props) => {
     />
   </React.Fragment>
 
-  const userMenuItems = <React.Fragment>
-    <CustomMenuItem
-      to='/'
-      iconProps={{icon: 'inbox'}}
-      label='Home'
-      width={width}
-    />
-    <CustomMenuItem
-      to={PROJECT_LIST}
-      iconProps={{icon: 'envelope'}}
-      label='Projects'
-      width={width}
-    />
-    <CustomMenuItem
-      to={USER_LIST}
-      iconProps={{icon: 'users'}}
-      label='Users'
-      width={width}
-    />
-    <CustomMenuItem
-      to={PROJECT_DETAILS}
-      iconProps={{icon: 'bars'}}
-      label='Project Details'
-      width={width}
-    />
-  </React.Fragment>
   /**
    * Trimite mail dupa ce a schimat parola. Was that you? If not blah blah!
    */
@@ -136,7 +111,6 @@ const App: React.FC<AppProps> = (props) => {
       <Module/>
       <AppMenu
         menuItems={menuItems}
-        userMenuItems={userMenuItems}
       >
         <Switch>
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
@@ -155,11 +129,10 @@ const App: React.FC<AppProps> = (props) => {
   );
 }
 
-
 export default compose<React.ComponentClass<any>>(
   withWidth(),
   withStyles(styles, {withTheme: true}),
   firestoreConnect([
     'projects', 'tasks', 'users'
-  ])
+  ]),
 )(App);
