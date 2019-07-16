@@ -44,7 +44,7 @@ class DueDates extends React.Component<DueDatesType, {}> {
     const sortedTasks = tasks.sort( (a, b) => {
       const date1 = new Date(a.dueDate).getTime();
       const date2 = new Date(b.dueDate).getTime();
-      return date2 - date1;
+      return date1 - date2;
     })
 
     console.log('sorted: ', sortedTasks);

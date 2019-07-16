@@ -29,6 +29,7 @@ import TaskDrawer from "../../components/TaskDrawer/TaskDrawer";
 import {createStructuredSelector} from "reselect";
 import {makeSelectSelectedProject, makeSelectSelectedTask} from "../../store/selectors";
 import {ITask} from "../../utils/interfaces/ITask/ITask";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -137,6 +138,16 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     toggleTaskDrawer();
   }
 
+  public onClickCreateNewTask = () => {
+    const {
+      toggleTaskDrawer,
+      selectTask,
+    } = this.props;
+
+    selectTask();
+    toggleTaskDrawer()
+  }
+
   public handleCreateNewTask = (values) => {
     console.log('create new task values: ', values);
     this.props.editTask({
@@ -174,19 +185,10 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
               data={this.getTableData()}
               actions={[
                 {
-                  icon: 'bookmark',
-                  tooltip: 'Save Project',
-                  onClick: (e, rowData) => {
-                    console.log(rowData);
-                  }
-                },
-                {
-                  icon: 'delete',
-                  tooltip: 'Delete Project',
-                  onClick: (e, rowData) => {
-                    // this.onDeleteHandler(e, rowData)
-                    console.log('sug pl iesi aks');
-                  }
+                  icon: () => <FontAwesomeIcon icon='plus'/>,
+                  tooltip: 'Add Task',
+                  onClick: this.onClickCreateNewTask,
+                  isFreeAction: true
                 }
               ]}
 

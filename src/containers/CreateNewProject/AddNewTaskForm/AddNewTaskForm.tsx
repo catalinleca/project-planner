@@ -16,6 +16,10 @@ import {Field, reduxForm, InjectedFormProps} from 'redux-form'
 import FieldTextField from "../../../components/FieldTextField/FieldTextField";
 import FieldReactSelect from "../../../components/FieldReactSelect/FieldReactSelect";
 import FieldDatePicker from "../../../components/FieldDatePicker/FieldDatePicker";
+import {connect} from "react-redux";
+import {AddTaskToProjectAction, CreateProjectAction} from "../../../store/action";
+import {createStructuredSelector} from "reselect";
+import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../../store/selectors";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -26,6 +30,8 @@ interface IAddNewTaskFormComponentProps {
   users?: any;
   handleSelectChange?: any;
   onSubmit?: any;
+  addTaskToProject?: any
+  selectedProjectId?: any
 }
 
 //from state
@@ -42,8 +48,30 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     users,
     handleSelectChange
   } = props;
+
+  const onSubmit = (taskData) => {
+    const {
+      addTaskToProject,
+      selectedProjectId
+    } = props;
+
+    const newTaskData = {
+      ...taskData,
+      dueDate: taskData.dueDate
+        ? new Date(taskData.dueDate).toString()
+        : null,
+      assignedTo: {
+        id: taskData.assignedTo.id,
+        firstName: taskData.assignedTo.firstName,
+        lastName: taskData.assignedTo.lastName
+      },
+    }
+    console.log('newTaskData: ', newTaskData);
+    addTaskToProject(newTaskData, selectedProjectId);
+  }
+
   return (
-    <form onSubmit={props.handleSubmit}>
+    <form onSubmit={props.handleSubmit(onSubmit)}>
       <Grid
         container={true}
         direction='column'
@@ -93,8 +121,25 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
   );
 }
 
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
+  return {
+    createProject: (project) => {
+      dispatch(CreateProjectAction(project))
+    },
+    addTaskToProject: (task, projectId) => {
+      dispatch(AddTaskToProjectAction(task, projectId))
+    },
+  };
+}
+
+const mapStateToProps = createStructuredSelector({
+  selectedProjectId: makeSelectSelectedProject(),
+  users: makeSelectFirestoreOrderedData('users')
+})
+
 export default compose<React.ComponentClass<IAddNewTaskFormComponentProps>>(
   withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps),
   reduxForm({
     form: 'createNewTask'
   }),

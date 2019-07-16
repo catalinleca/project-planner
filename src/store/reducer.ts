@@ -38,7 +38,7 @@ export const reducer = (state: IMap<IPtReducer> = INITIAL_STATE, action: any) =>
       return state.set('selectedProject', action.payload);
 
     case ActionTypes.SELECT_TASK:
-      return state.set('selectedTask', fromJS(action.payload));
+      return state.set('selectedTask', fromJS(action.payload) || '');
 
     case ActionTypes.SELECT_USER:
       return state.set('selectedUser', action.payload);

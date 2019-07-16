@@ -226,7 +226,6 @@ const mapStateToProps = createStructuredSelector({
 })
 
 export default compose<React.ComponentClass<ICreateNewProjectComponentProps>>(
-
   connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles)
 )(CreateNewProject);

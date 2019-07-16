@@ -6,7 +6,7 @@ import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
 import {
-	makeSelectIsLoggedIn, makeSelectLoggedInUserId,
+	makeSelectIsLoggedIn, makeSelectLoggedInUserId, makeSelectProjectTitle,
 	makeSelectSelectedProject,
 	makeSelectSelectedTask,
 	makeSelectSelectedUser, makeSelectUserTrackedProjects
@@ -259,10 +259,16 @@ export const TrackUntrackProjectAction = (projectId, track) => (dispatch, getSta
 export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
+	const currentState = getState()
+
+	// const projectName = makeSelectProjectTitle()(currentState)
+
 	firestore.collection('tasks').add({
 		createdDate: new Date().toString,
 		...taskBase,
 		...task,
+		projectId,
+		// projectName
 	}).then( (resp) => {
 		console.log(resp);
 	}).catch( err => {

@@ -39,6 +39,7 @@ import StatusChip from "../StatusChip/StatusChip";
 import {taskStatusValues} from "../../utils/constants";
 import FieldReactSelect from "../FieldReactSelect/FieldReactSelect";
 import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
+import AddNewTaskForm from "../../containers/CreateNewProject/AddNewTaskForm/AddNewTaskForm";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -228,7 +229,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       >
 
         {
-          task &&
+          task ?
           <form onSubmit={this.props.handleSubmit}>
 
             <AppBar position="static" color="primary">
@@ -358,6 +359,9 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
             </Button>
 
           </form>
+            : <AddNewTaskForm
+                users={users}
+            />
         }
       </Drawer>
     );
