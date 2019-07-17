@@ -88,7 +88,24 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   public state = {
     edit: false,
     projectAnchorEl: null,
-    taskStatusAnchorEl: null
+    taskStatusAnchorEl: null,
+    pictures: []
+  }
+
+  public handlePictureChange = (e) => {
+    this.setState({
+      pictures: [
+        ...this.state.pictures,
+        ...e.target.files
+      ]
+    })
+  }
+
+  public removePictureItem = (index) => {
+    const newPictures = [...this.state.pictures]
+    newPictures.splice(index, 1);
+
+    this.setState({pictures: newPictures})
   }
 
   public handleClick = () => {
@@ -236,9 +253,11 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
             justify: 'space-around',
             alignItems: 'center'
           }}
+          handlePictureChange={this.handlePictureChange}
+          removePictureItem={this.removePictureItem}
+          pictures={this.state.pictures}
         />
       </React.Fragment>
-
     )
 
     return (

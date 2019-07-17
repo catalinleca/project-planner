@@ -37,7 +37,7 @@ export const selectPtReducerState = () => createSelector(
   (state: any) => state.ptReducer || Map()
 )
 
-export const makeSelectProjects = () => createSelector(
+export const makeSelectProjectById = (projectId) => createSelector(
   selectReducerState(),
   (state: any) => {
     return state.get('projects')  || OrderedSet<number>();
@@ -51,10 +51,10 @@ export const makeSelectTaskDrawerOpen = () => createSelector(
   }
 );
 
-export const makeSelectProjectTitle = () => createSelector(
-  makeSelectProjects(),
+export const makeSelectProjectTitle = (projectId) => createSelector(
+  makeSelectProjectById(projectId),
   (projects: any) => {
-    return projects.get('projectTitle');
+    return projects.getIn('projectTitle');
   }
 );
 

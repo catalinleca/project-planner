@@ -36,7 +36,7 @@ type UploadPictureType = IUploadPictureProps & WithStyles<keyof ReturnType<typeo
 const UploadPicture: React.FC<UploadPictureType> = ({onFilesDrop, label, classes, input}) => {
   // don t forget to take the meta as well
 
-  const formProps = (input) => {
+  const getFormProps = (input) => {
     if (!input) {
       return
     }
@@ -59,7 +59,7 @@ const UploadPicture: React.FC<UploadPictureType> = ({onFilesDrop, label, classes
         {({getRootProps, getInputProps}) => (
           <section>
             <div {...getRootProps()}>
-              <input {...getInputProps()} {...formProps(input)} />
+              <input {...getInputProps()} {...getFormProps(input)} />
               {
                 React.isValidElement(label)
                   ? label

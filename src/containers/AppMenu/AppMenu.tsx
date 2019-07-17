@@ -31,7 +31,7 @@ import {StyleRules} from "@material-ui/core/styles";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import {CreateProjectAction, doTheThingAction, FirstAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectIsLoggedIn, makeSelectProjects, makeSelectProjectTitle} from "../../store/selectors";
+import {makeSelectIsLoggedIn, makeSelectProjectTitle} from "../../store/selectors";
 import { default as styledj } from 'styled-jss';
 import CustomMenuItem from "../../components/CustomMenuItem/CustomMenuItem";
 import AppNavBar from "../../components/AppNavBar/AppNavBar";

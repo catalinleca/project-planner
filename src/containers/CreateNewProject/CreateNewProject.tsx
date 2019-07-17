@@ -23,7 +23,7 @@ import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
 import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectProjects, makeSelectSelectedProject} from "../../store/selectors";
+import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../store/selectors";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},

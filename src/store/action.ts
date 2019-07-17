@@ -6,6 +6,7 @@ import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {PROJECT_DETAILS} from "../utils/constants";
 import {
+	makeSelectDataById,
 	makeSelectIsLoggedIn, makeSelectLoggedInUserId, makeSelectProjectTitle,
 	makeSelectSelectedProject,
 	makeSelectSelectedTask,
@@ -15,6 +16,7 @@ import firebase from '../base'
 import {IUser, userBase} from "../utils/interfaces/IUser/IUser";
 import {NewCredentials} from "../utils/types/types";
 import { SubmissionError } from 'redux-form'
+import {Simulate} from "react-dom/test-utils";
 
 export enum ActionTypes {
 	FIRST_ACTION = 'FIRST_ACTION',
@@ -261,19 +263,55 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 	const currentState = getState()
 
+	const uploadImageAsPromise = (picture) => {
+		return new Promise( (resolve, reject) => {
+			const storageRef = firebase.storage().ref().child(`${task.title}${picture.name}`)
+			storageRef.put(picture).then( snap => {
+				storageRef.getDownloadURL().then( url => resolve(url))
+			})
+		})
+	}
+
+	// Promise.all( task.pictures.map( picture => uploadImageAsPromise(picture)))
+	// 	.then( values => console.log('values: ', values))
+
+	const addTask = async () => {
+		const values = await Promise.all( task.pictures.map( picture => uploadImageAsPromise(picture)))
+		console.log('values: ', values);
+
+		const projectName = (makeSelectDataById('projects', projectId)(currentState)).name
+
+		console.log(projectName);
+
+		firestore.collection('tasks').add({
+			createdDate: new Date().toString,
+			...taskBase,
+			...task,
+			projectId,
+			projectName,
+			pictures: [...values],
+		}).then( (resp) => {
+			console.log(resp);
+		}).catch( err => {
+			console.log(err);
+		})
+	}
+
+	addTask()
+
 	// const projectName = makeSelectProjectTitle()(currentState)
 
-	firestore.collection('tasks').add({
-		createdDate: new Date().toString,
-		...taskBase,
-		...task,
-		projectId,
-		// projectName
-	}).then( (resp) => {
-		console.log(resp);
-	}).catch( err => {
-		console.log(err);
-	})
+	// firestore.collection('tasks').add({
+	// 	createdDate: new Date().toString,
+	// 	...taskBase,
+	// 	...task,
+	// 	projectId,
+	// 	// projectName
+	// }).then( (resp) => {
+	// 	console.log(resp);
+	// }).catch( err => {
+	// 	console.log(err);
+	// })
 
 	// let projectsRef = firestore.collection('projects').doc(projectId)
 	//

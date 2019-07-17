@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button,
-  Grid,
+  Grid, IconButton,
   Theme, Typography,
   withStyles,
   WithStyles,
@@ -24,9 +24,13 @@ import TaskPictures from "../../../components/TaskPictures/TaskPictures";
 import UploadPicture from "../../../components/UploadPicture/UploadPicture";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Dropzone from "react-dropzone";
+import ModalImage from "../../../components/ModalImage/ModalImage";
 
 const styles = (theme: Theme): StyleRules => ({
-  root: {}
+  root: {},
+  pictureItem: {
+    marginRight: '8px'
+  }
 });
 
 interface IAddNewTaskFormComponentProps {
@@ -37,6 +41,9 @@ interface IAddNewTaskFormComponentProps {
   addTaskToProject?: any
   selectedProjectId?: any
   gridProps?: any;
+  handlePictureChange?: any;
+  removePictureItem?: any;
+  pictures?: any;
 }
 
 //from state
@@ -55,6 +62,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     gridProps
   } = props;
 
+  console.log('pictures: ', props.pictures);
   const onSubmit = (taskData) => {
     const {
       addTaskToProject,
@@ -62,41 +70,20 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     } = props;
 
     console.log('taskData: ', taskData);
-    // const newTaskData = {
-    //   ...taskData,
-    //   dueDate: taskData.dueDate
-    //     ? new Date(taskData.dueDate).toString()
-    //     : null,
-    //   assignedTo: {
-    //     id: taskData.assignedTo.id,
-    //     firstName: taskData.assignedTo.firstName,
-    //     lastName: taskData.assignedTo.lastName
-    //   },
-    // }
-    // console.log('newTaskData: ', newTaskData);
-    // addTaskToProject(newTaskData, selectedProjectId);
-  }
-
-  const adaptFileEventToValue = delegate => e => delegate(e.target.files);
-
-  const FileInput = ({
-    input: { value: omitValue, onChange, onBlur, ...inputProps },
-    meta: omitMeta,
-    onFilesDrop,
-    ...props
-  }) => {
-    return (
-        <Dropzone onDrop={onFilesDrop}>
-          {({getRootProps, getInputProps}) => (
-            <section>
-              <div {...getRootProps()}>
-                <input type="file" {...getInputProps()} onChange={adaptFileEventToValue(onChange)} onBlur={adaptFileEventToValue(onBlur)}/>
-                <p>iesi acasa</p>
-              </div>
-            </section>
-          )}
-        </Dropzone>
-    );
+    const newTaskData = {
+      ...taskData,
+      dueDate: taskData.dueDate
+        ? new Date(taskData.dueDate).toString()
+        : null,
+      assignedTo: {
+        id: taskData.assignedTo.id,
+        firstName: taskData.assignedTo.firstName,
+        lastName: taskData.assignedTo.lastName
+      },
+      pictures: [...props.pictures]
+    }
+    console.log('newTaskData: ', newTaskData);
+    addTaskToProject(newTaskData, selectedProjectId);
   }
 
   return (
@@ -162,12 +149,54 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
             fullWidth: true
           }}
         />
-        <Field
-          name='pictures'
-          component={UploadPicture}
-          label='Daca merge ma cac'
-          type='file'
-        />
+        <Grid>
+          <Grid
+            container={true}
+            direction='row'
+            alignItems='center'
+            style={{width: '100%'}}
+          >
+            {props.pictures.map( (value, index) => {
+              console.log(value.name);
+              return (
+                <Grid
+                  item={true}
+                  key={`${index}${value}`}
+                >
+
+                <Grid
+                  container={true}
+                  direction='column'
+                  justify='center'
+                  alignItems='center'
+                  className={props.classes.pictureItem}
+                >
+                  <IconButton
+                    onClick={(index) => props.removePictureItem(index)}
+                  >
+                    <FontAwesomeIcon
+                      icon='times'
+                      size='xs'
+                    />
+                  </IconButton>
+                  <ModalImage
+                    picture={value}
+                  />
+                </Grid>
+                </Grid>
+
+              )
+            })}
+
+          </Grid>
+          <Field
+            name='pictures'
+            component={UploadPicture}
+            label='Daca merge ma cac'
+            type='file'
+            onChange={props.handlePictureChange}
+          />
+        </Grid>
       </Grid>
       </Grid>
 

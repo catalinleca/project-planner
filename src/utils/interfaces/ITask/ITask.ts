@@ -14,6 +14,7 @@ export interface ITask {
   projectName: string;
   projectId: string;
   assignedTo: Partial<IUser>; //userId
+  pictures: any[];
 }
 
 /**
@@ -42,6 +43,7 @@ export const taskBase = {
   taskStatus: 'toDo',
   projectId: null,
   projectName: null,
+  pictures: []
 }
 
 /**
