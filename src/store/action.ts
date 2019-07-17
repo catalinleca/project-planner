@@ -4,7 +4,7 @@ import {getFirestore} from "redux-firestore";
 import { projectBase } from "../utils/interfaces";
 import {taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
-import {PROJECT_DETAILS} from "../utils/constants";
+import {formatStringDate, PROJECT_DETAILS} from "../utils/constants";
 import {
 	makeSelectDataById,
 	makeSelectIsLoggedIn, makeSelectLoggedInUserId, makeSelectProjectTitle,
@@ -263,6 +263,11 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 	const currentState = getState()
 
+	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
+	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+
+	const createdDate = new Date().toString()
+
 	const uploadImageAsPromise = (picture) => {
 		return new Promise( (resolve, reject) => {
 			const storageRef = firebase.storage().ref().child(`${task.title}${picture.name}`)
@@ -281,14 +286,15 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 		const projectName = (makeSelectDataById('projects', projectId)(currentState)).name
 
-		console.log(projectName);
+		console.log(createdDate);
 
 		firestore.collection('tasks').add({
-			createdDate: new Date().toString,
 			...taskBase,
 			...task,
+			createdDate,
 			projectId,
 			projectName,
+			createdBy,
 			pictures: [...values],
 		}).then( (resp) => {
 			console.log(resp);
