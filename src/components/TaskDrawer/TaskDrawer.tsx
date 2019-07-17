@@ -341,7 +341,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           paper: classes.container
         }}
       >
-
         {
           task ?
           <form onSubmit={this.props.handleSubmit}>
@@ -393,9 +392,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                   direction='column'
                   alignItems='flex-start'
                 >
-                  <WithLabel
-                    label='Assigned To'
-                  >
+                  <WithLabel label='Assigned To'>
                     <DisplayEdit
                       edit={edit}
                       displayValue={fullName}
@@ -416,15 +413,11 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                     />
                   </WithLabel>
 
-
-                  <WithLabel
-                    label='Created Date'
-                  >
+                  <WithLabel label='Created Date'>
                     <Typography inline={true} variant='body2' color='inherit'>{this.formatStringDate(task.createdDate)}</Typography>
                   </WithLabel>
-                  <WithLabel
-                    label='Due Date'
-                  >
+
+                  <WithLabel label='Due Date' show={!edit}>
 										<DisplayEdit
 											edit={edit}
 											displayValue={this.formatStringDate(task.dueDate)}
@@ -435,15 +428,15 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                       }}
 										/>
                   </WithLabel>
-									<WithLabel
-                    label='Created By'
-                  >
+
+									<WithLabel label='Created By'>
 										<Typography inline={true} color='inherit' variant='body2'>{this.getCreatedByName()}</Typography>
                   </WithLabel>
+
                 </Grid>
 							</Grid>
-
             </Grid>
+
             <Button
               type='submit'
             >Submit the shit</Button>
