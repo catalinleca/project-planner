@@ -40,6 +40,7 @@ import {taskStatusValues} from "../../utils/constants";
 import FieldReactSelect from "../FieldReactSelect/FieldReactSelect";
 import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
 import AddNewTaskForm from "../../containers/CreateNewProject/AddNewTaskForm/AddNewTaskForm";
+import classnames from 'classnames';
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -58,6 +59,12 @@ const styles = (theme: Theme): StyleRules => ({
   },
   selectAssigned: {
     // width: '100%'
+  },
+  fieldData: {
+    marginBottom: '12px'
+  },
+  descriptionField: {
+    marginLeft: '2px'
   }
 });
 
@@ -76,12 +83,29 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   selectedTaskId: any;
   handleSubmit: any;
   users: any;
+  createdByUser: any;
 }
 
 type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 interface ITaskDrawerState {
   edit: boolean;
+}
+
+const WithLabel: React.FC<any> = ({children, label, show = true}) => {
+  return(
+    <Grid
+      container={true}
+      direction='column'
+      alignItems='flex-start'
+      style={{
+        marginBottom: '12px'
+      }}
+    >
+      {show && <Typography variant='caption'>{label}</Typography>}
+      {children}
+    </Grid>
+  )
 }
 
 class TaskDrawer extends React.Component<TaskDrawerType, {}> {
@@ -170,6 +194,14 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.setState({pictures: []})
   }
 
+  public getCreatedByName = () => {
+    const {
+      createdByUser: user
+    } = this.props;
+
+    return `${user.firstName.trim()}${user.lastName.trim()}`
+  }
+
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
   render() {
@@ -188,9 +220,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       taskStatusAnchorEl
     } = this.state;
 
-    // console.log(this.state);
-    console.log(this.props)
-
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
 
@@ -198,7 +227,9 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     const createdDate =  taskCreatedDate && taskCreatedDate.getDate() + "-" + (taskCreatedDate.getMonth() + 1) + "-" + taskCreatedDate.getFullYear()
 
     const taskStatus = task && (
-      <Grid>
+      <WithLabel
+        label='Task Status'
+      >
         <StatusChip
           status={task.taskStatus}
           anchorEl={taskStatusAnchorEl}
@@ -207,34 +238,70 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           handleOpen={this.handleTaskStatusOpen}
           handleClose={this.handleTaskStatusClose}
         />
-      </Grid>
+      </WithLabel>
     )
 
     const taskProject = task && (
-      <Grid>
-        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleProjectMenuOpen}>
-          {task.projectName || 'No Projects Assigned'}
-        </Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={projectAnchorEl}
-          keepMounted
-          open={Boolean(projectAnchorEl)}
-          onClose={this.handleProjectMenuClose}
-        >
-          {
-            projects &&
-            projects.map((project, index) => (
-              <MenuItem
-                key={`${project.id}${index}`}
-                onClick={() => this.handleProjectMenuClick(project.name, project.id)}
-              >
-                {project.name}
-              </MenuItem>
-            ))
-          }
-        </Menu>
-      </Grid>
+      <WithLabel
+        label='Task Project'
+      >
+        <Grid>
+          <Button color='secondary' aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleProjectMenuOpen} variant='outlined'>
+            {task.projectName || 'No Projects Assigned'}
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={projectAnchorEl}
+            keepMounted
+            open={Boolean(projectAnchorEl)}
+            onClose={this.handleProjectMenuClose}
+          >
+            {
+              projects &&
+              projects.map((project, index) => (
+                <MenuItem
+                  key={`${project.id}${index}`}
+                  onClick={() => this.handleProjectMenuClick(project.name, project.id)}
+                >
+                  {project.name}
+                </MenuItem>
+              ))
+            }
+          </Menu>
+        </Grid>
+      </WithLabel>
+    )
+
+    const taskDescription = task && (
+      <WithLabel
+        label='Task Description'
+        show={!edit}
+      >
+        <DisplayEdit
+          edit={edit}
+          displayValue={task.description}
+          component={FieldTextField}
+          fieldProps={{
+            name: 'description',
+            label: 'Description',
+            variant: 'outlined',
+            style: {
+              marginRight: '20px'
+            }
+          }}
+          componentProps={{
+            multiline: true,
+            rowsMax: '4',
+            rows: '4',
+            formControlProps: {
+              fullWidth: true,
+            }
+          }}
+          textProps={{
+            className: classes.descriptionField
+          }}
+        />
+      </WithLabel>
     )
 
     const addNewTask = (
@@ -287,7 +354,10 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                   component={FieldTextField}
                   fieldProps={{
                     name: 'title',
-                    label: 'Title'
+                    label: 'Title',
+                  }}
+                  textProps={{
+                    variant: 'h5',
                   }}
                 />
               </Toolbar>
@@ -310,19 +380,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
                   {taskProject}
 
-                    <DisplayEdit
-                      edit={edit}
-                      displayValue={task.description}
-                      component={FieldTextField}
-                      fieldProps={{
-                        name: 'description',
-                        label: 'Description',
-                      }}
-                      componentProps={{
-                        multiline: true,
-                        rowsMax: '4',
-                      }}
-                    />
+                  {taskDescription}
 
                 </Grid>
               </Grid>
@@ -335,49 +393,38 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                   direction='column'
                   alignItems='flex-start'
                 >
-                  <Grid
-                    container={true}
-                    direction='row'
-                    alignItems='center'
+                  <WithLabel
+                    label='Assigned To'
                   >
-                    <Grid>
-                      <Typography variant='body2' color='inherit' className={classes.marginRight}>Assigned To:</Typography>
-                    </Grid>
-                    <Grid
-                      className={classes.selectAssigned}
-                    >
-                      <DisplayEdit
-                        edit={edit}
-                        displayValue={fullName}
-                        component={FieldReactSelect}
-                        fieldProps={{
-                          name: 'assignedTo',
-                        }}
-                        componentProps={{
-                          label: 'Assigned To',
-                          onChange: (e) => console.log(e),
-                          isMulti: false,
-                          options: users.map(user => ({
-                            label: [user.firstName, user.lastName].join(' '),
-                            value: user.id,
-                            ...user
-                          }))
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid>
-                    <Typography inline={true} color='inherit' variant='body2' className={classes.marginRight}>Created Date:</Typography>
-                    <Typography inline={true} color='inherit' variant='body2'>{this.formatStringDate(task.createdDate)}</Typography>
-                  </Grid>
-                  <Grid
-                    container={true}
-                    direction='row'
-                    alignItems='center'
+                    <DisplayEdit
+                      edit={edit}
+                      displayValue={fullName}
+                      component={FieldReactSelect}
+                      fieldProps={{
+                        name: 'assignedTo',
+                      }}
+                      componentProps={{
+                        label: 'Assigned To',
+                        onChange: (e) => console.log(e),
+                        isMulti: false,
+                        options: users.map(user => ({
+                          label: [user.firstName, user.lastName].join(' '),
+                          value: user.id,
+                          ...user
+                        }))
+                      }}
+                    />
+                  </WithLabel>
+
+
+                  <WithLabel
+                    label='Created Date'
                   >
-                    <Grid>
-                      <Typography variant='body2' color='inherit' className={classes.marginRight}>Due Date:</Typography>
-                    </Grid>
+                    <Typography inline={true} variant='body2' color='inherit'>{this.formatStringDate(task.createdDate)}</Typography>
+                  </WithLabel>
+                  <WithLabel
+                    label='Due Date'
+                  >
 										<DisplayEdit
 											edit={edit}
 											displayValue={this.formatStringDate(task.dueDate)}
@@ -387,11 +434,12 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                         label: 'Change Task Due Date'
                       }}
 										/>
-                  </Grid>
-									<Grid>
-										<Typography inline={true} color='inherit' variant='body2' className={classes.marginRight}>Created By; </Typography>
-										<Typography inline={true} color='inherit' variant='body2'>TBD</Typography>
-									</Grid>
+                  </WithLabel>
+									<WithLabel
+                    label='Created By'
+                  >
+										<Typography inline={true} color='inherit' variant='body2'>{this.getCreatedByName()}</Typography>
+                  </WithLabel>
                 </Grid>
 							</Grid>
 
@@ -425,7 +473,7 @@ const mapStateToProps = (state: any) => {
     taskDrawerOpen: makeSelectTaskDrawerOpen(),
     task: makeSelectDataById('tasks', selectedTaskId),
     projects: makeSelectFirestoreOrderedData('projects'),
-    users: makeSelectFirestoreOrderedData('users')
+    users: makeSelectFirestoreOrderedData('users'),
   })(state);
 
   return {
@@ -434,6 +482,7 @@ const mapStateToProps = (state: any) => {
     task,
     projects,
     users,
+    createdByUser: task && makeSelectDataById('users', task.createdBy)(state)
   }
 };
 

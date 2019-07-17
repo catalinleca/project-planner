@@ -30,6 +30,7 @@ interface IDisplayEditComponentProps {
   displayValue: any
   component: any
   fieldProps: IFieldProps
+  textProps?: any;
   componentProps?: any
 }
 
@@ -41,13 +42,14 @@ type DisplayEditType = IDisplayEditProps & WithStyles<keyof ReturnType<typeof st
 
 interface IShowContent {
   displayValue: any
+  textProps?: any;
 }
 
-const ShowContent: React.FC<IShowContent> = ({displayValue}) => (
+const ShowContent: React.FC<IShowContent> = ({displayValue, textProps}) => (
   React.isValidElement(displayValue)
   ? displayValue
   : (
-      <Typography color='inherit' variant='body2'>
+      <Typography color='inherit' variant='body2' {...textProps}>
         {displayValue}
       </Typography>
     )
@@ -59,7 +61,8 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
     displayValue,
     component,
     fieldProps,
-    componentProps
+    componentProps,
+    textProps
   } = props;
 
   // console.log('DisplayEdit: ',props);
@@ -77,6 +80,7 @@ const DisplayEdit: React.FC<DisplayEditType> = (props) => {
     )
     : (<ShowContent
       displayValue={displayValue}
+      textProps={textProps}
     />)
 }
 
