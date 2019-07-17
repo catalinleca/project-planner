@@ -166,6 +166,10 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     }
   }
 
+  public emptyPicturesArray = () => {
+    this.setState({pictures: []})
+  }
+
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
   render() {
@@ -255,6 +259,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           }}
           handlePictureChange={this.handlePictureChange}
           removePictureItem={this.removePictureItem}
+          emptyPicturesArray={this.emptyPicturesArray}
           pictures={this.state.pictures}
         />
       </React.Fragment>

@@ -43,6 +43,7 @@ interface IAddNewTaskFormComponentProps {
   gridProps?: any;
   handlePictureChange?: any;
   removePictureItem?: any;
+  emptyPicturesArray?: any;
   pictures?: any;
 }
 
@@ -66,7 +67,8 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
   const onSubmit = (taskData) => {
     const {
       addTaskToProject,
-      selectedProjectId
+      selectedProjectId,
+      emptyPicturesArray
     } = props;
 
     console.log('taskData: ', taskData);
@@ -84,7 +86,49 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     }
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
+    emptyPicturesArray()
   }
+
+  const displayCurrentPictures = (
+    <Grid
+      container={true}
+      direction='row'
+      alignItems='center'
+      style={{width: '100%', marginBottom: '8px'}}
+    >
+      {props.pictures.map( (value, index) => {
+        console.log(value.name);
+        return (
+          <Grid
+            item={true}
+            key={`${index}${value}`}
+          >
+
+            <Grid
+              container={true}
+              direction='column'
+              justify='center'
+              alignItems='center'
+              className={props.classes.pictureItem}
+            >
+              <IconButton
+                onClick={(index) => props.removePictureItem(index)}
+              >
+                <FontAwesomeIcon
+                  icon='times'
+                  size='xs'
+                />
+              </IconButton>
+              <ModalImage
+                picture={value}
+              />
+            </Grid>
+          </Grid>
+
+        )
+      })}
+    </Grid>
+  )
 
   return (
     <form onSubmit={props.handleSubmit(onSubmit)}>
@@ -134,6 +178,9 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
           formControlProps={{
             fullWidth: true
           }}
+          style={{
+            marginBottom: '16px'
+          }}
         />
         <Field
           name='description'
@@ -150,45 +197,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
           }}
         />
         <Grid>
-          <Grid
-            container={true}
-            direction='row'
-            alignItems='center'
-            style={{width: '100%'}}
-          >
-            {props.pictures.map( (value, index) => {
-              console.log(value.name);
-              return (
-                <Grid
-                  item={true}
-                  key={`${index}${value}`}
-                >
-
-                <Grid
-                  container={true}
-                  direction='column'
-                  justify='center'
-                  alignItems='center'
-                  className={props.classes.pictureItem}
-                >
-                  <IconButton
-                    onClick={(index) => props.removePictureItem(index)}
-                  >
-                    <FontAwesomeIcon
-                      icon='times'
-                      size='xs'
-                    />
-                  </IconButton>
-                  <ModalImage
-                    picture={value}
-                  />
-                </Grid>
-                </Grid>
-
-              )
-            })}
-
-          </Grid>
+          {displayCurrentPictures}
           <Field
             name='pictures'
             component={UploadPicture}
@@ -200,11 +209,21 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
       </Grid>
       </Grid>
 
-      <Button
-        type='submit'
+      <Grid
+        container={true}
+        direction='row-reverse'
       >
-        Submit
-      </Button>
+        <Button
+          type='submit'
+          color='secondary'
+          variant='contained'
+          style={{
+            margin: '16px'
+          }}
+        >
+          Create The Task
+        </Button>
+      </Grid>
     </form>
   );
 }

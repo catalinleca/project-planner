@@ -64,7 +64,7 @@ const UploadPicture: React.FC<UploadPictureType> = ({onFilesDrop, label, classes
                 React.isValidElement(label)
                   ? label
                   : <Button
-                    variant='contained'
+                    variant='outlined'
                     color='primary'
                   >
                     <Typography color='inherit' variant='caption'>{label}</Typography>
