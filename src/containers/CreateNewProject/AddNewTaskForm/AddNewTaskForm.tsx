@@ -124,7 +124,6 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
               />
             </Grid>
           </Grid>
-
         )
       })}
     </Grid>
@@ -163,7 +162,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
             options: users.map(user => ({
               label: [user.firstName, user.lastName].join(' '),
               value: user.id,
-              ...user
+              ...user,
             })),
             placeholder: 'Assign User'
           }}
@@ -190,7 +189,10 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
             multiline: true,
             rowsMax: '4',
             rows: '4',
-            variant: 'outlined'
+            variant: 'outlined',
+            style: {
+              zIndex: '0'
+            }
           }}
           formControlProps={{
             fullWidth: true
