@@ -25,12 +25,11 @@ import UploadPicture from "../../../components/UploadPicture/UploadPicture";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Dropzone from "react-dropzone";
 import ModalImage from "../../../components/ModalImage/ModalImage";
+import DisplayPictures from "../../../components/DisplayPictures/DisplayPictures";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
-  pictureItem: {
-    marginRight: '8px'
-  }
+
 });
 
 interface IAddNewTaskFormComponentProps {
@@ -63,7 +62,6 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     gridProps
   } = props;
 
-  console.log('pictures: ', props.pictures);
   const onSubmit = (taskData) => {
     const {
       addTaskToProject,
@@ -199,7 +197,10 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
           }}
         />
         <Grid>
-          {displayCurrentPictures}
+          <DisplayPictures
+            pictures={props.pictures}
+            removePictureItem={props.removePictureItem}
+          />
           <Field
             name='pictures'
             component={UploadPicture}

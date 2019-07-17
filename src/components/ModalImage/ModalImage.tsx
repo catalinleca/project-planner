@@ -71,7 +71,11 @@ class ModalImage extends React.Component<ModalImageType, {}> {
       picture,
       classes
     } = this.props;
-    const imgObject = URL.createObjectURL(picture)
+    console.log('picture: ', picture)
+
+    const imgObject = typeof picture === 'object'
+      ? URL.createObjectURL(picture)
+      : picture
 
     return (
       <React.Fragment>

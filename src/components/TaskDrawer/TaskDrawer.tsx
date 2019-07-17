@@ -42,6 +42,8 @@ import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
 import AddNewTaskForm from "../../containers/CreateNewProject/AddNewTaskForm/AddNewTaskForm";
 import classnames from 'classnames';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import DisplayPictures from "../DisplayPictures/DisplayPictures";
+import UploadPicture from "../UploadPicture/UploadPicture";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -137,7 +139,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
         value: task.assignedTo.id
       },
       'description': task.description,
-      'dueDate': task.dueDate
+      'dueDate': task.dueDate,
+      'pictures': [...task.pictures]
     }
 
     this.props.initialize(initData);
@@ -235,6 +238,31 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.setState({edit: false})
     this.props.closeDrawer()
   }
+
+  public handleSubmit = (values) => {
+    console.log('handleSubmit values: ', values);
+    this.props.handleSubmit(values)
+    this.setState({edit: false})
+  }
+
+  // vezi ce zice ala de memoization in documentatie
+  /**
+   * CHANGE THIS SHIT ASAP
+   * @param prevProps
+   * @param prevState
+   */
+  public getSnapshotBeforeUpdate(prevProps, prevState) {
+    // console.log('prevProps: ', prevProps.task)
+    //
+    // console.log('this.props: ', this.props.task)
+    if(prevProps.task && this.props.task) {
+      if (prevProps.task.title !== this.props.task.title) {
+        console.log('john: ', this.props.task.pictures)
+        this.setState({pictures: this.props.task.pictures})
+      }
+    }
+  }
+
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
   render() {
@@ -337,6 +365,31 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       </WithLabel>
     )
 
+    console.log('task: ', task);
+
+    const showPictures = task && (
+      <WithLabel
+        label='Attachments'
+      >
+        <DisplayPictures
+          edit={edit}
+          pictures={this.state.pictures}
+          removePictureItem={this.removePictureItem}
+        />
+        {
+          edit &&
+          <Field
+              name='pictures'
+              component={UploadPicture}
+              label='Daca merge ma cac 2'
+              type='file'
+              onChange={this.handlePictureChange}
+          />
+        }
+      </WithLabel>
+    )
+
+
     const addNewTask = (
       <React.Fragment>
         <AppBar
@@ -376,7 +429,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       >
         {
           task ?
-          <form onSubmit={this.props.handleSubmit}>
+          <form onSubmit={this.handleSubmit}>
 
             <AppBar position="static" color="primary">
               <Toolbar>
@@ -430,6 +483,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
                   {taskDescription}
 
+                  {showPictures}
                 </Grid>
               </Grid>
               <Grid
