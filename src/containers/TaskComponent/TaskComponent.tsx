@@ -148,8 +148,8 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     toggleTaskDrawer()
   }
 
-  public handleCreateNewTask = (values) => {
-    console.log('create new task values: ', values);
+  public handleEditTask = (values) => {
+    console.log('edit task values: ', values);
     this.props.editTask({
       ...values,
       dueDate: values.dueDate && values.dueDate.toString(),
@@ -175,7 +175,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     return (
       <React.Fragment>
         <TaskDrawer
-          onSubmit={this.handleCreateNewTask}
+          onSubmit={this.handleEditTask}
         />
         {
           tasks &&

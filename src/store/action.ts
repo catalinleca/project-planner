@@ -188,10 +188,10 @@ export const EditUserAction = (values) => (dispatch, getState, {getFirebase, get
 export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	const selectedTaskId = (makeSelectSelectedTask())(getState().ptReducer)
+	const currentState = getState()
+	const selectedTaskId = (makeSelectSelectedTask())(currentState)
 
-	// console.log('selectedTaskId: ', selectedTaskId)
-	// console.log('values: ', values)
+	console.log('selectedTaskId: ', selectedTaskId)
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 

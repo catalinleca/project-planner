@@ -77,13 +77,12 @@ const FieldDatePicker: React.FC<FieldDatePickerType> = (props) => {
           helperText={null}
           error={touched && (error != null)}
           // END HACKY OVERRIDE PROPS
-
           label={label}
           placeholder={placeholder}
           mask={mask}
           keyboard={true}
           clearable={true}
-          format='YYYY-MM-DD'
+          format="dd/MM/yyyy"
           labelFunc={renderLabel}
           leftArrowIcon={
             <FontAwesomeIcon

@@ -7,7 +7,7 @@ import {
   withStyles,
   WithStyles,
   Toolbar,
-  Typography, TextField, Button, Menu, MenuItem
+  Typography, TextField, Button, Menu, MenuItem, IconButton
 
 } from '@material-ui/core';
 import {Field, reduxForm} from 'redux-form';
@@ -41,6 +41,7 @@ import FieldReactSelect from "../FieldReactSelect/FieldReactSelect";
 import FieldDatePicker from "../FieldDatePicker/FieldDatePicker";
 import AddNewTaskForm from "../../containers/CreateNewProject/AddNewTaskForm/AddNewTaskForm";
 import classnames from 'classnames';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -65,6 +66,10 @@ const styles = (theme: Theme): StyleRules => ({
   },
   descriptionField: {
     marginLeft: '2px'
+  },
+  buttonsFooter: {
+    paddingBottom: '12px',
+    paddingRight: '40px'
   }
 });
 
@@ -132,7 +137,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
         value: task.assignedTo.id
       },
       'description': task.description,
-      'dueDate': task.dueDate.toString()
+      'dueDate': task.dueDate
     }
 
     this.props.initialize(initData);
@@ -223,9 +228,13 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       createdByUser: user
     } = this.props;
 
-    return `${user.firstName.trim()}${user.lastName.trim()}`
+    return  user && `${user.firstName.trim()}${user.lastName.trim()}`
   }
 
+  public handleCloseDrawer = () => {
+    this.setState({edit: false})
+    this.props.closeDrawer()
+  }
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
   render() {
@@ -360,7 +369,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       <Drawer
         anchor='top'
         open={taskDrawerOpen}
-        onClose={closeDrawer}
+        onClose={this.handleCloseDrawer}
         classes={{
           paper: classes.container
         }}
@@ -371,18 +380,34 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
             <AppBar position="static" color="primary">
               <Toolbar>
-                <DisplayEdit
-                  edit={edit}
-                  displayValue={task.title}
-                  component={FieldTextField}
-                  fieldProps={{
-                    name: 'title',
-                    label: 'Title',
-                  }}
-                  textProps={{
-                    variant: 'h5',
-                  }}
-                />
+                <Grid
+                  container={true}
+                  direction='row'
+                  justify='space-between'
+                  alignItems='center'
+                >
+                  <DisplayEdit
+                    edit={edit}
+                    displayValue={task.title}
+                    component={FieldTextField}
+                    fieldProps={{
+                      name: 'title',
+                      label: 'Title',
+                      style: {
+                        color: 'white'
+                      }
+                    }}
+                    textProps={{
+                      variant: 'h5',
+                    }}
+                  />
+                  <IconButton onClick={this.toggleEdit}>
+                    <FontAwesomeIcon
+                      icon={edit ? 'times' : 'edit'}
+                      size='1x'
+                    />
+                  </IconButton>
+                </Grid>
               </Toolbar>
             </AppBar>
             <Grid
@@ -463,14 +488,18 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 							</Grid>
             </Grid>
 
-            <Button
-              type='submit'
-            >Submit the shit</Button>
-            <Button
-                onClick={this.toggleEdit}
+            <Grid
+              container={true}
+              direction='row-reverse'
+              className={classes.buttonsFooter}
             >
-                toggle
-            </Button>
+              {
+              edit &&
+               <Button variant='outlined' type='submit' color='secondary'>
+                  Submit the edit
+                </Button>
+              }
+            </Grid>
 
           </form>
             : <Grid>{addNewTask}</Grid>
