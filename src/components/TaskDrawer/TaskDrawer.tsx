@@ -124,11 +124,14 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
     const initData = task && {
       'title': task.title,
-      'description': task.description,
       'assignedTo': {
-        label: [task.assignedTo.firstName.trim(), task.assignedTo.lastName.trim()].join(' '),
-        value: task.assignedTo.id,
+        label: [task.assignedTo.firstName, task.assignedTo.lastName].join(' '),
+        firstName: task.assignedTo.firstName,
+        lastName: task.assignedTo.lastName,
+        id: task.assignedTo.id,
+        value: task.assignedTo.id
       },
+      'description': task.description,
       'dueDate': task.dueDate.toString()
     }
 
@@ -428,7 +431,9 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                         options: users.map(user => ({
                           label: [user.firstName, user.lastName].join(' '),
                           value: user.id,
-                          ...user
+                          firstName: user.firstName,
+                          lastName: user.lastName,
+                          id: user.id
                         }))
                       }}
                     />
