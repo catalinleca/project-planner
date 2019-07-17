@@ -84,6 +84,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   handleSubmit: any;
   users: any;
   createdByUser: any;
+  initialize: any;
 }
 
 type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -113,7 +114,25 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     edit: false,
     projectAnchorEl: null,
     taskStatusAnchorEl: null,
-    pictures: []
+    pictures: [],
+  }
+
+  public handleInitialize() {
+    const {
+      task
+    } = this.props;
+
+    const initData = task && {
+      'title': task.title,
+      'description': task.description,
+      'assignedTo': {
+        label: [task.assignedTo.firstName.trim(), task.assignedTo.lastName.trim()].join(' '),
+        value: task.assignedTo.id,
+      },
+      'dueDate': task.dueDate.toString()
+    }
+
+    this.props.initialize(initData);
   }
 
   public handlePictureChange = (e) => {
@@ -142,6 +161,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.setState((prevState: ITaskDrawerState) => ({
       edit: !prevState.edit
     }))
+
+    this.handleInitialize()
   }
 
   public handleProjectMenuClose = () => {

@@ -152,7 +152,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     console.log('create new task values: ', values);
     this.props.editTask({
       ...values,
-      dueDate: values.dueDate.toString(),
+      dueDate: values.dueDate && values.dueDate.toString(),
     })
   }
 
