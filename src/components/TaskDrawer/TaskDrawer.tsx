@@ -168,6 +168,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     } = this.state;
 
     // console.log(this.state);
+    console.log(this.props)
 
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
@@ -215,17 +216,39 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       </Grid>
     )
 
+    const addNewTask = (
+      <React.Fragment>
+        <AppBar
+          color='primary'
+          position='static'
+        >
+          <Toolbar>
+            <Typography variant='h4' color='inherit'>
+              Create A New Task
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <AddNewTaskForm
+          users={users}
+          gridProps={{
+            item: true,
+            xs: 8,
+            justify: 'space-around',
+            alignItems: 'center'
+          }}
+        />
+      </React.Fragment>
+
+    )
+
     return (
       <Drawer
         anchor='top'
         open={taskDrawerOpen}
         onClose={closeDrawer}
         classes={{
-          paper:
-          classes.container
-
+          paper: classes.container
         }}
-        className={classes.container}
       >
 
         {
@@ -359,9 +382,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
             </Button>
 
           </form>
-            : <AddNewTaskForm
-                users={users}
-            />
+            : <Grid>{addNewTask}</Grid>
         }
       </Drawer>
     );

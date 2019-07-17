@@ -371,7 +371,7 @@ export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {g
 		})
 }
 
-export const UploadFileAction = (file) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const UploadUserAvatarAction = (file) => (dispatch, getState, {getFirebase, getFirestore}) => {
 
 	const firestore = getFirestore()
 	const currentState = getState();
@@ -393,6 +393,13 @@ export const UploadFileAction = (file) => (dispatch, getState, {getFirebase, get
 	}).catch(err => console.log(err));
 
 	// storageRef.put(file).then(snap => console.log('Uploaded, ', snap))
+}
+
+export const UploadTaskPicturesAction = (files) => (dispatch, getState, {getFirebase, getFirestore}) => {
+
+	const firestore = getFirestore()
+	const currentState = getState();
+
 }
 export const FirstActionSucceeded = (payload: any) => ({
 	type: ActionTypes.FIRST_ACTION_SUCCEEDED,

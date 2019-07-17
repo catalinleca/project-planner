@@ -39,15 +39,12 @@ class DueDates extends React.Component<DueDatesType, {}> {
       tasks
     } = this.props;
 
-    console.log('Due Dates: ', tasks)
-
     const sortedTasks = tasks.sort( (a, b) => {
       const date1 = new Date(a.dueDate).getTime();
       const date2 = new Date(b.dueDate).getTime();
       return date1 - date2;
     })
 
-    console.log('sorted: ', sortedTasks);
     return (
       <React.Fragment>
         {

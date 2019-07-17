@@ -6,7 +6,7 @@ export interface ITask {
   title: string;
   dueDate: string;
   createdDate: string;
-  subTasks: any
+  subTasks: string[]
   tag: any //users
   description: string;
   createdBy: string; //userId

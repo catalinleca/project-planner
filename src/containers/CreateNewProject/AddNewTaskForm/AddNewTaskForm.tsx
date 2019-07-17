@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   Button,
   Grid,
-  Theme,
+  Theme, Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -20,6 +20,10 @@ import {connect} from "react-redux";
 import {AddTaskToProjectAction, CreateProjectAction} from "../../../store/action";
 import {createStructuredSelector} from "reselect";
 import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../../store/selectors";
+import TaskPictures from "../../../components/TaskPictures/TaskPictures";
+import UploadPicture from "../../../components/UploadPicture/UploadPicture";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Dropzone from "react-dropzone";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -32,6 +36,7 @@ interface IAddNewTaskFormComponentProps {
   onSubmit?: any;
   addTaskToProject?: any
   selectedProjectId?: any
+  gridProps?: any;
 }
 
 //from state
@@ -46,7 +51,8 @@ type AddNewTaskFormType = IAddNewTaskFormProps & WithStyles<keyof ReturnType<typ
 const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
   const {
     users,
-    handleSelectChange
+    handleSelectChange,
+    gridProps
   } = props;
 
   const onSubmit = (taskData) => {
@@ -55,41 +61,66 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
       selectedProjectId
     } = props;
 
-    const newTaskData = {
-      ...taskData,
-      dueDate: taskData.dueDate
-        ? new Date(taskData.dueDate).toString()
-        : null,
-      assignedTo: {
-        id: taskData.assignedTo.id,
-        firstName: taskData.assignedTo.firstName,
-        lastName: taskData.assignedTo.lastName
-      },
-    }
-    console.log('newTaskData: ', newTaskData);
-    addTaskToProject(newTaskData, selectedProjectId);
+    console.log('taskData: ', taskData);
+    // const newTaskData = {
+    //   ...taskData,
+    //   dueDate: taskData.dueDate
+    //     ? new Date(taskData.dueDate).toString()
+    //     : null,
+    //   assignedTo: {
+    //     id: taskData.assignedTo.id,
+    //     firstName: taskData.assignedTo.firstName,
+    //     lastName: taskData.assignedTo.lastName
+    //   },
+    // }
+    // console.log('newTaskData: ', newTaskData);
+    // addTaskToProject(newTaskData, selectedProjectId);
+  }
+
+  const adaptFileEventToValue = delegate => e => delegate(e.target.files);
+
+  const FileInput = ({
+    input: { value: omitValue, onChange, onBlur, ...inputProps },
+    meta: omitMeta,
+    onFilesDrop,
+    ...props
+  }) => {
+    return (
+        <Dropzone onDrop={onFilesDrop}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps()}>
+                <input type="file" {...getInputProps()} onChange={adaptFileEventToValue(onChange)} onBlur={adaptFileEventToValue(onBlur)}/>
+                <p>iesi acasa</p>
+              </div>
+            </section>
+          )}
+        </Dropzone>
+    );
   }
 
   return (
     <form onSubmit={props.handleSubmit(onSubmit)}>
       <Grid
         container={true}
+        alignItems='center'
         direction='column'
+      >
+
+      <Grid
+        item={true}
+        container={true}
+        xs={8}
       >
         <Field
           name='title'
           component={FieldTextField}
           label='Task Title'
-        />
-        <Field
-          name='description'
-          component={FieldTextField}
-          label='Provide more details about the task'
-          props={{
-            multiline: true,
-            rowsMax: '4'
+          formControlProps={{
+            fullWidth: true
           }}
         />
+
         <Field
           name='assignedTo'
           component={FieldReactSelect}
@@ -102,16 +133,44 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
               label: [user.firstName, user.lastName].join(' '),
               value: user.id,
               ...user
-            }))
+            })),
+            placeholder: 'Assign User'
+          }}
+          formControlProps={{
+            fullWidth: true
           }}
         />
         <Field
           name='dueDate'
           component={FieldDatePicker}
           label='Task Due Date'
+          formControlProps={{
+            fullWidth: true
+          }}
         />
-
+        <Field
+          name='description'
+          component={FieldTextField}
+          label='Provide more details about the task'
+          props={{
+            multiline: true,
+            rowsMax: '4',
+            rows: '4',
+            variant: 'outlined'
+          }}
+          formControlProps={{
+            fullWidth: true
+          }}
+        />
+        <Field
+          name='pictures'
+          component={UploadPicture}
+          label='Daca merge ma cac'
+          type='file'
+        />
       </Grid>
+      </Grid>
+
       <Button
         type='submit'
       >

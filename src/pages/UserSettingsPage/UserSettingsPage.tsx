@@ -17,7 +17,7 @@ import {ButtonProps} from "@material-ui/core/Button";
 import Dropzone from "react-dropzone";
 import {
   ChangeUserCredentialsAction,
-  UploadFileAction
+  UploadUserAvatarAction
 } from "../../store/action";
 import {
   makeSelectDataById,
@@ -31,6 +31,7 @@ import { SubmissionError } from 'redux-form'
 import {min} from "moment";
 import {push} from "connected-react-router";
 import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
+import UploadPicture from "../../components/UploadPicture/UploadPicture";
 
 
 const styles = (theme: Theme): StyleRules => ({
@@ -47,7 +48,7 @@ interface IUserSettingsPageComponentProps {
 
 //from state
 interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
-  onFilesDropAction?: any
+  uploadUserAvatar?: any
   loggedInUserId: string
   currentUserId: string
   handleSubmit: any
@@ -64,7 +65,7 @@ const minLength = value => value && value.length < 6 ? `Password must have minim
 class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
   public onFilesDrop = files => {
     console.log(files);
-    this.props.onFilesDropAction(files[0])
+    this.props.uploadUserAvatar(files[0])
   }
 
 
@@ -115,16 +116,10 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
 
 
     const profilePicUpload = (loggedInUserId === currentUserId) && (
-      <Dropzone onDrop={this.onFilesDrop}>
-        {({getRootProps, getInputProps}) => (
-          <section>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
-            </div>
-          </section>
-        )}
-      </Dropzone>
+      <UploadPicture
+        onFilesDrop={this.onFilesDrop}
+        label='Upload User Picture'
+      />
     )
 
     const changePassword = (
@@ -236,7 +231,7 @@ const mapStateToProps = (state: any, ownProps) => {
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
   return {
     dispatch,
-    onFilesDropAction: (files) => dispatch(UploadFileAction(files)),
+    uploadUserAvatar: (files) => dispatch(UploadUserAvatarAction(files)),
     changeUserCredentials: (values) => dispatch(ChangeUserCredentialsAction(values)),
   };
 }

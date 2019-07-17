@@ -136,8 +136,6 @@ export const makeSelectCurrentUserProperty = (properties: UserProps[]) => create
 
     const data = user && pick(user, properties)
 
-    console.log('data: ', data);
-
     return data;
     // return user && user[property]
   }
