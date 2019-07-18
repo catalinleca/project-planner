@@ -82,6 +82,8 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
       },
       pictures: [...props.pictures]
     }
+
+    console.log(taskData.pictures)
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
     emptyPicturesArray()

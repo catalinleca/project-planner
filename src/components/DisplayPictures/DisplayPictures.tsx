@@ -33,8 +33,9 @@ interface IDisplayPicturesProps extends IDisplayPicturesComponentProps {
 
 type DisplayPicturesType = IDisplayPicturesProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-const DisplayPictures: React.FC<DisplayPicturesType> = ({pictures, removePictureItem, classes, edit = false}) => {
+const DisplayPictures: React.FC<DisplayPicturesType> = ({pictures, removePictureItem, classes, edit = true}) => {
 
+  console.log('displayPictures edit: ', edit);
   return (
     <Grid
       container={true}
@@ -43,7 +44,6 @@ const DisplayPictures: React.FC<DisplayPicturesType> = ({pictures, removePicture
       style={{width: '100%', marginBottom: '8px'}}
     >
       {pictures && pictures.map( (value, index) => {
-        console.log(value.name);
         return (
           <Grid
             item={true}

@@ -76,7 +76,11 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 interface ITaskDrawerComponentProps {
-  onSubmit: any
+  onSubmit: any,
+  pictures: string[]
+  handleAddPictures?: any
+  handleRemovePictures?: any
+  emptyPicturesState?: any
 }
 
 //from state
@@ -94,10 +98,12 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   initialize: any;
 }
 
-type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
+export type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 interface ITaskDrawerState {
   edit: boolean;
+  projectAnchorEl: any;
+  taskStatusAnchorEl: any;
 }
 
 const WithLabel: React.FC<any> = ({children, label, show = true}) => {
@@ -117,11 +123,11 @@ const WithLabel: React.FC<any> = ({children, label, show = true}) => {
 }
 
 class TaskDrawer extends React.Component<TaskDrawerType, {}> {
-  public state = {
+
+  public state: ITaskDrawerState = {
     edit: false,
     projectAnchorEl: null,
     taskStatusAnchorEl: null,
-    pictures: [],
   }
 
   public handleInitialize() {
@@ -140,26 +146,35 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       },
       'description': task.description,
       'dueDate': task.dueDate,
-      'pictures': [...task.pictures]
+      // 'pictures': task.pictures && [...task.pictures]
     }
 
     this.props.initialize(initData);
   }
 
   public handlePictureChange = (e) => {
-    this.setState({
-      pictures: [
-        ...this.state.pictures,
-        ...e.target.files
-      ]
-    })
+    console.log('handlePictureChange: ', this.props.pictures)
+
+    this.props.handleAddPictures(e.target.files)
+    // this.setState({
+    //   pictures: [
+    //     ...this.state.pictures,
+    //     ...e.target.files
+    //   ]
+    // })
+  }
+
+  public componentDidUpdate = () => {
+    // console.log('did update: ', this.state.pictures)
   }
 
   public removePictureItem = (index) => {
-    const newPictures = [...this.state.pictures]
+
+    const newPictures = [...this.props.pictures]
     newPictures.splice(index, 1);
 
-    this.setState({pictures: newPictures})
+    // this.setState({pictures: newPictures})
+    this.props.handleRemovePictures(newPictures)
   }
 
   public handleClick = () => {
@@ -168,9 +183,19 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     })
   }
 
+  public someFunction = () => {
+    console.log('123');
+    this.setState({
+      pictures: this.props.task && this.props.task.pictures
+    })
+  }
+
   public toggleEdit = () => {
+
+
     this.setState((prevState: ITaskDrawerState) => ({
-      edit: !prevState.edit
+      edit: !prevState.edit,
+      pictures: !prevState.edit && this.props.task.pictures
     }))
 
     this.handleInitialize()
@@ -237,6 +262,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   public handleCloseDrawer = () => {
     this.setState({edit: false})
     this.props.closeDrawer()
+    this.props.emptyPicturesState()
   }
 
   public handleSubmit = (values) => {
@@ -251,17 +277,17 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
    * @param prevProps
    * @param prevState
    */
-  public getSnapshotBeforeUpdate(prevProps, prevState) {
-    // console.log('prevProps: ', prevProps.task)
-    //
-    // console.log('this.props: ', this.props.task)
-    if(prevProps.task && this.props.task) {
-      if (prevProps.task.title !== this.props.task.title) {
-        console.log('john: ', this.props.task.pictures)
-        this.setState({pictures: this.props.task.pictures})
-      }
-    }
-  }
+  // public getSnapshotBeforeUpdate(prevProps, prevState) {
+  //   // console.log('prevProps: ', prevProps.task)
+  //   //
+  //   // console.log('this.props: ', this.props.task)
+  //   if(prevProps.task && this.props.task) {
+  //     if (prevProps.task.title !== this.props.task.title) {
+  //       console.log('john: ', this.props.task.pictures)
+  //       this.setState({pictures: this.props.task.pictures})
+  //     }
+  //   }
+  // }
 
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
@@ -281,6 +307,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       taskStatusAnchorEl
     } = this.state;
 
+    console.log('state pics: ', this.props.pictures)
+    console.log('task  pics: ', this.props.task && this.props.task.pictures)
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
 
@@ -373,7 +401,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       >
         <DisplayPictures
           edit={edit}
-          pictures={this.state.pictures}
+          pictures={this.props.pictures}
           removePictureItem={this.removePictureItem}
         />
         {
@@ -381,7 +409,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           <Field
               name='pictures'
               component={UploadPicture}
-              label='Daca merge ma cac 2'
+              label='Daca merge ma cac 3'
               type='file'
               onChange={this.handlePictureChange}
           />
@@ -413,7 +441,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           handlePictureChange={this.handlePictureChange}
           removePictureItem={this.removePictureItem}
           emptyPicturesArray={this.emptyPicturesArray}
-          pictures={this.state.pictures}
+          pictures={this.props.pictures}
         />
       </React.Fragment>
     )

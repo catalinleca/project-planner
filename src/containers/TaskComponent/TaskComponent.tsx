@@ -60,12 +60,15 @@ type TaskComponentType = ITaskComponentProps & WithStyles<keyof ReturnType<typeo
 
 interface ITaskComponentState {
   open: boolean,
+  pictures: []
 }
 
 class TaskComponent extends React.Component<TaskComponentType, {}> {
   public state: ITaskComponentState = {
-    open: false
+    open: false,
+    pictures: []
   }
+
   private columns = [
     {title: 'Title', field: 'title'},
     {title: 'Task Status', field: 'taskStatus'},
@@ -136,6 +139,10 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
     selectTask(task.id)
     toggleTaskDrawer();
+
+    this.setState({
+      pictures: task.pictures
+    })
   }
 
   public onClickCreateNewTask = () => {
@@ -153,6 +160,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     this.props.editTask({
       ...values,
       dueDate: values.dueDate && values.dueDate.toString(),
+      pictures: this.state.pictures
     })
   }
 
@@ -167,6 +175,23 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     }));
   }
 
+  public handleAddPictures = (files) => {
+    this.setState({
+      pictures: [
+        ...this.state.pictures,
+        ...files
+      ]
+    })
+  }
+
+  public handleRemovePictures = (newPictures) => {
+    this.setState({pictures: newPictures})
+  }
+
+  public emptyPicturesState = () => {
+    this.setState({pictures: []})
+  }
+
   render() {
     const {
       tasks,
@@ -175,7 +200,11 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     return (
       <React.Fragment>
         <TaskDrawer
+          pictures={this.state.pictures}
           onSubmit={this.handleEditTask}
+          handleAddPictures={this.handleAddPictures}
+          handleRemovePictures={this.handleRemovePictures}
+          emptyPicturesState={this.emptyPicturesState}
         />
         {
           tasks &&
@@ -202,7 +231,9 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                   return (
                     <TableRow
                       // className={classes.duteDreacu}
-                      onClick={() => this.handleRowClick(props.data)}
+                      onClick={() => {
+                        this.handleRowClick(props.data);
+                      }}
                     >
                       <td>
                         <TaskElement

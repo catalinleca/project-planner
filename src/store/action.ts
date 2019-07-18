@@ -188,6 +188,7 @@ export const EditUserAction = (values) => (dispatch, getState, {getFirebase, get
 export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
+	console.log('in edit task action: values: ', values);
 	const currentState = getState()
 	const selectedTaskId = (makeSelectSelectedTask())(currentState)
 
@@ -195,9 +196,9 @@ export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, get
 
 	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
 
-	const setWithMerge = taskRef.set({
-		...values
-	}, {merge: true})
+	// const setWithMerge = taskRef.set({
+	// 	...values
+	// }, {merge: true})
 
 }
 export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
