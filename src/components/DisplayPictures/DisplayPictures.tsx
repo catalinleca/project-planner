@@ -44,6 +44,8 @@ const DisplayPictures: React.FC<DisplayPicturesType> = ({pictures, removePicture
       style={{width: '100%', marginBottom: '8px'}}
     >
       {pictures && pictures.map( (value, index) => {
+        console.log('in Display Pictures: ', value)
+        console.log(typeof value)
         return (
           <Grid
             item={true}
@@ -58,7 +60,7 @@ const DisplayPictures: React.FC<DisplayPicturesType> = ({pictures, removePicture
             >
               {
                 edit && <IconButton
-                    onClick={(index) => removePictureItem(index)}
+                    onClick={() => removePictureItem(index, typeof value)}
                 >
                     <FontAwesomeIcon
                         icon='times'

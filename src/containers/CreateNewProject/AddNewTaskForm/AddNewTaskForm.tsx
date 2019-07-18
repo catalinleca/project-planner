@@ -40,10 +40,10 @@ interface IAddNewTaskFormComponentProps {
   addTaskToProject?: any
   selectedProjectId?: any
   gridProps?: any;
-  handlePictureChange?: any;
+  handleAddPicture?: any;
   removePictureItem?: any;
   emptyPicturesArray?: any;
-  pictures?: any;
+  picturesAsFile?: any;
 }
 
 //from state
@@ -80,7 +80,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
         firstName: taskData.assignedTo.firstName,
         lastName: taskData.assignedTo.lastName
       },
-      pictures: [...props.pictures]
+      pictures: [...props.picturesAsFile]
     }
 
     console.log(taskData.pictures)
@@ -88,46 +88,6 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     addTaskToProject(newTaskData, selectedProjectId);
     emptyPicturesArray()
   }
-
-  const displayCurrentPictures = (
-    <Grid
-      container={true}
-      direction='row'
-      alignItems='center'
-      style={{width: '100%', marginBottom: '8px'}}
-    >
-      {props.pictures.map( (value, index) => {
-        console.log(value.name);
-        return (
-          <Grid
-            item={true}
-            key={`${index}${value}`}
-          >
-
-            <Grid
-              container={true}
-              direction='column'
-              justify='center'
-              alignItems='center'
-              className={props.classes.pictureItem}
-            >
-              <IconButton
-                onClick={(index) => props.removePictureItem(index)}
-              >
-                <FontAwesomeIcon
-                  icon='times'
-                  size='xs'
-                />
-              </IconButton>
-              <ModalImage
-                picture={value}
-              />
-            </Grid>
-          </Grid>
-        )
-      })}
-    </Grid>
-  )
 
   return (
     <form onSubmit={props.handleSubmit(onSubmit)}>
@@ -200,7 +160,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
         />
         <Grid>
           <DisplayPictures
-            pictures={props.pictures}
+            pictures={props.picturesAsFile}
             removePictureItem={props.removePictureItem}
           />
           <Field
@@ -208,7 +168,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
             component={UploadPicture}
             label='Daca merge ma cac'
             type='file'
-            onChange={props.handlePictureChange}
+            onChange={props.handleAddPicture}
           />
         </Grid>
       </Grid>

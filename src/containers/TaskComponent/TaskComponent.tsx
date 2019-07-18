@@ -60,13 +60,15 @@ type TaskComponentType = ITaskComponentProps & WithStyles<keyof ReturnType<typeo
 
 interface ITaskComponentState {
   open: boolean,
-  pictures: []
+  pictures: [],
+  picturesAsFile: []
 }
 
 class TaskComponent extends React.Component<TaskComponentType, {}> {
   public state: ITaskComponentState = {
     open: false,
-    pictures: []
+    pictures: [],
+    picturesAsFile: []
   }
 
   private columns = [
@@ -177,19 +179,42 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
 
   public handleAddPictures = (files) => {
     this.setState({
-      pictures: [
-        ...this.state.pictures,
+      picturesAsFile: [
+        ...this.state.picturesAsFile,
         ...files
       ]
     })
   }
 
-  public handleRemovePictures = (newPictures) => {
-    this.setState({pictures: newPictures})
+
+  public handleRemovePictures = (index, type) => {
+
+    console.log('clicked picture type: ', type)
+    console.log('clicked picture index: ', index)
+
+    const removeItemByIndex = (key, array) => {
+      const newArray = [...array]
+      newArray.splice(key, 1);
+      return newArray
+    }
+
+    if (type === 'object') {
+      console.log('remove la file')
+      console.log('this.state.picturesAsFile: ', this.state.picturesAsFile)
+      const newPicturesAsFile  = removeItemByIndex(index - this.state.pictures.length, [...this.state.picturesAsFile])
+      console.log('newPicturesAsFile: ', newPicturesAsFile)
+      this.setState({picturesAsFile: newPicturesAsFile})
+    } else {
+      console.log('remove la string')
+      console.log('this.state.pictures: ', this.state.pictures)
+      const newPictures  = removeItemByIndex(index, [...this.state.pictures])
+      console.log('newPictures: ', newPictures)
+      this.setState({pictures: newPictures})
+    }
   }
 
   public emptyPicturesState = () => {
-    this.setState({pictures: []})
+    this.setState({pictures: [], picturesAsFile: []})
   }
 
   render() {
@@ -201,6 +226,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
       <React.Fragment>
         <TaskDrawer
           pictures={this.state.pictures}
+          picturesAsFile={this.state.picturesAsFile}
           onSubmit={this.handleEditTask}
           handleAddPictures={this.handleAddPictures}
           handleRemovePictures={this.handleRemovePictures}

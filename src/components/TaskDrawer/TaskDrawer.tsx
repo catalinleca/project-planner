@@ -78,6 +78,7 @@ const styles = (theme: Theme): StyleRules => ({
 interface ITaskDrawerComponentProps {
   onSubmit: any,
   pictures: string[]
+  picturesAsFile: string[]
   handleAddPictures?: any
   handleRemovePictures?: any
   emptyPicturesState?: any
@@ -152,7 +153,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     this.props.initialize(initData);
   }
 
-  public handlePictureChange = (e) => {
+  public handleEditAddPicture = (e) => {
     console.log('handlePictureChange: ', this.props.pictures)
 
     this.props.handleAddPictures(e.target.files)
@@ -166,15 +167,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
 
   public componentDidUpdate = () => {
     // console.log('did update: ', this.state.pictures)
-  }
-
-  public removePictureItem = (index) => {
-
-    const newPictures = [...this.props.pictures]
-    newPictures.splice(index, 1);
-
-    // this.setState({pictures: newPictures})
-    this.props.handleRemovePictures(newPictures)
   }
 
   public handleClick = () => {
@@ -401,8 +393,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       >
         <DisplayPictures
           edit={edit}
-          pictures={this.props.pictures}
-          removePictureItem={this.removePictureItem}
+          pictures={this.props.pictures && this.props.pictures.concat(this.props.picturesAsFile)}
+          removePictureItem={this.props.handleRemovePictures}
         />
         {
           edit &&
@@ -411,7 +403,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
               component={UploadPicture}
               label='Daca merge ma cac 3'
               type='file'
-              onChange={this.handlePictureChange}
+              onChange={this.handleEditAddPicture}
           />
         }
       </WithLabel>
@@ -438,10 +430,10 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
             justify: 'space-around',
             alignItems: 'center'
           }}
-          handlePictureChange={this.handlePictureChange}
-          removePictureItem={this.removePictureItem}
+          handleAddPicture={this.handleEditAddPicture}
+          removePictureItem={this.props.handleRemovePictures}
           emptyPicturesArray={this.emptyPicturesArray}
-          pictures={this.props.pictures}
+          picturesAsFile={this.props.picturesAsFile}
         />
       </React.Fragment>
     )
