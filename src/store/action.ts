@@ -283,7 +283,7 @@ export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, get
 
 		const setPicturesWithMerge = taskRef.set({
 			pictures: [
-				...currentTask.pictures,
+				...values.pictures,
 				...stringPictures]
 		}, {merge: true})
 	}
