@@ -399,7 +399,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
         {
           edit &&
           <Field
-              name='pictures'
+              name='picturesAsFile'
               component={UploadPicture}
               label='Daca merge ma cac 3'
               type='file'

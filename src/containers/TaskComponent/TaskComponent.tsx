@@ -65,6 +65,18 @@ interface ITaskComponentState {
 }
 
 class TaskComponent extends React.Component<TaskComponentType, {}> {
+  /**
+   * le-ai mutat aici pentru ca la click tu trebuia cand se afiseaza drawerul sa incarci de fiecare data pozele pe care le luai din props
+   *
+   * ia vezi tu daca nu mergea ca la handle close sa fi dat select task null pe store iar la un click sa il selectezi pe store ca cred ca esti batut in bila
+   *
+   * oare aveam nevoie de pictureAsFile considerand ca in momentul in care eu dau, daca adaug vreo poza e doar File, deci stiu sigur?
+   * Raspuns: Da pentru ca atunci cand dau Submit the edit el nu iti tine in evidenta daca ai sters iar ai adaugat iar ai sters
+   * Exemplu: ai un string. Adaugi 2 file, stergi 1 file, mai adaugi 3 file. In values de la form o sa ai ultimele 3 file in loc de 4. El nu iti tine evidenta
+   *
+   *
+   *
+   */
   public state: ITaskComponentState = {
     open: false,
     pictures: [],
@@ -162,7 +174,8 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     this.props.editTask({
       ...values,
       dueDate: values.dueDate && values.dueDate.toString(),
-      pictures: this.state.pictures
+      pictures: this.state.pictures,
+      picturesAsFile: this.state.picturesAsFile
     })
   }
 

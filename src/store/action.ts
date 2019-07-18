@@ -2,7 +2,7 @@ import {IAction} from "../utils/interfaces";
 import {fromJS} from "immutable";
 import {getFirestore} from "redux-firestore";
 import { projectBase } from "../utils/interfaces";
-import {taskBase} from "../utils/interfaces/ITask/ITask";
+import {ITask, taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {formatStringDate, PROJECT_DETAILS} from "../utils/constants";
 import {
@@ -107,7 +107,18 @@ const cleanParams = (obj) => {
 	}
 }
 
+const getPicturesValues = (picturesAsFiles, path?: string) => {
+	const uploadImageAsPromise = (picture, path) => {
+		return new Promise( (resolve, reject) => {
+			const storageRef = firebase.storage().ref().child(`${path && path}${picture.name}`)
+			storageRef.put(picture).then( snap => {
+				storageRef.getDownloadURL().then( url => resolve(url))
+			})
+		})
+	}
 
+	return Promise.all( picturesAsFiles.map( picture => uploadImageAsPromise(picture, path)))
+}
 
 export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
@@ -185,22 +196,8 @@ export const EditUserAction = (values) => (dispatch, getState, {getFirebase, get
 	}, {merge: true})
 }
 
-export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
-	const firestore = getFirestore();
 
-	console.log('in edit task action: values: ', values);
-	const currentState = getState()
-	const selectedTaskId = (makeSelectSelectedTask())(currentState)
 
-	console.log('selectedTaskId: ', selectedTaskId)
-
-	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
-
-	const setWithMerge = taskRef.set({
-		...values
-	}, {merge: true})
-
-}
 export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -214,8 +211,6 @@ export const ChangeTaskProjectAction = (projectName, projectId) => (dispatch, ge
 		projectName,
 		projectId
 	}, {merge: true})
-
-
 
 }
 
@@ -259,6 +254,43 @@ export const TrackUntrackProjectAction = (projectId, track) => (dispatch, getSta
 	}, {merge: true})
 }
 
+export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, getFirestore}) => {
+	/**
+	 * Refactor this shit
+	 * Bug: when adding and deleting pictures
+	 */
+	const firestore = getFirestore();
+
+	const picturesAsFile = [...values.picturesAsFile]
+
+	delete values.picturesAsFile;
+
+	console.log('in EditTaskAction, values: ', values);
+	console.log('in EditTaskAction, picturesAsFile: ', picturesAsFile);
+	const currentState = getState()
+	const selectedTaskId = (makeSelectSelectedTask())(currentState)
+	const currentTask: ITask = (makeSelectDataById('tasks', selectedTaskId))(currentState)
+
+	console.log('current task: ', currentTask)
+	const taskRef = firestore.collection('tasks').doc(selectedTaskId);
+
+	const setWithMerge = taskRef.set({
+		...values
+	}, {merge: true})
+
+	const editTaskPictures = async () => {
+		const stringPictures = await getPicturesValues(picturesAsFile, selectedTaskId)
+
+		const setPicturesWithMerge = taskRef.set({
+			pictures: [
+				...currentTask.pictures,
+				...stringPictures]
+		}, {merge: true})
+	}
+
+	picturesAsFile.length && editTaskPictures()
+}
+
 export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
@@ -269,20 +301,11 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 	const createdDate = new Date().toString()
 
-	const uploadImageAsPromise = (picture) => {
-		return new Promise( (resolve, reject) => {
-			const storageRef = firebase.storage().ref().child(`${task.title}${picture.name}`)
-			storageRef.put(picture).then( snap => {
-				storageRef.getDownloadURL().then( url => resolve(url))
-			})
-		})
-	}
-
 	// Promise.all( task.pictures.map( picture => uploadImageAsPromise(picture)))
 	// 	.then( values => console.log('values: ', values))
 
 	const addTask = async () => {
-		const values = await Promise.all( task.pictures.map( picture => uploadImageAsPromise(picture)))
+		const values = await getPicturesValues(task.pictures, `${task.title}`)
 		console.log('values: ', values);
 
 		const projectName = (makeSelectDataById('projects', projectId)(currentState)).name
@@ -305,26 +328,6 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	}
 
 	addTask()
-
-	// const projectName = makeSelectProjectTitle()(currentState)
-
-	// firestore.collection('tasks').add({
-	// 	createdDate: new Date().toString,
-	// 	...taskBase,
-	// 	...task,
-	// 	projectId,
-	// 	// projectName
-	// }).then( (resp) => {
-	// 	console.log(resp);
-	// }).catch( err => {
-	// 	console.log(err);
-	// })
-
-	// let projectsRef = firestore.collection('projects').doc(projectId)
-	//
-	// projectsRef.update({
-	// 	tasks: firestore.FieldValue.arrayUnion({...task})
-	// })
 
 }
 
