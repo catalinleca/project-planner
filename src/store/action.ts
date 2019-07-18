@@ -258,6 +258,7 @@ export const EditTaskAction = (values) => (dispatch, getState, {getFirebase, get
 	/**
 	 * Refactor this shit
 	 * Bug: when adding and deleting pictures
+	 * Gata BUGU
 	 */
 	const firestore = getFirestore();
 
