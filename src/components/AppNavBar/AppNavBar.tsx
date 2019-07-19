@@ -28,6 +28,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link, LinkProps} from "react-router-dom";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import AvatarButton from "../AvatarButton/AvatarButton";
+import {CreateProjectContext} from "../../containers/AppMenu/AppMenu";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -178,6 +179,20 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       </Button>
     )
 
+    const createProjectButton = isAdmin && (
+      <CreateProjectContext.Consumer>
+        {({setIsCreateProjectOpen}) => (
+          <Button
+            onClick={() => setIsCreateProjectOpen(true)}
+            variant='outlined'
+            color='primary'
+          >
+            Create A New Project
+          </Button>
+        )}
+      </CreateProjectContext.Consumer>
+    )
+
     return (
       <Grid
         container={true}
@@ -186,6 +201,7 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
         {myAccountButton}
         {logoutButton}
         {addUserButton}
+        {createProjectButton}
       </Grid>
     );
   }
