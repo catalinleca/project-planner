@@ -27,7 +27,6 @@ import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../s
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Simulate} from "react-dom/test-utils";
 import { submit, reset } from 'redux-form';
-import {CreateProjectContext} from "../AppMenu/AppMenu";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -213,74 +212,77 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
 
     return (
       <React.Fragment>
-        <CreateProjectContext.Consumer>
-          {({isCreateProjectOpen, setIsCreateProjectOpen}) => (
-            <SwipeableDrawer
-              anchor="bottom"
-              open={isCreateProjectOpen}
-              onClose={() => setIsCreateProjectOpen(false)}
-              onOpen={() => setIsCreateProjectOpen(true)}
-              classes={{
-                paper: classes.fullHeight
-              }}
-            >
-              {
-                users &&
-                <Grid>
-                    <AppBar
-                        position='static'
-                        color='primary'
+        <SwipeableDrawer
+          anchor="bottom"
+          open={this.state.open}
+          onClose={() => this.setState({open: false})}
+          onOpen={() => this.setState({open: true})}
+          classes={{
+            paper: classes.fullHeight
+          }}
+        >
+          {
+            users &&
+              <Grid>
+                <AppBar
+                  position='static'
+                  color='primary'
+                >
+                  <Toolbar>
+                    <Grid
+                      container={true}
+                      alignItems='center'
+                      justify='space-between'
                     >
-                        <Toolbar>
-                            <Grid
-                                container={true}
-                                alignItems='center'
-                                justify='space-between'
-                            >
-                                <Typography variant='h4' color='inherit'>
-                                    Create A New Project
-                                </Typography>
-                                <IconButton onClick={() => setIsCreateProjectOpen(false)} color='inherit'>
-                                    <Typography color='inherit'>
-                                        <FontAwesomeIcon
-                                            icon='times'
-                                            size='2x'
-                                        />
-                                    </Typography>
-                                </IconButton>
-                            </Grid>
-                        </Toolbar>
-                    </AppBar>
-                    <Stepper activeStep={activeStep} orientation='vertical'>
-                      {steps.map( (label, index) => {
-                        return (
-                          <Step key={`${label}${index}`}>
-                            <StepLabel>{label}</StepLabel>
-                            <StepContent>
-                              {this.getStepContent(index)}
-                              <Button
-                                disabled={activeStep === 0}
-                                onClick={this.handleBack}
-                              >
-                                Back
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={activeStep === steps.length - 1 ? () => setIsCreateProjectOpen(false) : this.handleNext}
-                              >
-                                {activeStep === steps.length - 1 ? 'Finish' : 'Create The Project'}
-                              </Button>
-                            </StepContent>
-                          </Step>
-                        )})}
-                    </Stepper>
-                </Grid>
-              }
-            </SwipeableDrawer>
-          )}
-        </CreateProjectContext.Consumer>
+                      <Typography variant='h4' color='inherit'>
+                        Create A New Project
+                      </Typography>
+                      <IconButton onClick={this.handleClose} color='inherit'>
+                        <Typography color='inherit'>
+                            <FontAwesomeIcon
+                                icon='times'
+                                size='2x'
+                            />
+                        </Typography>
+                      </IconButton>
+                    </Grid>
+                  </Toolbar>
+                </AppBar>
+                <Stepper activeStep={activeStep} orientation='vertical'>
+                  {steps.map( (label, index) => {
+                    return (
+                    <Step key={`${label}${index}`}>
+                      <StepLabel>{label}</StepLabel>
+                      <StepContent>
+                        {this.getStepContent(index)}
+                        <Button
+                          disabled={activeStep === 0}
+                          onClick={this.handleBack}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={this.handleNext}
+                        >
+                          {activeStep === steps.length - 1 ? 'Finish' : 'Create The Project'}
+                        </Button>
+                      </StepContent>
+                    </Step>
+                  )})}
+                </Stepper>
+              </Grid>
 
+          }
+        </SwipeableDrawer>
+        <Button
+          onClick={() => this.setState({open: true})}
+          variant='outlined'
+          color='primary'
+        >
+          Create A New Project
+        </Button>
       </React.Fragment>
     );
   }
