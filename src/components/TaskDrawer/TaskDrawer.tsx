@@ -183,13 +183,10 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   }
 
   public toggleEdit = () => {
-
-
     this.setState((prevState: ITaskDrawerState) => ({
       edit: !prevState.edit,
-      pictures: !prevState.edit && this.props.task.pictures
+      // pictures: !prevState.edit && this.props.task.pictures
     }))
-
     this.handleInitialize()
   }
 

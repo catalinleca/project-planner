@@ -32,6 +32,7 @@ import {min} from "moment";
 import {push} from "connected-react-router";
 import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
 import UploadPicture from "../../components/UploadPicture/UploadPicture";
+import {required, minLength} from "../../utils/validators/validators";
 
 
 const styles = (theme: Theme): StyleRules => ({
@@ -58,9 +59,6 @@ interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
 }
 
 type UserSettingsPageType = IUserSettingsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
-
-const required = value => value ? undefined : 'Required'
-const minLength = value => value && value.length < 6 ? `Password must have minimum 6 charaters` : undefined
 
 class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
   public onFilesDrop = files => {

@@ -199,8 +199,11 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     })
   }
 
+  public emptyPicturesArray = () => {
+    this.setState({picturesAsFile: []})
+  }
 
-  public handleRemovePictures = (index, type) => {
+  public handleRemovePictures = (index, type?: any) => {
 
     console.log('clicked picture type: ', type)
     console.log('clicked picture index: ', index)

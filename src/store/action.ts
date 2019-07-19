@@ -297,6 +297,7 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 
 	const currentState = getState()
 
+	console.log('values in Add Task To Project: ', task )
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
 	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
 
@@ -306,7 +307,7 @@ export const AddTaskToProjectAction = (task, projectId) => (dispatch, getState, 
 	// 	.then( values => console.log('values: ', values))
 
 	const addTask = async () => {
-		const values = await getPicturesValues(task.pictures, `${task.title}`)
+		const values = task.pictures ? await getPicturesValues(task.pictures, `${task.title}`) : []
 		console.log('values: ', values);
 
 		const projectName = (makeSelectDataById('projects', projectId)(currentState)).name
@@ -345,12 +346,14 @@ export const CreateProjectAction = (project) => (dispatch, getState, {getFirebas
 	const currentState = getState();
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
 	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+	const createdDate = new Date().toString()
 
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
 		...projectBase,
 		...project,
-		createdBy
+		createdBy,
+		createdDate
 	}).then( (resp) => {
 		dispatch(SelectProjectAction(resp.id))
 	}).catch( err => {
@@ -372,6 +375,9 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 		})
 		.catch( err => console.log(err))
 }
+
+const var1 = '3';
+const var2 = 3
 
 export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
 

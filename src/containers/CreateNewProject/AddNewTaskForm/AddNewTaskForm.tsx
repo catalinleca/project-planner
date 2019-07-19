@@ -26,6 +26,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Dropzone from "react-dropzone";
 import ModalImage from "../../../components/ModalImage/ModalImage";
 import DisplayPictures from "../../../components/DisplayPictures/DisplayPictures";
+import {GridProps} from "@material-ui/core/Grid";
+import {required} from "../../../utils/validators/validators";
+import {reset} from 'redux-form'
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -39,11 +42,12 @@ interface IAddNewTaskFormComponentProps {
   onSubmit?: any;
   addTaskToProject?: any
   selectedProjectId?: any
-  gridProps?: any;
+  gridProps?: GridProps;
   handleAddPicture?: any;
   removePictureItem?: any;
   emptyPicturesArray?: any;
   picturesAsFile?: any;
+  reset?: any;
 }
 
 //from state
@@ -59,7 +63,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
   const {
     users,
     handleSelectChange,
-    gridProps
+    gridProps,
   } = props;
 
   const onSubmit = (taskData) => {
@@ -80,12 +84,14 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
         firstName: taskData.assignedTo.firstName,
         lastName: taskData.assignedTo.lastName
       },
-      pictures: [...props.picturesAsFile]
+      pictures: props.picturesAsFile && [...props.picturesAsFile]
     }
 
     console.log(taskData.pictures)
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
+    props.reset()
+
     emptyPicturesArray()
   }
 
@@ -95,83 +101,85 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
         container={true}
         alignItems='center'
         direction='column'
+        {...gridProps}
       >
-
-      <Grid
-        item={true}
-        container={true}
-        xs={8}
-      >
-        <Field
-          name='title'
-          component={FieldTextField}
-          label='Task Title'
-          formControlProps={{
-            fullWidth: true
-          }}
-        />
-
-        <Field
-          name='assignedTo'
-          component={FieldReactSelect}
-          props={{
-            label: 'Assigned User',
-            isMulti: false,
-            // value: this.state.selectedValues,
-            onChange: handleSelectChange,
-            options: users.map(user => ({
-              label: [user.firstName, user.lastName].join(' '),
-              value: user.id,
-              ...user,
-            })),
-            placeholder: 'Assign User'
-          }}
-          formControlProps={{
-            fullWidth: true
-          }}
-        />
-        <Field
-          name='dueDate'
-          component={FieldDatePicker}
-          label='Task Due Date'
-          formControlProps={{
-            fullWidth: true
-          }}
-          style={{
-            marginBottom: '16px'
-          }}
-        />
-        <Field
-          name='description'
-          component={FieldTextField}
-          label='Provide more details about the task'
-          props={{
-            multiline: true,
-            rowsMax: '4',
-            rows: '4',
-            variant: 'outlined',
-            style: {
-              zIndex: '0'
-            }
-          }}
-          formControlProps={{
-            fullWidth: true
-          }}
-        />
-        <Grid>
-          <DisplayPictures
-            pictures={props.picturesAsFile}
-            removePictureItem={props.removePictureItem}
+        <Grid
+          item={true}
+          container={true}
+          xs={8}
+        >
+          <Field
+            name='title'
+            component={FieldTextField}
+            label='Task Title'
+            formControlProps={{
+              fullWidth: true
+            }}
+            validate={[required]}
           />
           <Field
-            name='pictures'
-            component={UploadPicture}
-            label='Daca merge ma cac'
-            type='file'
-            onChange={props.handleAddPicture}
+            name='assignedTo'
+            component={FieldReactSelect}
+            props={{
+              label: 'Assigned User',
+              isMulti: false,
+              // value: this.state.selectedValues,
+              onChange: handleSelectChange,
+              options: users.map(user => ({
+                label: [user.firstName, user.lastName].join(' '),
+                value: user.id,
+                ...user,
+              })),
+              placeholder: 'Assign User'
+            }}
+            formControlProps={{
+              fullWidth: true
+            }}
+            validate={[required]}
           />
+          <Field
+            name='dueDate'
+            component={FieldDatePicker}
+            label='Task Due Date'
+            formControlProps={{
+              fullWidth: true
+            }}
+            style={{
+              marginBottom: '16px'
+            }}
+          />
+          <Field
+            name='description'
+            component={FieldTextField}
+            label='Provide more details about the task'
+            props={{
+              multiline: true,
+              rowsMax: '4',
+              rows: '4',
+              variant: 'outlined',
+              style: {
+                zIndex: '0'
+              }
+            }}
+            formControlProps={{
+              fullWidth: true
+            }}
+            validate={[required]}
+          />
+          <Grid>
+            <DisplayPictures
+              pictures={props.picturesAsFile}
+              removePictureItem={props.removePictureItem}
+            />
+            <Field
+              name='pictures'
+              component={UploadPicture}
+              label='Daca merge ma cac'
+              type='file'
+              onChange={props.handleAddPicture}
+            />
+          </Grid>
         </Grid>
-      </Grid>
       </Grid>
 
       <Grid

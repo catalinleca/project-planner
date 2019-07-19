@@ -16,6 +16,7 @@ import FieldTextField from "../../../components/FieldTextField/FieldTextField";
 import {Field, reduxForm} from 'redux-form'
 import FieldDatePicker from "../../../components/FieldDatePicker/FieldDatePicker";
 import FieldReactSelect from "../../../components/FieldReactSelect/FieldReactSelect";
+import {required} from "../../../utils/validators/validators";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -43,7 +44,6 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
     selectedLeads,
     users,
     handleSelectChange,
-    handleClose
   } = props;
 
   return (
@@ -55,47 +55,53 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
         <Grid
           container={true}
           direction='column'
+          alignItems='flex-start'
         >
-          <Field
-            name='name'
-            component={FieldTextField}
-            label='Project Name'
-          />
-          <Field
-            name='dueDate'
-            component={FieldDatePicker}
-            label='Project Due Date'
-          />
-          <Field
-            name='leadSources'
-            component={FieldReactSelect}
-            props={{
-              label: 'Select your leads',
-              isMulti: true,
-              // value: this.state.selectedValues,
-              onChange: handleSelectChange,
-              options: users.map(user => ({
-                label: [user.firstName, user.lastName].join(' '),
-                value: user.id,
-                ...user
-              }))
-            }}
-          />
+          <Grid
+            item={true}
+            container={true}
+            xs={8}
+          >
+            <Field
+              name='name'
+              component={FieldTextField}
+              label='Project Name'
+              formControlProps={{
+                fullWidth: true
+              }}
+              validate={[required]}
+            />
+            <Field
+              name='dueDate'
+              component={FieldDatePicker}
+              label='Project Due Date'
+              formControlProps={{
+                fullWidth: true
+              }}
+              validate={[required]}
+            />
+            <Field
+              name='leadSources'
+              component={FieldReactSelect}
+              props={{
+                label: 'Select your leads',
+                isMulti: true,
+                // value: this.state.selectedValues,
+                onChange: handleSelectChange,
+                options: users.map(user => ({
+                  label: [user.firstName, user.lastName].join(' '),
+                  value: user.id,
+                  ...user
+                }))
+              }}
+              validate={[required]}
+              formControlProps={{
+                fullWidth: true
+              }}
+            />
+          </Grid>
         </Grid>
-        <Button
-          type='submit'
-        >
-          Submit
-        </Button>
-
       </form>
-      <Grid>
-        <Button
-          onClick={handleClose}
-        >
-          close
-        </Button>
-      </Grid>
     </Grid>
   );
 }
