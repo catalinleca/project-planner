@@ -30,9 +30,10 @@ import {NewCredentials} from "../../utils/types/types";
 import { SubmissionError } from 'redux-form'
 import {min} from "moment";
 import {push} from "connected-react-router";
-import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
+import {pick, USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
 import UploadPicture from "../../components/UploadPicture/UploadPicture";
 import {required, minLength} from "../../utils/validators/validators";
+import AvatarButton from "../../components/AvatarButton/AvatarButton";
 
 
 const styles = (theme: Theme): StyleRules => ({
@@ -56,6 +57,7 @@ interface IUserSettingsPageProps extends IUserSettingsPageComponentProps {
   changeUserCredentials: any
   checkCurrentPasswordAction: any
   dispatch: any
+  currentUser: any
 }
 
 type UserSettingsPageType = IUserSettingsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -106,6 +108,7 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     const {
       loggedInUserId,
       currentUserId,
+      currentUser,
       handleSubmit
     } = this.props;
 
@@ -113,11 +116,29 @@ class UserSettingsPage extends React.Component<UserSettingsPageType, {}> {
     console.log('this.state: ', this.state);
 
 
+    const showUserAvatar = currentUser && (
+      <Grid
+        style={{marginBottom: '8px'}}
+      >
+        <AvatarButton
+          userData={pick(currentUser, ['avatar', 'firstName', 'lastName'])}
+        />
+      </Grid>
+
+    )
+
     const profilePicUpload = (loggedInUserId === currentUserId) && (
-      <UploadPicture
-        onFilesDrop={this.onFilesDrop}
-        label='Upload User Picture'
-      />
+      <Grid
+        container={true}
+        direction='column'
+        alignItems='center'
+      >
+        {showUserAvatar}
+        <UploadPicture
+          onFilesDrop={this.onFilesDrop}
+          label='Upload Picture'
+        />
+      </Grid>
     )
 
     const changePassword = (
@@ -215,13 +236,16 @@ const mapStateToProps = (state: any, ownProps) => {
 
   const {
     loggedInUserId,
+    currentUser
   } =  createStructuredSelector({
     loggedInUserId: makeSelectLoggedInUserId(),
+    currentUser: makeSelectDataById('users', currentUserId)
   })(state);
 
   return {
     loggedInUserId,
-    currentUserId
+    currentUserId,
+    currentUser
   }
 
 };
