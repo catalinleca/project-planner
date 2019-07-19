@@ -37,6 +37,8 @@ const styles = (theme: Theme): StyleRules => ({
 
 interface ICreateNewProjectComponentProps {
   // onSubmit?: any;
+  isOpen: boolean,
+  setOpen: any,
 }
 
 //from state
@@ -134,9 +136,9 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
     console.log('this.state.activeStep: ', this.state.activeStep)
     if (this.state.activeStep === steps.length - 1) {
       this.setState({
-        open: false,
         activeStep: 0
       })
+      this.props.setOpen(false)
     } else {
       this.props.dispatch(submit('newProject'));
       this.setState( prevState => ({
@@ -192,15 +194,21 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
     }
   }
 
+  public setOpenTrue = () => this.setState({open: true})
+
   public getSteps = () => ['Add your project details', 'Insert Tasks'];
 
   public handleClose = () => {
     this.setState({open: false})
   }
+
+
   render() {
     const {
       classes,
-      users
+      users,
+      setOpen,
+      isOpen
     } = this.props;
 
     const {
@@ -214,9 +222,9 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       <React.Fragment>
         <SwipeableDrawer
           anchor="bottom"
-          open={this.state.open}
-          onClose={() => this.setState({open: false})}
-          onOpen={() => this.setState({open: true})}
+          open={isOpen}
+          onClose={() => setOpen(false)}
+          onOpen={() => setOpen(true)}
           classes={{
             paper: classes.fullHeight
           }}
@@ -237,7 +245,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
                       <Typography variant='h4' color='inherit'>
                         Create A New Project
                       </Typography>
-                      <IconButton onClick={this.handleClose} color='inherit'>
+                      <IconButton onClick={() => setOpen(false)} color='inherit'>
                         <Typography color='inherit'>
                             <FontAwesomeIcon
                                 icon='times'
@@ -273,16 +281,8 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
                   )})}
                 </Stepper>
               </Grid>
-
           }
         </SwipeableDrawer>
-        <Button
-          onClick={() => this.setState({open: true})}
-          variant='outlined'
-          color='primary'
-        >
-          Create A New Project
-        </Button>
       </React.Fragment>
     );
   }

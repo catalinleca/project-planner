@@ -28,6 +28,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Link, LinkProps} from "react-router-dom";
 import {IconProp} from "@fortawesome/fontawesome-svg-core";
 import AvatarButton from "../AvatarButton/AvatarButton";
+import CreateNewProject from "../../containers/CreateNewProject/CreateNewProject";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -55,11 +56,8 @@ type AppNavBarType = IAppNavBarProps & WithStyles<keyof ReturnType<typeof styles
 
 class AppNavBar extends React.Component<AppNavBarType, {}> {
   public state = {
-    anchorEl: null
-  };
-
-  public logOutHandler = () => {
-    this.props.logOut();
+    anchorEl: null,
+    isOpen: false
   };
 
   public createNewUser = () => {
@@ -78,12 +76,21 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       loggedInUserId,
     } = this.props;
 
-   dispatch(push(`${USER_DETAILS}/${loggedInUserId}/${value.path}`))
+    console.log('value: ', value);
+    value.path
+      ? dispatch(push(`${USER_DETAILS}/${loggedInUserId}/${value.path}`))
+      : value.action()
+
+    this.handleClose();
   }
 
 
   public handleClose = () => {
     this.setState({anchorEl: null});
+  }
+
+  public setOpen = (value) => {
+    this.setState({isOpen: value})
   }
 
   render() {
@@ -109,7 +116,13 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
         text: 'Settings',
         icon: 'cog',
         path: 'settings'
+      },
+      {
+        text: 'Logout',
+        icon: 'sign-out-alt',
+        action: () => this.props.logOut()
       }
+
     ]
 
     const {
@@ -159,15 +172,6 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       </div>
     )
 
-    const logoutButton = isLoggedIn && (
-      <Button
-        variant='outlined'
-        color='primary'
-        onClick={this.logOutHandler}
-      >
-        Log Out
-      </Button>)
-
     const addUserButton = isAdmin && (
       <Button
         variant='outlined'
@@ -178,14 +182,28 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       </Button>
     )
 
+    const createNewProjectButton = isAdmin && (
+      <Button
+        onClick={() => this.setState({isOpen: true})}
+        variant='outlined'
+        color='primary'
+      >
+        Create A New Project
+      </Button>
+    )
+
     return (
       <Grid
         container={true}
         direction='row-reverse'
       >
+        <CreateNewProject
+          isOpen={this.state.isOpen}
+          setOpen={this.setOpen}
+        />
         {myAccountButton}
-        {logoutButton}
         {addUserButton}
+        {createNewProjectButton}
       </Grid>
     );
   }

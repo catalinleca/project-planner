@@ -38,6 +38,7 @@ import AppNavBar from "../../components/AppNavBar/AppNavBar";
 import blueLogo from '../../images/blueLogo.svg';
 import whitePlaneNoBackground from '../../images/whitePlaneNoBackground.svg';
 import whiteText from '../../images/whiteText.svg';
+import CreateNewProject from "../CreateNewProject/CreateNewProject";
 const drawerWidth = 240;
 
 
@@ -436,6 +437,7 @@ class AppMenu extends React.Component<AppMenuProps> {
     return (
       <div className={classes.root}>
         <CssBaseline />
+
         <AppBarWrapper
           widthBreakpoint={widthBreakpoint}
           style={{backgroundColor: 'white'}}

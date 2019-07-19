@@ -181,12 +181,8 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
     // console.log(this.props.projects);
 
-    const newProjectButton = isAdmin && (
-      <CreateNewProject/>
-    )
     return (
       <React.Fragment>
-        {newProjectButton}
         {
           projects &&
           <MaterialTable
