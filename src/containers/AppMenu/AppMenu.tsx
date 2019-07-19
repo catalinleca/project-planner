@@ -326,11 +326,9 @@ interface IAppMenuProps extends IAppMenuComponentProps{
 
 type AppMenuProps = IAppMenuComponentProps & WithWidth & IAppMenuProps & WithStyles<keyof ReturnType<typeof styles>>;
 
-export const CreateProjectContext = React.createContext({} as any)
 class AppMenu extends React.Component<AppMenuProps> {
   state = {
     isOpen: true,
-    isCreateProjectOpen: false,
   };
 
   handleDrawerOpen = () => {
@@ -437,12 +435,6 @@ class AppMenu extends React.Component<AppMenuProps> {
     const showMenuItems = isLoggedIn && menuItems
     return (
       <div className={classes.root}>
-        <CreateProjectContext.Provider
-          value={{
-            isCreateProjectOpen: this.state.isCreateProjectOpen,
-            setIsCreateProjectOpen: (value: Boolean) => this.setState({isCreateProjectOpen: value})
-          }}
-        >
         <CssBaseline />
         <AppBarWrapper
           widthBreakpoint={widthBreakpoint}
@@ -510,7 +502,7 @@ class AppMenu extends React.Component<AppMenuProps> {
             </div>
           </ContentWrapper>
         </ResponsiveContentContainer>
-        </CreateProjectContext.Provider>
+
       </div>
     );
   }
