@@ -32,8 +32,9 @@ import CreateNewProject from "../../containers/CreateNewProject/CreateNewProject
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
-  avatarButton: {
-    marginLeft: '6px'
+  buttonSpacing: {
+    marginLeft: '6px',
+    marginRight: '6px'
   }
 });
 
@@ -133,16 +134,12 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
       <div>
         {
           userData &&
-            <Grid
-              className={classes.avatarButton}
-            >
-              <AvatarButton
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  userData={userData}
-                  onClickHandler={e => this.handleOpen(e)}
-              />
-            </Grid>
+            <AvatarButton
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                userData={userData}
+                onClickHandler={e => this.handleOpen(e)}
+            />
         }
         <Menu
           id="simple-menu"
@@ -177,10 +174,13 @@ class AppNavBar extends React.Component<AppNavBarType, {}> {
         variant='outlined'
         color='secondary'
         onClick={this.createNewUser}
+        className={classes.buttonSpacing}
+
       >
         Add User
       </Button>
     )
+    // 5fa544
 
     const createNewProjectButton = isAdmin && (
       <Button
