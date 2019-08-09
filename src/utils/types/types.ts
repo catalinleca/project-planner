@@ -14,3 +14,22 @@ export enum TaskStatus {
   rejected = 'Rejected',
   accepted = 'Accepted'
 }
+
+const adaugaElementActiune = (payload) => {
+  return {
+    type: 'ADAUGA_ELEMENT_IN_LISTA',
+    payload: payload
+  }
+}
+
+const reducer = ( state, action ) => {
+  switch (action.type) {
+    case ('ADAUGA_ELEMENT_IN_LISTA'):
+      return {
+        ...state,
+        elementNou: action.payload
+      }
+    default:
+      return state
+  }
+}

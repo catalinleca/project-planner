@@ -341,7 +341,7 @@ export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFireba
 
 }
 
-export const CreateProjectAction = (project) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const CreateProjectAction = (project) => (dispatch, getState, {getFirestore}) => {
 
 	const currentState = getState();
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
@@ -379,7 +379,7 @@ export const GetProjectsAction = () => (dispatch, getState, {getFirebase, getFir
 const var1 = '3';
 const var2 = 3
 
-export const SignInAction = (credentials) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+export const SignInAction = (credentials) =>  (dispatch) => {
 
 	console.log("in signInAction credentials: ", credentials);
 	firebase.auth().signInWithEmailAndPassword(credentials.username, credentials.password)

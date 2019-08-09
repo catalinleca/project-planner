@@ -66,9 +66,9 @@ const AvatarButton: React.FC<AvatarButtonType> = props => {
   } = props;
 
   const getFirstLetter = (val: string) => {
-    if (!val) return
+    if (!val) return;
     return val.trim().charAt(0).toUpperCase()
-  }
+  };
 
   const userAvatar = <Avatar alt={userData.avatar} src={userData.avatar}/>
 

@@ -68,7 +68,6 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
       dispatch
     } = this.props;
 
-    console.log('handleLogin: ', values)
     signIn(values)
     dispatch(push(HOME_PATH))
   }
@@ -151,7 +150,7 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
     dispatch,
     signIn: (creds) => { dispatch(SignInAction(creds)) },
     signUp: (newUser) => { dispatch(SignUpAction(newUser)) }
-};
+  };
 }
 
 export default compose<React.ComponentClass<ILoginSignupComponentComponentProps>>(
