@@ -174,7 +174,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
             <Field
               name='pictures'
               component={UploadPicture}
-              label='Daca merge ma cac'
+              label='Upload Picture'
               type='file'
               onChange={props.handleAddPicture}
             />

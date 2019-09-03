@@ -129,7 +129,7 @@ export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFire
 
 }
 
-export const ChangeUserCredentialsAction = ({currentPassword, newPassword, newMail}) => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const ChangeUserCredentialsAction = ({currentPassword, newPassword, newMail}) => () => {
 
 	const checkCurrentPassword = (password) => {
 		const currentUser = firebase.auth().currentUser

@@ -398,7 +398,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           <Field
               name='picturesAsFile'
               component={UploadPicture}
-              label='Daca merge ma cac 3'
+              label='Upload Picture'
               type='file'
               onChange={this.handleEditAddPicture}
           />
