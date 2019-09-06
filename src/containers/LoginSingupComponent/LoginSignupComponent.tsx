@@ -19,7 +19,7 @@ import {connect} from "react-redux";
 import {IAction} from "../../utils/interfaces";
 import {doTheThingAction, SignInAction, SignUpAction} from "../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
+import {makeSelectIsLoggedIn, makeSelectLoggedInUserId, selectReducerState} from "../../store/selectors";
 import {push} from "connected-react-router";
 import {HOME_PATH} from "../../utils/constants";
 import UserSettingsPage from "../../pages/UserSettingsPage/UserSettingsPage";
@@ -48,6 +48,7 @@ interface ILoginSignupComponentProps extends ILoginSignupComponentComponentProps
   signIn?: any;
   signUp?: any;
   isLoggedIn?: boolean;
+  authError?: any;
 }
 
 type LoginSignupComponentType = ILoginSignupComponentProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -110,6 +111,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
       admin
     } = this.props;
 
+    console.log(this.props)
     return (
       <Grid>
         {/*<Grid style={this.getModalStyle()} className={classes.paper}>*/}
@@ -140,6 +142,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
               <LoginComponent
                 onHandleSubmit={this.props.handleSubmit}
                 onSubmit={this.handleLogin}
+                loginError={this.props.authError === 'Login Failed'}
               />
               :
               <SignupComponent
@@ -154,9 +157,20 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
   }
 }
 
-const mapStateToProps = createStructuredSelector({
-  isLoggedIn: makeSelectIsLoggedIn(),
-})
+const mapStateToProps = (originalState: any) => {
+  const {
+    isLoggedIn
+  }: {
+    isLoggedIn: any
+  } = createStructuredSelector({
+    isLoggedIn: makeSelectIsLoggedIn(),
+  })(originalState);
+
+  return {
+    isLoggedIn,
+    authError: originalState.ptReducer.get('authError')
+  }
+};
 
 
 export function mapDispatchToProps(dispatch: React.Dispatch<any>) {

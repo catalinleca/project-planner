@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
   Button, Grid,
-  Theme,
+  Theme, Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -13,6 +13,7 @@ import {
 } from 'redux';
 import FieldTextField from "../FieldTextField/FieldTextField";
 import {Field} from 'redux-form';
+import {minLength, required} from "../../utils/validators/validators";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -21,6 +22,7 @@ const styles = (theme: Theme): StyleRules => ({
 interface ILoginComponentComponentProps {
   onHandleSubmit?: any;
   onSubmit?: any;
+  loginError?: any;
 }
 
 //from state
@@ -34,25 +36,60 @@ const LoginComponent: React.FC<LoginComponentType> = (props) => {
     <form onSubmit={props.onHandleSubmit(props.onSubmit)}>
       <Grid
         container={true}
-        direction='column'
+        justify='center'
       >
-        <Field
-          name='username'
-          component={FieldTextField}
-          label='Username'
-          formControlProps={{
-            fullWidth: true,
-          }}
-        />
-        <Field
-          name='password'
-          component={FieldTextField}
-          label='Password'
-          type='password'
-        />
-        <Button type='submit'>
-          Login
-        </Button>
+        <Grid
+          item={true}
+          xs={6}
+          container={true}
+          direction='column'
+        >
+          <Field
+            name='username'
+            component={FieldTextField}
+            label='Username'
+            formControlProps={{
+              fullWidth: true,
+            }}
+            validate={[required]}
+          />
+          <Field
+            name='password'
+            component={FieldTextField}
+            label='Password'
+            type='password'
+            validate={[required, minLength]}
+          />
+          {
+            props.loginError &&
+              <Grid>
+                <Typography
+                  variant='h6'
+                  style={{
+                    color: 'red'
+                  }}
+                >
+                  Wrong Email or Password
+                </Typography>
+              </Grid>
+          }
+
+          <Grid
+            item={true}
+            style={{
+              margin: '16px auto'
+            }}
+          >
+            <Button
+              type='submit'
+              variant='outlined'
+              color='primary'
+            >
+              Login
+            </Button>
+          </Grid>
+
+        </Grid>
       </Grid>
     </form>
 

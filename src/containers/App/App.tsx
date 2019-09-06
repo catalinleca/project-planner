@@ -94,12 +94,6 @@ const App: React.FC<AppProps> = (props) => {
       label='Users'
       width={width}
     />
-    <CustomMenuItem
-      to={PROJECT_DETAILS}
-      iconProps={{icon: 'bars'}}
-      label='Project Details'
-      width={width}
-    />
   </React.Fragment>
 
   /**
