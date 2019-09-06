@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
-  Avatar, Step, StepLabel, Stepper,
-  Theme, Typography,
+  Avatar, Button, Fab, IconButton, Step, StepLabel, Stepper,
+  Theme, Tooltip, Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -13,7 +13,12 @@ import {
 } from 'redux';
 import Grid from "@material-ui/core/es/Grid";
 import {ProjectPhase} from "../../utils/types/types";
-import {formatStringDate} from "../../utils/constants";
+import {formatStringDate, USER_DETAILS} from "../../utils/constants";
+import {createStructuredSelector} from "reselect";
+import {makeSelectDataById, selectReducerState} from "../../store/selectors";
+import {connect} from "react-redux";
+import {ChangeTaskStatusAction, EditTaskAction, SelectTaskAction, toggleTaskDrawerAction} from "../../store/action";
+import {push} from "connected-react-router";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -28,11 +33,16 @@ interface IProjectInfoSectionComponentProps {
 
 //from state
 interface IProjectInfoSectionProps extends IProjectInfoSectionComponentProps {
+  user: any
+  dispatch: any
+
 }
 
 type ProjectInfoSectionType = IProjectInfoSectionProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
+
+  const { user } = props;
 
   const rowItem = (item1, item2, index) => (
     <Grid
@@ -69,9 +79,9 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
     classes
   } = props;
 
-  const dataSet1 = project && [
+  const dataSet1 = project && user && [
     ['Sprint:', project.sprint],
-    ['Created By:', project.createdBy],
+    ['Created By:', `${user.firstName} ${user.lastName}`],
   ]
 
   const newDate = project && new Date(project.dueDate);
@@ -103,6 +113,11 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
       </Stepper>
     </Grid>
   )
+
+  const handleLeadClick = (user) => {
+    props.dispatch(push(`${USER_DETAILS}/${user.id}/profile`))
+
+  }
 
   return (
     <Grid
@@ -150,6 +165,9 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
         >
           <Grid
             item={true}
+            style={{
+              marginRight: '16px'
+            }}
           >
             <Typography variant='body1' color='inherit'>
               LeadSource:
@@ -168,8 +186,23 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
                   const firstName = user.firstName;
                   const lastName = user.lastName;
                   return (
-                    <Avatar
-                      key={index}>{firstName && firstName.trim().charAt(0) || lastName && lastName.trim().charAt(0)}</Avatar>
+                    <Tooltip
+                      title={`${firstName} ${lastName}`}
+                      placement='top'
+                      key={index}
+                      style={{marginRight: '4px'}}
+                    >
+                      <Fab
+                        onClick={() => handleLeadClick(user)}
+                        size='small'
+                      >
+                        <Avatar
+                          key={index}
+                        >
+                          {firstName && firstName.trim().charAt(0).toUpperCase() || lastName && lastName.trim().charAt(0).toUpperCase()}
+                        </Avatar>
+                      </Fab>
+                    </Tooltip>
                   );
                 })
               }
@@ -181,6 +214,19 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
   );
 }
 
+const mapStateToProps = (originalState: any, ownProps: any) => {
+  return createStructuredSelector({
+    user: makeSelectDataById('users', ownProps.project.createdBy),
+  })(originalState);
+};
+
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
+  return {
+    dispatch
+  };
+}
+
 export default compose<React.ComponentClass<IProjectInfoSectionComponentProps>>(
   withStyles(styles),
+  connect(mapStateToProps, mapDispatchToProps),
 )(ProjectInfoSection);

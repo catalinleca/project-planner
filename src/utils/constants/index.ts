@@ -20,6 +20,14 @@ export const HOME_PATH = '/home';
 
 export const projectPhases: ProjectPhase[] = ['initial', 'planning', 'execution', 'closure'];
 
+export const TaskColor = {
+  toDo: 'orange',
+  inProgress: 'lightblue',
+  completed: 'blue',
+  rejected: 'red',
+  accepted: 'green'
+}
+
 const keys = Object.keys(TaskStatus);
 
 export const taskStatusValues = Map().withMutations( taskStatuses => {

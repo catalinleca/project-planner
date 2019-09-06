@@ -203,7 +203,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                   container={true}
                   direction='column'
                   xs={12}
-                  sm={8}
+                  sm={6}
                   className={classes.widgetStyle}
                 >
                   <Paper
@@ -236,7 +236,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                   container={true}
                   direction='column'
                   xs={12}
-                  sm={4}
+                  sm={6}
                   className={classes.widgetStyle}
                 >
                   <Paper
@@ -260,11 +260,11 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
                         tasks &&
 												<DueDates
 													tasks={this.getProjectTasks()}
+                          projectId={selectedProjectId}
 												/>
                       }
                     </WidgetDetailStyle>
-                  </Paper>
-                </Grid>
+                  </Paper></Grid>
                 <Grid
                   // Tasks
                   item={true}

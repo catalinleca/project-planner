@@ -233,6 +233,12 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
     this.setState({pictures: [], picturesAsFile: []})
   }
 
+  public handleState = (task) => {
+    this.setState({
+      pictures: task.pictures
+    })
+  }
+
   render() {
     const {
       tasks,
@@ -247,6 +253,7 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
           handleAddPictures={this.handleAddPictures}
           handleRemovePictures={this.handleRemovePictures}
           emptyPicturesState={this.emptyPicturesState}
+          handleState={this.handleState}
         />
         {
           tasks &&

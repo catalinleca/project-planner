@@ -82,6 +82,8 @@ interface ITaskDrawerComponentProps {
   handleAddPictures?: any
   handleRemovePictures?: any
   emptyPicturesState?: any
+  handleState?: any
+
 }
 
 //from state
@@ -164,9 +166,14 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     //   ]
     // })
   }
+  //
+  // componentDidMount() {
+  //   this.props.handleState(this.props.task)
+  // }
 
   public componentDidUpdate = () => {
-    // console.log('did update: ', this.state.pictures)
+    console.log(this.props.task)
+    this.props.task && this.props.handleState(this.props.task)
   }
 
   public handleClick = () => {
