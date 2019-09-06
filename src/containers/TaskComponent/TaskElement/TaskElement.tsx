@@ -85,19 +85,19 @@ const styles = (theme: Theme): StyleRules => ({
   //   color: Immutable.getIn(theme.palette, ['status', 'cancelled'], 'none'),
   // },
   toDo: {
-    borderLeftColor: 'orange !important',
+    borderLeftColor: '#E69C24 !important',
   },
   inProgress: {
-    borderLeftColor: 'lightblue !important',
+    borderLeftColor: '#34EBFF !important',
   },
   completed: {
-    borderLeftColor: 'blue !important',
+    borderLeftColor: '#3366ff !important',
   },
   rejected: {
-    borderLeftColor: 'red !important',
+    borderLeftColor: '#DF3100 !important',
   },
   accepted: {
-    borderLeftColor: 'green !important',
+    borderLeftColor: '#33CC33 !important',
   },
   // [CriteriaStatus.Created]: {
   //   color: Immutable.getIn(theme.palette, ['status', 'toDo'], 'none'),

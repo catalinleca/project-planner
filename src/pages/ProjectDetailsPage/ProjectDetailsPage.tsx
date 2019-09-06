@@ -52,6 +52,10 @@ const styles = (theme: Theme): StyleRules => ({
     width: '100%',
     padding: `${theme.spacing.unit * 2}px`,
   },
+  trackButton: {
+    marginLeft: '8px',
+    marginBottom: '8px'
+  }
 });
 
 interface IProjectDetailsPageComponentProps {
@@ -119,6 +123,7 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
         aria-haspopup="true"
         variant='contained'
         onClick={this.handleClick}
+        color='secondary'
         className={classes.trackButton}
       >
         <Typography style={{marginTop: '1px'}}>

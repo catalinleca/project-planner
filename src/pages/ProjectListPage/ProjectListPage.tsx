@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Grid,
   Theme, Typography,
   withStyles,
   WithStyles,
@@ -48,6 +49,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import CreateNewProject from "../../containers/CreateNewProject/CreateNewProject";
 import AppMenu from "../../containers/AppMenu/AppMenu";
 import DueDateComponent from "../../components/DueDateComponent/DueDateComponent";
+import DialogComponent from "../../components/DialogComponent/DialogComponent";
 
 const tableIcons = {
   Add: AddBox,
@@ -92,13 +94,18 @@ interface IProjectListPageProps extends IProjectListPageComponentProps {
 
   getProjects(): void;
 
-  deleteProject(id: number): void
+  deleteProject(id: string): void
   trackUntrackProject(id: number, track: boolean): void
 }
 
 type ProjectListPageType = IProjectListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class ProjectListPage extends React.Component<ProjectListPageType, {}> {
+  public state = {
+    open: false,
+    projectId: ''
+  }
+
   private columns = [
     {title: 'Name', field: 'name'},
     {title: 'Project Phase', field: 'projectPhase'},
@@ -136,12 +143,13 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     }))
   }
 
-  public onDeleteHandler = (e, rowData) => {
+  public onDeleteHandler = () => {
     const {
       deleteProject
     } = this.props;
 
-    deleteProject(rowData.id)
+    deleteProject(this.state.projectId)
+    this.handleClose()
   }
 
   public handleRowClick = (rowData) => {
@@ -171,6 +179,21 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
     trackUntrackProject(rowData.id, !currentTrackStatus)
   }
 
+  public handleClickOpen = (e, rowData) => {
+    this.setState({
+      open: true,
+      projectId: rowData.id
+    });
+  }
+
+  public handleClose = () => {
+    this.setState({
+      open: false,
+      projectId: ''
+    });
+  }
+
+
   render() {
     const {
       customData,
@@ -183,6 +206,14 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
 
     return (
       <React.Fragment>
+        <DialogComponent
+          open={this.state.open}
+          handleClose={this.handleClose}
+          handleAgree={this.onDeleteHandler}
+          title='Warning'
+          text='Are you sure you want to delete this project?'
+        >
+        </DialogComponent>
         {
           projects &&
           <MaterialTable
@@ -204,7 +235,7 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
                 icon: 'delete',
                 tooltip: 'Delete Project',
                 onClick: (e, rowData) => {
-                  this.onDeleteHandler(e, rowData)
+                  this.handleClickOpen(e, rowData)
                 }
               }
             ]}

@@ -22,6 +22,8 @@ import {createStructuredSelector} from "reselect";
 import {makeSelectIsLoggedIn, makeSelectLoggedInUserId} from "../../store/selectors";
 import {push} from "connected-react-router";
 import {HOME_PATH} from "../../utils/constants";
+import UserSettingsPage from "../../pages/UserSettingsPage/UserSettingsPage";
+import {NewCredentials} from "../../utils/types/types";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -87,6 +89,18 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
       isAdmin: admin
     });
     dispatch(push(HOME_PATH))
+  }
+
+  public static validateForm = (values: any) => {
+    const errors: any = {};
+    if(values.password !== values.confirmedPassword) {
+      errors.confirmedPassword = 'New Passwords Does Not Match'
+    }
+    if(values.adminPassword !== 'adminPassword') {
+      errors.adminPassword = 'Wrong Admin Password'
+    }
+
+    return errors;
   }
 
   render() {
@@ -156,7 +170,8 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>) {
 export default compose<React.ComponentClass<ILoginSignupComponentComponentProps>>(
   withStyles(styles),
   reduxForm({
-    form: 'loginSignupForm'
+    form: 'loginSignupForm',
+    validate: LoginSignupComponent.validateForm
   }),
   connect(mapStateToProps, mapDispatchToProps)
 )(LoginSignupComponent);

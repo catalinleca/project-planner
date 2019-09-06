@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {
-  Grid, List, ListItem, ListItemIcon, ListItemText,
+  Button,
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Grid, List, ListItem, ListItemIcon, ListItemText, Slide,
   Theme, Typography,
   withStyles,
   WithStyles,
@@ -41,6 +43,7 @@ import UserProfilePage from "../UserProfilePage/UserProfilePage";
 import {push} from "connected-react-router";
 import {ITask} from "../../utils/interfaces/ITask/ITask";
 import UserSettingsPage from "../UserSettingsPage/UserSettingsPage";
+import DialogComponent from "../../components/DialogComponent/DialogComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -92,7 +95,12 @@ interface IUserItemMenu {
   }
 }
 
+
 class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
+  public state: any = {
+    open: false
+  }
+
   private userItemMenuDefault: IUserItemMenu[] = [
     {
       icon: 'tasks',
@@ -128,8 +136,9 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     this.props.editUser(values)
   }
 
+
   public deleteUser = () => {
-    this.props.deleteUser();
+    this.props.deleteUser(this.props.match.params.id);
 
     this.props.dispatch(push(USER_LIST))
   }
@@ -143,6 +152,14 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     return tasks.filter( (task: ITask) => task.assignedTo.id === currentUserId)
   }
 
+  public handleClickOpen = () => {
+    this.setState({open: true});
+  }
+
+  public handleClose = () => {
+    this.setState({open: false});
+  }
+
   render() {
     const {
       user,
@@ -153,6 +170,8 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
       currentUserId,
       isAdmin
     } = this.props;
+
+    console.log('this.state: ', this.state);
 
     /**
      * vezi cand schimba userii daca iti schimba si taskurile
@@ -175,7 +194,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
           userItemMenu.map( (userItem, index) => {
             const body = (
               <ListItem button={true}
-                onClick={() => userItem.action && userItem.action(this.deleteUser)}
+                onClick={() => userItem.action && userItem.action(this.handleClickOpen)}
                 TouchRippleProps={{
                   classes: {
                     ripple: classes.ripple
@@ -223,6 +242,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
         direction='row'
         style={{height: '100%'}}
       >
+
         <Grid
           item={true}
           xs={2}
@@ -232,6 +252,15 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
           className={classes.menuItemContainer}
         >
           {sideUserMenu}
+          <DialogComponent
+            open={this.state.open}
+            handleClose={this.handleClose}
+            handleAgree={this.deleteUser}
+            title='Warning'
+            text='Are you sure you want to delete this user?'
+          >
+          </DialogComponent>
+
         </Grid>
         <Grid
           item={true}
@@ -284,7 +313,7 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   return {
     dispatch,
     editUser: (values) => dispatch(EditUserAction(values)),
-    deleteUser: () => dispatch(DeleteUserAction())
+    deleteUser: (id) => dispatch(DeleteUserAction(id))
   };
 }
 

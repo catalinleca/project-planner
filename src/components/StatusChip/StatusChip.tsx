@@ -26,19 +26,19 @@ const styles = (theme: Theme): StyleRules => ({
     textAlign: 'center'
   },
   toDo: {
-    background: 'orange',
+    background: '#FB9C01',
   },
   inProgress: {
-    background: 'lightblue',
+    background: '#95E1FF',
   },
   completed: {
-    background: 'blue',
+    background: '#3366ff',
   },
   rejected: {
-    background: 'red',
+    background: '#DF3100',
   },
   accepted: {
-    background: 'green',
+    background: '#33CC33',
   },
 });
 

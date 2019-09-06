@@ -120,12 +120,12 @@ const getPicturesValues = (picturesAsFiles, path?: string) => {
 	return Promise.all( picturesAsFiles.map( picture => uploadImageAsPromise(picture, path)))
 }
 
-export const DeleteUserAction = () => (dispatch, getState, {getFirebase, getFirestore}) => {
+export const DeleteUserAction = (id) => (dispatch, getState, {getFirebase, getFirestore}) => {
 	const firestore = getFirestore();
 
-	const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
+	// const selectedUserId = (makeSelectSelectedUser())(getState().ptReducer)
 
-	firestore.collection('users').doc(selectedUserId).delete()
+	firestore.collection('users').doc(id).delete()
 
 }
 
@@ -338,6 +338,12 @@ export const DeleteProjectAction = (id: any) =>  (dispatch, getState, {getFireba
 	const firestore = getFirestore();
 
 	firestore.collection('projects').doc(id).delete()
+
+}
+export const DeleteTaskAction = (id: any) =>  (dispatch, getState, {getFirebase, getFirestore}) => {
+	const firestore = getFirestore();
+
+	firestore.collection('tasks').doc(id).delete()
 
 }
 

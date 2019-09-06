@@ -168,7 +168,7 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
             style={{
               marginRight: '16px'
             }}
-          >
+           >
             <Typography variant='body1' color='inherit'>
               LeadSource:
             </Typography>

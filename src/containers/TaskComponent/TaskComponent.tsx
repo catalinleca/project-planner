@@ -299,7 +299,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                     <tbody>
                       <tr>
                         <th>
-                          <div>headshot</div>
                           <Divider/>
                         </th>
                       </tr>

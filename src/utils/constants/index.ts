@@ -21,11 +21,11 @@ export const HOME_PATH = '/home';
 export const projectPhases: ProjectPhase[] = ['initial', 'planning', 'execution', 'closure'];
 
 export const TaskColor = {
-  toDo: 'orange',
-  inProgress: 'lightblue',
-  completed: 'blue',
-  rejected: 'red',
-  accepted: 'green'
+  toDo: '#FB9C01',
+  inProgress: '#95E1FF',
+  completed: '#3366ff',
+  rejected: '#DF3100',
+  accepted: '#33CC33',
 }
 
 const keys = Object.keys(TaskStatus);

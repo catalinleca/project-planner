@@ -68,6 +68,9 @@ const DueDateComponent: React.FC<DueDateComponentType> = ({dateAsString, type, c
         [classes.warning]: isClose,
         [classes.error]: isPassed,
       })}
+      style={{
+        marginTop: '4px'
+      }}
     >
       <FontAwesomeIcon
         icon='clock'

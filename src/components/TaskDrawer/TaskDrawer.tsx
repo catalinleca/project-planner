@@ -21,7 +21,7 @@ import {connect} from "react-redux";
 import {
   ChangeTaskProjectAction, ChangeTaskStatusAction,
   closeTaskDrawerAction,
-  CreateProjectAction,
+  CreateProjectAction, DeleteTaskAction,
   doTheThingAction,
   FirstAction
 } from "../../store/action";
@@ -44,6 +44,7 @@ import classnames from 'classnames';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import DisplayPictures from "../DisplayPictures/DisplayPictures";
 import UploadPicture from "../UploadPicture/UploadPicture";
+import DialogComponent from "../DialogComponent/DialogComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -99,6 +100,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   users: any;
   createdByUser: any;
   initialize: any;
+  deleteTask: any;
 }
 
 export type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -107,6 +109,7 @@ interface ITaskDrawerState {
   edit: boolean;
   projectAnchorEl: any;
   taskStatusAnchorEl: any;
+  open: boolean;
 }
 
 const WithLabel: React.FC<any> = ({children, label, show = true}) => {
@@ -131,6 +134,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     edit: false,
     projectAnchorEl: null,
     taskStatusAnchorEl: null,
+    open: false,
   }
 
   public handleInitialize() {
@@ -285,6 +289,30 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   //   }
   // }
 
+  public handleClickOpen = () => {
+    this.setState({
+      open: true,
+    });
+  }
+
+  public handleClose = () => {
+    this.setState({
+      open: false,
+    });
+  }
+
+  public onDeleteHandler = () => {
+    const {
+      deleteTask,
+      selectedTaskId,
+      closeDrawer
+    } = this.props;
+
+    deleteTask(selectedTaskId);
+    closeDrawer();
+    this.handleClose();
+  }
+
   // could improve a little, passing task from parent and keeping openDrawerState in the component's state
   // but since we use projects and users there wouldn't be much of an improvement
   render() {
@@ -294,7 +322,9 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       classes,
       task,
       projects,
-      users
+      users,
+      pictures,
+      picturesAsFile
     } = this.props;
 
     const {
@@ -303,7 +333,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       taskStatusAnchorEl
     } = this.state;
 
-    console.log('state pics: ', this.props.pictures)
+    console.log('state pics: ', this.props)
     console.log('task  pics: ', this.props.task && this.props.task.pictures)
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
@@ -395,20 +425,32 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       <WithLabel
         label='Attachments'
       >
-        <DisplayPictures
-          edit={edit}
-          pictures={this.props.pictures && this.props.pictures.concat(this.props.picturesAsFile)}
-          removePictureItem={this.props.handleRemovePictures}
-        />
         {
-          edit &&
-          <Field
-              name='picturesAsFile'
-              component={UploadPicture}
-              label='Upload Picture'
-              type='file'
-              onChange={this.handleEditAddPicture}
-          />
+          pictures && pictures.length !== 0 || picturesAsFile && picturesAsFile.length !== 0
+            ?
+            <Grid>
+              <DisplayPictures
+                edit={edit}
+                pictures={this.props.pictures && this.props.pictures.concat(this.props.picturesAsFile)}
+                removePictureItem={this.props.handleRemovePictures}
+              />
+              {
+                edit &&
+                <Field
+                  name='picturesAsFile'
+                  component={UploadPicture}
+                  label='Upload Picture'
+                  type='file'
+                  onChange={this.handleEditAddPicture}
+                />
+              }
+            </Grid>
+            :
+            <Grid>
+              <Typography>
+                No Attachments
+              </Typography>
+            </Grid>
         }
       </WithLabel>
     )
@@ -451,6 +493,13 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           paper: classes.container
         }}
       >
+        <DialogComponent
+          open={this.state.open}
+          handleClose={this.handleClose}
+          handleAgree={this.onDeleteHandler}
+          title='Warning'
+          text='Are you sure you want to delete this project?'
+        />
         {
           task ?
           <form onSubmit={this.handleSubmit}>
@@ -478,12 +527,31 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                       variant: 'h5',
                     }}
                   />
-                  <IconButton onClick={this.toggleEdit}>
-                    <FontAwesomeIcon
-                      icon={edit ? 'times' : 'edit'}
-                      size='1x'
-                    />
-                  </IconButton>
+                  <Grid
+                    item={true}
+                  >
+                    <Grid
+                      container={true}
+                      direction='row-reverse'
+                    >
+                      <IconButton onClick={this.toggleEdit}>
+                        <FontAwesomeIcon
+                          icon={edit ? 'times' : 'edit'}
+                          size='1x'
+                        />
+                      </IconButton>
+                      <IconButton
+                        onClick={this.handleClickOpen}
+                        style={{color: 'white'}}
+                      >
+                        <FontAwesomeIcon
+                          icon='trash'
+                          size='1x'
+                        />
+                      </IconButton>
+                    </Grid>
+
+                  </Grid>
                 </Grid>
               </Toolbar>
             </AppBar>
@@ -623,6 +691,9 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
     changeTaskStatus: (taskId, status) => {
       dispatch(ChangeTaskStatusAction(taskId, status))
     },
+    deleteTask: (id) => {
+      dispatch(DeleteTaskAction(id))
+    }
   };
 }
 
