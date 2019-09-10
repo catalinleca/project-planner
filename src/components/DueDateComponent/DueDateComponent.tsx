@@ -59,6 +59,7 @@ const DueDateComponent: React.FC<DueDateComponentType> = ({dateAsString, type, c
       : (projectLimitDate.setMonth(projectLimitDate.getMonth() - 1)) < nowTime)
 
   const stringDate = formatStringDate(date)
+
   return (
     <Grid
       container={true}

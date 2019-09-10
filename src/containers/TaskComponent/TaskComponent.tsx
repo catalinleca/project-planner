@@ -244,9 +244,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
       tasks,
     } = this.props
 
-    console.log('randare in taskComponent, this.props: ', this.props)
-    console.log('randare in taskComponent, this.state: ', this.state)
-
     return (
       <React.Fragment>
         <TaskDrawer

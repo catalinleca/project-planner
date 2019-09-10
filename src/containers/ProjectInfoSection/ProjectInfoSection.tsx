@@ -86,7 +86,7 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
   ]
 
   const newDate = project && new Date(project.dueDate);
-  const formatted_date = newDate && formatStringDate(newDate);
+  const formatted_date = newDate.toString();
 
   const createdDate = project && new Date(project.createdDate);
   const formattedCreatedDate = newDate && formatStringDate(createdDate)

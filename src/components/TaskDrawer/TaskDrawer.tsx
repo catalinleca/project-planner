@@ -332,8 +332,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       taskStatusAnchorEl
     } = this.state;
 
-    console.log('state pics: ', this.props)
-    console.log('task  pics: ', this.props.task && this.props.task.pictures)
+    // console.log('state pics: ', this.props)
+    // console.log('task  pics: ', this.props.task && this.props.task.pictures)
     const now = new Date();
     const fullName =  task && [task.assignedTo.firstName, task.assignedTo.lastName].join(' ').split(' ').filter( value => value != '').join(' ')
 
@@ -418,9 +418,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       </WithLabel>
     )
 
-    console.log('task: ', task);
-
-    console.log('ba du-te dreq: ', pictures)
+    // console.log('task: ', task);
 
     const showPictures = task && (
       <WithLabel

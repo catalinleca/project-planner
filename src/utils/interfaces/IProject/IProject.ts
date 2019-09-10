@@ -25,7 +25,7 @@ export const projectBase = {
   leadSources: null, // id first name last name
   modifiedBy: null,
   modifiedDate: null,
-  projectPhase: 'beginning',
+  projectPhase: 'initial',
   status: null,
   keyContacts: [],
   dueDate: null,

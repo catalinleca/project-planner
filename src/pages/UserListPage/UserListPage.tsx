@@ -42,6 +42,8 @@ import AvatarButton from "../../components/AvatarButton/AvatarButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 import _ from 'lodash';
+import {DeleteUserAction} from "../../store/action";
+import DialogComponent from "../../components/DialogComponent/DialogComponent";
 
 const tableIcons = {
   Add: AddBox,
@@ -86,6 +88,10 @@ interface IUserListPageProps extends IUserListPageComponentProps {
 type UserListPageType = IUserListPageProps & WithStyles<keyof ReturnType<typeof styles>>;
 
 class UserListPage extends React.Component<UserListPageType, {}> {
+  public state: any = {
+    open: false,
+    userId: ''
+  }
 
   public columnsDefault =  [
     {title: 'Avatar', filed: 'avatar', render: rowData => <AvatarButton userData={pick(rowData, ['avatar', 'firstName', 'lastName'])}/>, cellStyle: {width: '131px'}, headerStyle: {marginLeft: '4px'}},
@@ -95,24 +101,35 @@ class UserListPage extends React.Component<UserListPageType, {}> {
   ]
 
   public onDeleteHandler = (e,rowData) => {
-    const {
-      deleteUser
-    } = this.props;
-
-    deleteUser(rowData.id)
+    this.handleClickOpen(e, rowData);
   }
 
-  public userActions = rowData => <IconButton onClick={e => this.onDeleteHandler(e, rowData)}><FontAwesomeIcon icon='trash'/></IconButton>
+  public userActions = rowData => <IconButton onClick={e => {e.stopPropagation(); this.onDeleteHandler(e, rowData)}}><FontAwesomeIcon icon='trash'/></IconButton>
 
   public columnsAdminExtension = [
     {title: 'Actions', field: '', render: this.userActions, cellStyle: {width: '131px'}},
   ]
 
+  public handleClickOpen = (e, rowData) => {
+    this.setState({
+      open: true,
+      userId: rowData.id
+    });
+  }
 
-
-
+  public handleClose = () => {
+    this.setState({
+      open: false,
+      userId: ''
+    });
+  }
   public handleRowClick = (rowData) => {
     this.props.dispatch(push(`${USER_DETAILS}/${rowData.id}`))
+  }
+
+  public onDeleteUser = () => {
+    this.props.deleteUser(this.state.userId)
+    this.handleClose()
   }
 
   render() {
@@ -131,6 +148,14 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 
     return (
       <React.Fragment>
+        <DialogComponent
+          open={this.state.open}
+          handleClose={this.handleClose}
+          handleAgree={this.onDeleteUser}
+          title='Warning'
+          text='Are you sure you want to delete this user?'
+        >
+        </DialogComponent>
         {
           users &&
 					<MaterialTable
@@ -158,6 +183,7 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
+    deleteUser: (id) => dispatch(DeleteUserAction(id))
   };
 }
 
