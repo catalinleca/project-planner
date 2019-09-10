@@ -95,7 +95,7 @@ export const doTheThingAction = () => (dispatch, getState, {getFirebase, getFire
 
 /**
  * Refactoring. Vezi ca folosesti 100 functii ca sa editezi project sau task cand poti
- * sa folosesti una si sa trimiti campurile ca parametur ba pula
+ * sa folosesti una si sa trimiti campurile ca parametur ba
  *
  */
 

@@ -175,9 +175,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
   //   this.props.handleState(this.props.task)
   // }
 
-  public componentDidUpdate = () => {
-    console.log(this.props.task)
-    this.props.task && this.props.handleState(this.props.task)
+  public componentDidUpdate = (prevProps) => {
+    this.props.task && prevProps.taskDrawerOpen !== this.props.taskDrawerOpen && this.props.handleState(this.props.task)
   }
 
   public handleClick = () => {
@@ -420,6 +419,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
     )
 
     console.log('task: ', task);
+
+    console.log('ba du-te dreq: ', pictures)
 
     const showPictures = task && (
       <WithLabel

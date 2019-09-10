@@ -36,12 +36,12 @@ export const taskStatusValues = Map().withMutations( taskStatuses => {
   })
 });
 
-export const formatStringDate = (date: any) => {
+export const formatStringDate = (date: any): string => {
   if (date) {
     const newDate = new Date(date)
     return newDate.getDate() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getFullYear()
   } else {
-    return null
+    return ''
   }
 }
 

@@ -19,6 +19,7 @@ import {makeSelectDataById, selectReducerState} from "../../store/selectors";
 import {connect} from "react-redux";
 import {ChangeTaskStatusAction, EditTaskAction, SelectTaskAction, toggleTaskDrawerAction} from "../../store/action";
 import {push} from "connected-react-router";
+import DueDateComponent from "../../components/DueDateComponent/DueDateComponent";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {},
@@ -85,11 +86,21 @@ const ProjectInfoSection: React.FC<ProjectInfoSectionType> = props => {
   ]
 
   const newDate = project && new Date(project.dueDate);
-  let formatted_date = newDate && formatStringDate(newDate);
+  const formatted_date = newDate && formatStringDate(newDate);
+
+  const createdDate = project && new Date(project.createdDate);
+  const formattedCreatedDate = newDate && formatStringDate(createdDate)
+
+  const dateComp = (
+    <DueDateComponent
+      dateAsString={formatted_date}
+      type='project'
+    />
+  )
 
   const dataSet2 = project && [
-    ['Created Date:', project.createdDate],
-    ['Due Date:', formatted_date],
+    ['Created Date:', formattedCreatedDate],
+    ['Due Date:', dateComp],
   ]
 
   const steps: ProjectPhase[] = getSteps();

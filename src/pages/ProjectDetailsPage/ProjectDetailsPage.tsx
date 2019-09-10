@@ -203,7 +203,6 @@ class ProjectDetailsPage extends React.Component<ProjectDetailsPageType, {}> {
               >
                 <Grid
                   // ProjectInfo
-                  // leaderii scrumu pzdms
                   item={true}
                   container={true}
                   direction='column'
