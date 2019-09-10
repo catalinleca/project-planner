@@ -82,6 +82,7 @@ interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   loggedInUserId: string;
   currentUserId: string;
   isAdmin: boolean;
+  selectUser: any;
 }
 
 type UserDetailsPageType = IUserDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -158,6 +159,16 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
 
   public handleClose = () => {
     this.setState({open: false});
+  }
+
+  componentDidMount() {
+    const {
+      selectUser,
+      currentUserId,
+    } = this.props;
+
+    selectUser(currentUserId);
+
   }
 
   render() {
@@ -313,7 +324,8 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   return {
     dispatch,
     editUser: (values) => dispatch(EditUserAction(values)),
-    deleteUser: (id) => dispatch(DeleteUserAction(id))
+    deleteUser: (id) => dispatch(DeleteUserAction(id)),
+    selectUser: (id) => dispatch(SelectUserAction(id))
   };
 }
 
