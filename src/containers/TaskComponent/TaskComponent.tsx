@@ -269,8 +269,6 @@ class TaskComponent extends React.Component<TaskComponentType, {}> {
                   isFreeAction: true
                 }
               ]}
-
-
               components={{
                 Container: props => <Paper {...props} elevation={0}/>,
                 Row: props => {

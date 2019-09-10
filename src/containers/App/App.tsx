@@ -110,7 +110,7 @@ const App: React.FC<AppProps> = (props) => {
           <Redirect from={`/`} to={`${HOME_PATH}`} exact={true}/>
           <Route path={`${AUTH_PATH}`} component={NotAuthenticatedLoginSignupComponent} exact={true}/>
           <Route path={`${CREATE_ADMIN_PATH}`} render={(props) => <NotAuthenticatedLoginSignupComponent {...props} admin={true}/>}/>
-          <Route path={`${ADD_USER}`} render={(props) => <AuthenticatedLoginSignupComponent {...props} admin={false}/>} exact={true}/>
+          <Route path={`${ADD_USER}`} render={(props) => <AuthenticatedLoginSignupComponent {...props} />} exact={true}/>
           <Route path={`${HOME_PATH}`} component={AuthenticatedHomePage}/>
           <Route path={`${PROJECT_DETAILS}/:id`} component={AuthenticatedProjectDetailsPage}/>
           <Route path={PROJECT_LIST} component={AuthenticatedProjectListPage} exact={true}/>

@@ -13,7 +13,7 @@ import {
 } from 'redux';
 import FieldTextField from "../FieldTextField/FieldTextField";
 import {Field} from 'redux-form';
-import {minLength, required} from "../../utils/validators/validators";
+import {minLength, required, trueOrFalse} from "../../utils/validators/validators";
 
 const styles = (theme: Theme): StyleRules => ({
   root: {}
@@ -22,6 +22,7 @@ const styles = (theme: Theme): StyleRules => ({
 interface ISignupComponentComponentProps {
   onHandleSubmit?: any;
   onSubmit?: any;
+  isLoggedIn?: boolean;
 }
 
 //from state
@@ -167,20 +168,35 @@ const SignupComponent: React.FC<SignupComponentType> = (props) => {
                 />
               </Grid>
             </Grid>
-            <Field
-              name='adminPassword'
-              component={FieldTextField}
-              label='Admin Password'
-              type='number'
-              formControlProps={{
-                fullWidth: true,
-              }}
-              props={{
-                type: 'password',
-                required: true
-              }}
-              validate={[required, minLength]}
-            />
+            {
+              !props.isLoggedIn
+                ?
+                <Field
+                  name='adminPassword'
+                  component={FieldTextField}
+                  label='Admin Password'
+                  type='number'
+                  formControlProps={{
+                    fullWidth: true,
+                  }}
+                  props={{
+                    type: 'password',
+                    required: true
+                  }}
+                  validate={[required, minLength]}
+                />
+                :
+                <Field
+                  name='isAdmin'
+                  component={FieldTextField}
+                  label='Is Admin'
+                  props={{
+                    required: true
+                  }}
+                  validate={[required, trueOrFalse]}
+                />
+
+            }
             <Grid
               item={true}
               style={{

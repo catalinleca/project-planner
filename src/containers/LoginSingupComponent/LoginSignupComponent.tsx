@@ -83,11 +83,15 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
       admin,
     } = this.props;
 
-    const signedUpBy =
+    console.log('wtf: ', admin);
+
+
+    console.log('value: ', values);
+
 
     signUp({
       ...values,
-      isAdmin: admin
+      isAdmin: admin ? admin : Boolean(values.isAdmin)
     });
     dispatch(push(HOME_PATH))
   }
@@ -148,6 +152,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
               <SignupComponent
                 onHandleSubmit={this.props.handleSubmit}
                 onSubmit={this.handleSignup}
+                isLoggedIn={isLoggedIn}
               />
           }
         </Grid>
