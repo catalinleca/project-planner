@@ -82,6 +82,7 @@ interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   loggedInUserId: string;
   currentUserId: string;
   isAdmin: boolean;
+  selectUser: any;
 }
 
 type UserDetailsPageType = IUserDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -90,9 +91,10 @@ interface IUserItemMenu {
   icon: IconProp,
   label: string,
   to?: string,
+  actionType?: string,
   action?: {
     (...args: any[]): any
-  }
+  },
 }
 
 
@@ -126,6 +128,20 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     {
       icon: 'trash',
       label: 'Delete Account',
+      actionType: 'delete',
+      action: (callback) => callback()
+    },
+    {
+      icon: 'key',
+      label: 'Add to this admin',
+      actionType: 'add',
+      action: (callback) => callback()
+    },
+  ]
+  private userItemMenuAddToProjectExtension: IUserItemMenu[] = [
+    {
+      icon: 'key',
+      label: 'Add to this admin',
       action: (callback) => callback()
     },
   ]
@@ -160,6 +176,24 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
     this.setState({open: false});
   }
 
+  public handleAddToProject = () => {
+    const {
+      loggedInUserId
+    } = this.props;
+
+    this.handleEditUserProfile({
+      signedUpBy: loggedInUserId
+    })
+  }
+
+  componentDidMount(): void {
+    this.props.selectUser(this.props.currentUserId);
+  }
+
+  componentWillUnmount(): void {
+    this.props.selectUser('');
+  }
+
   render() {
     const {
       user,
@@ -184,6 +218,7 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
         ? this.userItemMenuDefault.concat(this.userItemMenuTrashExtension)
         : this.userItemMenuDefault
 
+
     const sideUserMenu = (
       <List
         classes={{
@@ -194,7 +229,10 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
           userItemMenu.map( (userItem, index) => {
             const body = (
               <ListItem button={true}
-                onClick={() => userItem.action && userItem.action(this.handleClickOpen)}
+                onClick={() => userItem.action && (userItem.actionType === 'delete'
+                  ? userItem.action(this.handleClickOpen)
+                  : userItem.action(this.handleAddToProject))
+                }
                 TouchRippleProps={{
                   classes: {
                     ripple: classes.ripple
@@ -313,7 +351,8 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
   return {
     dispatch,
     editUser: (values) => dispatch(EditUserAction(values)),
-    deleteUser: (id) => dispatch(DeleteUserAction(id))
+    deleteUser: (id) => dispatch(DeleteUserAction(id)),
+    selectUser: (id) => dispatch(SelectUserAction(id))
   };
 }
 

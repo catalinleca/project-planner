@@ -184,6 +184,8 @@ export const EditUserAction = (values) => (dispatch, getState, {getFirebase, get
 	const currentState = getState();
 	const selectedUserId = (makeSelectSelectedUser())(currentState)
 
+	console.log(currentState);
+
 	const userRef = firestore.collection('users').doc(selectedUserId);
 
 	console.log('in action: ', values);

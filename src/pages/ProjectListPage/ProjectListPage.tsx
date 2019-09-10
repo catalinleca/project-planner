@@ -137,7 +137,10 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
       loggedInUserId
     } = this.props;
 
-    return projects.filter( project => !isAdmin ? project.createdBy === loggedInUserParent : project.createdBy === loggedInUserId).map((project, index) => ({
+    console.log('loggedInUserParent: ', loggedInUserParent);
+
+    // return projects.filter( project => !isAdmin ? project.createdBy === loggedInUserParent : project.createdBy === loggedInUserId).map((project, index) => ({
+    return projects.filter( project => project.createdBy === loggedInUserParent || project.createdBy === loggedInUserId).map((project, index) => ({
       ...project,
       tableData: {id: index}
     }))

@@ -148,6 +148,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
               <SignupComponent
                 onHandleSubmit={this.props.handleSubmit}
                 onSubmit={this.handleSignup}
+                isLoggedIn={isLoggedIn}
               />
           }
         </Grid>

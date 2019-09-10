@@ -22,6 +22,7 @@ const styles = (theme: Theme): StyleRules => ({
 interface ISignupComponentComponentProps {
   onHandleSubmit?: any;
   onSubmit?: any;
+  isLoggedIn?: any;
 }
 
 //from state
@@ -167,20 +168,23 @@ const SignupComponent: React.FC<SignupComponentType> = (props) => {
                 />
               </Grid>
             </Grid>
-            <Field
-              name='adminPassword'
-              component={FieldTextField}
-              label='Admin Password'
-              type='number'
-              formControlProps={{
-                fullWidth: true,
-              }}
-              props={{
-                type: 'password',
-                required: true
-              }}
-              validate={[required, minLength]}
-            />
+            {
+              !props.isLoggedIn &&
+              <Field
+                name='adminPassword'
+                component={FieldTextField}
+                label='Admin Password'
+                type='number'
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                props={{
+                  type: 'password',
+                  required: true
+                }}
+                validate={[required, minLength]}
+              />
+            }
             <Grid
               item={true}
               style={{

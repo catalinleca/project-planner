@@ -255,7 +255,7 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
                 </Typography>
               </Grid>
               <Button type='submit'>
-                Submi
+                Submit
               </Button>
             </Grid>
           </Grid>
