@@ -37,12 +37,12 @@ import {
 import {Link} from "react-router-dom";
 import {pick, USER_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectIsAdmin} from "../../store/selectors";
+import {makeSelectFirestoreOrderedData, makeSelectIsAdmin, makeSelectLoggedInUserId} from "../../store/selectors";
 import AvatarButton from "../../components/AvatarButton/AvatarButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 import _ from 'lodash';
-import {DeleteUserAction} from "../../store/action";
+import {DeleteUserAction, SignOutAction} from "../../store/action";
 import DialogComponent from "../../components/DialogComponent/DialogComponent";
 
 const tableIcons = {
@@ -76,7 +76,9 @@ const styles = (theme: Theme): StyleRules => ({
 interface IUserListPageComponentProps {
   users: any;
   isAdmin: boolean;
+  loggedInUserId: string;
   deleteUser(id: number): void
+  logOut(): void
 }
 
 //from state
@@ -130,6 +132,9 @@ class UserListPage extends React.Component<UserListPageType, {}> {
   public onDeleteUser = () => {
     this.props.deleteUser(this.state.userId)
     this.handleClose()
+    if (this.props.loggedInUserId === this.state.userId) {
+      this.props.logOut()
+    }
   }
 
   render() {
@@ -175,6 +180,7 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 
 const mapStateToProps = (state: any) => {
   return createStructuredSelector({
+    loggedInUserId: makeSelectLoggedInUserId(),
     users: makeSelectFirestoreOrderedData('users'),
     isAdmin: makeSelectIsAdmin()
   })(state)
@@ -183,7 +189,8 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     dispatch,
-    deleteUser: (id) => dispatch(DeleteUserAction(id))
+    deleteUser: (id) => dispatch(DeleteUserAction(id)),
+    logOut: () => dispatch(SignOutAction())
   };
 }
 

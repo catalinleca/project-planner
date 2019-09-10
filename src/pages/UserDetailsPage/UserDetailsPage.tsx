@@ -22,7 +22,7 @@ import {
   makeSelectLoggedInUserId,
   makeSelectSelectedUser
 } from "../../store/selectors";
-import {DeleteUserAction, EditUserAction, SelectUserAction} from "../../store/action";
+import {DeleteUserAction, EditUserAction, SelectUserAction, SignOutAction} from "../../store/action";
 import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {
   USER_DETAILS, USER_LIST,
@@ -83,6 +83,7 @@ interface IUserDetailsPageProps extends IUserDetailsPageComponentProps {
   currentUserId: string;
   isAdmin: boolean;
   selectUser: any;
+  logOut: any;
 }
 
 type UserDetailsPageType = IUserDetailsPageProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -139,9 +140,17 @@ class UserDetailsPage extends React.Component<UserDetailsPageType, {}> {
 
 
   public deleteUser = () => {
-    this.props.deleteUser(this.props.match.params.id);
+    const {
+      deleteUser,
+      currentUserId,
+      dispatch,
+      loggedInUserId,
+      logOut
+    } = this.props
 
-    this.props.dispatch(push(USER_LIST))
+    deleteUser(currentUserId);
+
+    currentUserId === loggedInUserId ? logOut() : dispatch(push(USER_LIST))
   }
 
   public getUserTasks = (): ITask[] => {
@@ -325,7 +334,8 @@ export function mapDispatchToProps(dispatch: React.Dispatch<any>, ownProps) {
     dispatch,
     editUser: (values) => dispatch(EditUserAction(values)),
     deleteUser: (id) => dispatch(DeleteUserAction(id)),
-    selectUser: (id) => dispatch(SelectUserAction(id))
+    selectUser: (id) => dispatch(SelectUserAction(id)),
+    logOut: () => dispatch(SignOutAction())
   };
 }
 
