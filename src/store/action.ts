@@ -414,6 +414,7 @@ export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {g
 	const currentState = getState();
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
 	const signedUpBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
+	const registeredDate = new Date().toString()
 
 	firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
 		.then((resp: any) => {
@@ -423,7 +424,8 @@ export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {g
 			return firestore.collection('users').doc(resp.user.uid).set({
 				...userBase,
 				...newUser,
-				signedUpBy
+				signedUpBy,
+				registeredDate
 			}).then( () => {
 				console.log('SIGN UP SUCCESS');
 			}).catch( err => {

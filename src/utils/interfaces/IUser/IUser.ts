@@ -27,6 +27,7 @@ export interface IUser {
   signedUpBy: string;
   trackedProjects: string[]
   avatar: string;
+  confirmedPassword: string;
 }
 
 export const userBase = {
@@ -43,5 +44,6 @@ export const userBase = {
   signedUpBy: '',
   trackedProjects: [],
   avatar: null,
+  confirmedPassword: null,
   // hai sa facem adminul contul companiei
 }

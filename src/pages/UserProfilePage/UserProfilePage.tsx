@@ -27,7 +27,7 @@ import {IUser} from "../../utils/interfaces/IUser/IUser";
 import {firestoreConnect} from "react-redux-firebase";
 import DisplayEdit from "../../components/DisplayEdit/DisplayEdit";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
+import {formatStringDate, USER_DETAILS, USER_SETTINGS_PATH} from "../../utils/constants";
 import {push} from "connected-react-router";
 
 const styles = (theme: Theme): StyleRules => ({
@@ -251,11 +251,11 @@ class UserProfilePage extends React.Component<UserProfilePageType, {}> {
               </Grid>
               <Grid item={true} className={classes.profileItem}>
                 <Typography color='inherit' variant='caption'>
-                  {user && `${user.firstName} ${user.lastName} registered on ${user.registeredDate}`}
+                  {user && `${user.firstName} ${user.lastName} registered on ${formatStringDate(user.registeredDate)}`}
                 </Typography>
               </Grid>
               <Button type='submit'>
-                Submi
+                Submit
               </Button>
             </Grid>
           </Grid>

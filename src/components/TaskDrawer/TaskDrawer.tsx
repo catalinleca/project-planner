@@ -424,15 +424,23 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       <WithLabel
         label='Attachments'
       >
-        {
-          pictures && pictures.length !== 0 || picturesAsFile && picturesAsFile.length !== 0
-            ?
+
             <Grid>
-              <DisplayPictures
-                edit={edit}
-                pictures={this.props.pictures && this.props.pictures.concat(this.props.picturesAsFile)}
-                removePictureItem={this.props.handleRemovePictures}
-              />
+              {
+                pictures && pictures.length !== 0 || picturesAsFile && picturesAsFile.length !== 0
+                  ?
+                  <DisplayPictures
+                    edit={edit}
+                    pictures={this.props.pictures && this.props.pictures.concat(this.props.picturesAsFile)}
+                    removePictureItem={this.props.handleRemovePictures}
+                  />
+                  :
+                  <Grid>
+                    <Typography>
+                      No Attachments
+                    </Typography>
+                  </Grid>
+              }
               {
                 edit &&
                 <Field
@@ -444,13 +452,6 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                 />
               }
             </Grid>
-            :
-            <Grid>
-              <Typography>
-                No Attachments
-              </Typography>
-            </Grid>
-        }
       </WithLabel>
     )
 

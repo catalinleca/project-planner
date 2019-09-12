@@ -91,7 +91,7 @@ class LoginSignupComponent extends React.Component<LoginSignupComponentType, {}>
 
     signUp({
       ...values,
-      isAdmin: admin ? admin : Boolean(values.isAdmin)
+      isAdmin: admin ? admin : values.isAdmin === 'true'
     });
     dispatch(push(HOME_PATH))
   }
