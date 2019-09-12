@@ -27,7 +27,7 @@ import {
 } from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {
-  makeSelectDataById, makeSelectFirestoreOrderedData,
+  makeSelectDataById, makeSelectFirestoreOrderedData, makeSelectLoggedInUserId,
   makeSelectSelectedTask,
   makeSelectTaskDrawerOpen,
   selectReducerState
@@ -101,6 +101,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   createdByUser: any;
   initialize: any;
   deleteTask: any;
+  loggedInUserId: any;
 }
 
 export type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -323,7 +324,8 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       projects,
       users,
       pictures,
-      picturesAsFile
+      picturesAsFile,
+      loggedInUserId
     } = this.props;
 
     const {
@@ -599,7 +601,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                         label: 'Assigned To',
                         onChange: (e) => console.log(e),
                         isMulti: false,
-                        options: users.map(user => ({
+                        options: users.filter((user, index) => user && (user.signedUpBy === loggedInUserId || user.id === loggedInUserId)).map(user => ({
                           label: [user.firstName, user.lastName].join(' '),
                           value: user.id,
                           firstName: user.firstName,
@@ -662,12 +664,14 @@ const mapStateToProps = (state: any) => {
     taskDrawerOpen,
     task,
     projects,
-    users
+    users,
+    loggedInUserId
   } = createStructuredSelector({
     taskDrawerOpen: makeSelectTaskDrawerOpen(),
     task: makeSelectDataById('tasks', selectedTaskId),
     projects: makeSelectFirestoreOrderedData('projects'),
     users: makeSelectFirestoreOrderedData('users'),
+    loggedInUserId: makeSelectLoggedInUserId()
   })(state);
 
   return {
@@ -676,6 +680,7 @@ const mapStateToProps = (state: any) => {
     task,
     projects,
     users,
+    loggedInUserId,
     createdByUser: task && makeSelectDataById('users', task.createdBy)(state)
   }
 };

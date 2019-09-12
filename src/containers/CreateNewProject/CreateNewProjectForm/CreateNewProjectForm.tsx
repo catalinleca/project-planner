@@ -29,6 +29,7 @@ interface ICreateNewProjectFormComponentProps {
   users?: any
   handleSelectChange?: any
   handleClose?: any
+  loggedInUserId?: any
 }
 
 //from state
@@ -44,6 +45,7 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
     selectedLeads,
     users,
     handleSelectChange,
+    loggedInUserId
   } = props;
 
   return (
@@ -88,7 +90,7 @@ const CreateNewProjectForm: React.FC<CreateNewProjectFormType> = (props) => {
                 isMulti: true,
                 // value: this.state.selectedValues,
                 onChange: handleSelectChange,
-                options: users.map(user => ({
+                options: users.filter((user, index) => user && (user.signedUpBy === loggedInUserId || user.id === loggedInUserId)).map(user => ({
                   label: [user.firstName, user.lastName].join(' '),
                   value: user.id,
                   ...user

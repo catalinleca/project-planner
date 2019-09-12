@@ -19,7 +19,11 @@ import FieldDatePicker from "../../../components/FieldDatePicker/FieldDatePicker
 import {connect} from "react-redux";
 import {AddTaskToProjectAction, CreateProjectAction} from "../../../store/action";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../../store/selectors";
+import {
+  makeSelectFirestoreOrderedData,
+  makeSelectLoggedInUserId,
+  makeSelectSelectedProject
+} from "../../../store/selectors";
 import TaskPictures from "../../../components/TaskPictures/TaskPictures";
 import UploadPicture from "../../../components/UploadPicture/UploadPicture";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -48,6 +52,7 @@ interface IAddNewTaskFormComponentProps {
   emptyPicturesArray?: any;
   picturesAsFile?: any;
   reset?: any;
+  loggedInUserId?: any;
 }
 
 //from state
@@ -64,6 +69,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     users,
     handleSelectChange,
     gridProps,
+    loggedInUserId
   } = props;
 
   const onSubmit = (taskData) => {
@@ -125,7 +131,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
               isMulti: false,
               // value: this.state.selectedValues,
               onChange: handleSelectChange,
-              options: users.map(user => ({
+              options: users.filter((user, index) => user && (user.signedUpBy === loggedInUserId || user.id === loggedInUserId)).map(user => ({
                 label: [user.firstName, user.lastName].join(' '),
                 value: user.id,
                 ...user,
@@ -214,7 +220,8 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 const mapStateToProps = createStructuredSelector({
   selectedProjectId: makeSelectSelectedProject(),
-  users: makeSelectFirestoreOrderedData('users')
+  users: makeSelectFirestoreOrderedData('users'),
+  loggedInUserId: makeSelectLoggedInUserId(),
 })
 
 export default compose<React.ComponentClass<IAddNewTaskFormComponentProps>>(

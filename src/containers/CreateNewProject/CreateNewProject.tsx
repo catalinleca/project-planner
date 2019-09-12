@@ -23,7 +23,11 @@ import CreateNewProjectForm from "./CreateNewProjectForm/CreateNewProjectForm";
 import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetProjectsAction} from "../../store/action";
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectSelectedProject} from "../../store/selectors";
+import {
+  makeSelectFirestoreOrderedData,
+  makeSelectLoggedInUserId,
+  makeSelectSelectedProject
+} from "../../store/selectors";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Simulate} from "react-dom/test-utils";
 import { submit, reset } from 'redux-form';
@@ -46,6 +50,7 @@ interface ICreateNewProjectProps extends ICreateNewProjectComponentProps {
   users: any;
   selectedProjectId: any;
   dispatch: any;
+  loggedInUserId: any;
 }
 
 type CreateNewProjectType = ICreateNewProjectProps & InjectedFormProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -177,6 +182,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
           selectedLeads={this.state.selectedLeads}
           users={this.props.users}
           handleSelectChange={this.handleSelectChangeLeads}
+          loggedInUserId={this.props.loggedInUserId}
         />;
       case 1:
         return <AddNewTaskForm
@@ -302,7 +308,8 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 
 const mapStateToProps = createStructuredSelector({
   selectedProjectId: makeSelectSelectedProject(),
-  users: makeSelectFirestoreOrderedData('users')
+  users: makeSelectFirestoreOrderedData('users'),
+  loggedInUserId: makeSelectLoggedInUserId()
 })
 
 export default compose<React.ComponentClass<ICreateNewProjectComponentProps>>(

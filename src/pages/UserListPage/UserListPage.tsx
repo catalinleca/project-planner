@@ -141,7 +141,8 @@ class UserListPage extends React.Component<UserListPageType, {}> {
     const {
       classes,
       users,
-      isAdmin
+      isAdmin,
+      loggedInUserId
     } = this.props;
 
     const columns = isAdmin
@@ -166,7 +167,7 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 					<MaterialTable
 						title="All Users"
 						columns={columns}
-						data={users.map( (user, index) => ({
+						data={users.filter( (user, index) => user.signedUpBy === loggedInUserId ).map( (user, index) => ({
               ...user,
               tableData: {id: index}
             }))}
