@@ -53,6 +53,7 @@ interface IAddNewTaskFormComponentProps {
   picturesAsFile?: any;
   reset?: any;
   loggedInUserId?: any;
+  handleCloseDrawer?: any;
 }
 
 //from state
@@ -76,7 +77,7 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     const {
       addTaskToProject,
       selectedProjectId,
-      emptyPicturesArray
+      handleCloseDrawer
     } = props;
 
     console.log('taskData: ', taskData);
@@ -97,8 +98,8 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
     props.reset()
+    handleCloseDrawer();
 
-    emptyPicturesArray()
   }
 
   return (

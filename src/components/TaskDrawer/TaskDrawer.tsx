@@ -482,6 +482,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           removePictureItem={this.props.handleRemovePictures}
           emptyPicturesArray={this.emptyPicturesArray}
           picturesAsFile={this.props.picturesAsFile}
+          handleCloseDrawer={this.handleCloseDrawer}
         />
       </React.Fragment>
     )

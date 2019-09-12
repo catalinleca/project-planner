@@ -47,7 +47,7 @@ const LoginComponent: React.FC<LoginComponentType> = (props) => {
           <Field
             name='username'
             component={FieldTextField}
-            label='Username'
+            label='Mail'
             formControlProps={{
               fullWidth: true,
             }}
