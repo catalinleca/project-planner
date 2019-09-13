@@ -24,6 +24,7 @@ import {AddTaskToProjectAction, CreateProjectAction, DeleteProjectAction, GetPro
 import AddNewTaskForm from "./AddNewTaskForm/AddNewTaskForm";
 import {createStructuredSelector} from "reselect";
 import {
+  makeSelectCurrentUserProperty,
   makeSelectFirestoreOrderedData,
   makeSelectLoggedInUserId,
   makeSelectSelectedProject
@@ -51,6 +52,7 @@ interface ICreateNewProjectProps extends ICreateNewProjectComponentProps {
   selectedProjectId: any;
   dispatch: any;
   loggedInUserId: any;
+  currentUserSignedUpBy: any;
 }
 
 type CreateNewProjectType = ICreateNewProjectProps & InjectedFormProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -175,6 +177,16 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
   }
 
   public getStepContent = (step: number) => {
+    const {
+      currentUserSignedUpBy: currentUserSignedUpByObject,
+    } = this.props;
+
+    console.log('currentUserSignedUpByObject: ', currentUserSignedUpByObject)
+
+    const currentUserSignedUpBy = currentUserSignedUpByObject && currentUserSignedUpByObject.signedUpBy && currentUserSignedUpByObject.signedUpBy
+
+    console.log('currentUserSignedUpBy: ', currentUserSignedUpBy)
+
     switch(step) {
       case 0:
         return <CreateNewProjectForm
@@ -183,6 +195,7 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
           users={this.props.users}
           handleSelectChange={this.handleSelectChangeLeads}
           loggedInUserId={this.props.loggedInUserId}
+          currentUserSignedUpBy={currentUserSignedUpBy}
         />;
       case 1:
         return <AddNewTaskForm
@@ -214,7 +227,8 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
       classes,
       users,
       setOpen,
-      isOpen
+      isOpen,
+      currentUserSignedUpBy: currentUserSignedUpByObject,
     } = this.props;
 
     const {
@@ -223,6 +237,8 @@ class CreateNewProject extends React.Component<CreateNewProjectType, {}> {
     // console.log('currentProps: ', this.props.users);
 
     const steps = this.getSteps();
+
+
 
     return (
       <React.Fragment>
@@ -309,7 +325,8 @@ const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
 const mapStateToProps = createStructuredSelector({
   selectedProjectId: makeSelectSelectedProject(),
   users: makeSelectFirestoreOrderedData('users'),
-  loggedInUserId: makeSelectLoggedInUserId()
+  loggedInUserId: makeSelectLoggedInUserId(),
+  currentUserSignedUpBy: makeSelectCurrentUserProperty(['signedUpBy'])
 })
 
 export default compose<React.ComponentClass<ICreateNewProjectComponentProps>>(

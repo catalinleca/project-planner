@@ -20,6 +20,7 @@ import {connect} from "react-redux";
 import {AddTaskToProjectAction, CreateProjectAction} from "../../../store/action";
 import {createStructuredSelector} from "reselect";
 import {
+  makeSelectCurrentUserProperty,
   makeSelectFirestoreOrderedData,
   makeSelectLoggedInUserId,
   makeSelectSelectedProject
@@ -54,6 +55,7 @@ interface IAddNewTaskFormComponentProps {
   reset?: any;
   loggedInUserId?: any;
   handleCloseDrawer?: any;
+  currentUserSignedUpBy?: any;
 }
 
 //from state
@@ -70,14 +72,23 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     users,
     handleSelectChange,
     gridProps,
-    loggedInUserId
+    loggedInUserId,
+    currentUserSignedUpBy: currentUserSignedUpByObject,
   } = props;
+
+  console.log('currentUserSignedUpByObject: ', currentUserSignedUpByObject)
+
+  const currentUserSignedUpBy = currentUserSignedUpByObject && currentUserSignedUpByObject.signedUpBy && currentUserSignedUpByObject.signedUpBy
+
+  console.log('currentUserSignedUpBy: ', currentUserSignedUpBy)
+
 
   const onSubmit = (taskData) => {
     const {
       addTaskToProject,
       selectedProjectId,
-      handleCloseDrawer
+      handleCloseDrawer,
+      emptyPicturesArray
     } = props;
 
     console.log('taskData: ', taskData);
@@ -98,7 +109,8 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
     console.log('newTaskData: ', newTaskData);
     addTaskToProject(newTaskData, selectedProjectId);
     props.reset()
-    handleCloseDrawer();
+
+    handleCloseDrawer ? handleCloseDrawer() : emptyPicturesArray();
 
   }
 
@@ -132,7 +144,11 @@ const AddNewTaskForm: React.FC<AddNewTaskFormType> = (props) => {
               isMulti: false,
               // value: this.state.selectedValues,
               onChange: handleSelectChange,
-              options: users.filter((user, index) => user && (user.signedUpBy === loggedInUserId || user.id === loggedInUserId)).map(user => ({
+              options: users.filter((user, index) => user && (
+                !currentUserSignedUpBy
+                  ? user.signedUpBy === loggedInUserId || user.id === loggedInUserId
+                  : user.signedUpBy === currentUserSignedUpBy || user.id === currentUserSignedUpBy
+              )).map(user => ({
                 label: [user.firstName, user.lastName].join(' '),
                 value: user.id,
                 ...user,
@@ -223,6 +239,7 @@ const mapStateToProps = createStructuredSelector({
   selectedProjectId: makeSelectSelectedProject(),
   users: makeSelectFirestoreOrderedData('users'),
   loggedInUserId: makeSelectLoggedInUserId(),
+  currentUserSignedUpBy: makeSelectCurrentUserProperty(['signedUpBy'])
 })
 
 export default compose<React.ComponentClass<IAddNewTaskFormComponentProps>>(

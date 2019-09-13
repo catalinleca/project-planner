@@ -226,7 +226,8 @@ class ProjectListPage extends React.Component<ProjectListPageType, {}> {
             actions={[
               rowData => ({
                 icon: () => <FontAwesomeIcon
-                  icon={[this.getIconStyle(rowData), 'bookmark']}
+                  // icon={[this.getIconStyle(rowData), 'bookmark']}
+                  icon='bookmark'
                 />,
                 tooltip: this.tooltip(rowData),
                 onClick: (e, rowData) => this.trackUntrack(rowData)

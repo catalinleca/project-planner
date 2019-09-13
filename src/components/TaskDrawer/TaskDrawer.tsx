@@ -27,6 +27,7 @@ import {
 } from "../../store/action";
 import {createStructuredSelector} from "reselect";
 import {
+  makeSelectCurrentUserProperty,
   makeSelectDataById, makeSelectFirestoreOrderedData, makeSelectLoggedInUserId,
   makeSelectSelectedTask,
   makeSelectTaskDrawerOpen,
@@ -102,6 +103,7 @@ interface ITaskDrawerProps extends ITaskDrawerComponentProps {
   initialize: any;
   deleteTask: any;
   loggedInUserId: any;
+  currentUserSignedUpBy: any;
 }
 
 export type TaskDrawerType = ITaskDrawerProps & WithStyles<keyof ReturnType<typeof styles>>;
@@ -325,6 +327,7 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       users,
       pictures,
       picturesAsFile,
+      currentUserSignedUpBy: currentUserSignedUpByObject,
       loggedInUserId
     } = this.props;
 
@@ -333,6 +336,12 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
       projectAnchorEl,
       taskStatusAnchorEl
     } = this.state;
+
+    console.log('currentUserSignedUpByObject: ', currentUserSignedUpByObject)
+
+    const currentUserSignedUpBy = currentUserSignedUpByObject && currentUserSignedUpByObject.signedUpBy && currentUserSignedUpByObject.signedUpBy
+
+    console.log('currentUserSignedUpBy: ', currentUserSignedUpBy)
 
     // console.log('state pics: ', this.props)
     // console.log('task  pics: ', this.props.task && this.props.task.pictures)
@@ -374,7 +383,9 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
           >
             {
               projects &&
-              projects.map((project, index) => (
+              projects
+                .filter( project => project.createdBy === currentUserSignedUpBy || project.createdBy === loggedInUserId)
+                .map((project, index) => (
                 <MenuItem
                   key={`${project.id}${index}`}
                   onClick={() => this.handleProjectMenuClick(project.name, project.id)}
@@ -602,7 +613,11 @@ class TaskDrawer extends React.Component<TaskDrawerType, {}> {
                         label: 'Assigned To',
                         onChange: (e) => console.log(e),
                         isMulti: false,
-                        options: users.filter((user, index) => user && (user.signedUpBy === loggedInUserId || user.id === loggedInUserId)).map(user => ({
+                        options: users.filter((user, index) =>  (
+                          !currentUserSignedUpBy
+                            ? user.signedUpBy === loggedInUserId || user.id === loggedInUserId
+                            : user.signedUpBy === currentUserSignedUpBy || user.id === currentUserSignedUpBy
+                        )).map(user => ({
                           label: [user.firstName, user.lastName].join(' '),
                           value: user.id,
                           firstName: user.firstName,
@@ -666,13 +681,15 @@ const mapStateToProps = (state: any) => {
     task,
     projects,
     users,
-    loggedInUserId
+    loggedInUserId,
+    currentUserSignedUpBy,
   } = createStructuredSelector({
     taskDrawerOpen: makeSelectTaskDrawerOpen(),
     task: makeSelectDataById('tasks', selectedTaskId),
     projects: makeSelectFirestoreOrderedData('projects'),
     users: makeSelectFirestoreOrderedData('users'),
-    loggedInUserId: makeSelectLoggedInUserId()
+    loggedInUserId: makeSelectLoggedInUserId(),
+    currentUserSignedUpBy: makeSelectCurrentUserProperty(['signedUpBy']),
   })(state);
 
   return {
@@ -682,6 +699,7 @@ const mapStateToProps = (state: any) => {
     projects,
     users,
     loggedInUserId,
+    currentUserSignedUpBy,
     createdByUser: task && makeSelectDataById('users', task.createdBy)(state)
   }
 };

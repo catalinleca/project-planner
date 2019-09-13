@@ -6,6 +6,7 @@ import {ITask, taskBase} from "../utils/interfaces/ITask/ITask";
 import {push} from "connected-react-router";
 import {formatStringDate, PROJECT_DETAILS} from "../utils/constants";
 import {
+	makeSelectCurrentUserProperty,
 	makeSelectDataById,
 	makeSelectIsLoggedIn, makeSelectLoggedInUserId, makeSelectProjectTitle,
 	makeSelectSelectedProject,
@@ -351,8 +352,17 @@ export const CreateProjectAction = (project) => (dispatch, getState, {getFiresto
 
 	const currentState = getState();
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
-	const createdBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
 	const createdDate = new Date().toString()
+
+	const temp: any = isLoggedIn
+		? makeSelectCurrentUserProperty(['signedUpBy'])(currentState)
+		: null
+
+	const createdBy: any = temp
+		? temp.signedUpBy
+			? temp.signedUpBy
+			: makeSelectLoggedInUserId()(currentState)
+		: null
 
 	const firestore = getFirestore();
 	firestore.collection('projects').add({
@@ -413,8 +423,27 @@ export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {g
 
 	const currentState = getState();
 	const isLoggedIn = makeSelectIsLoggedIn()(currentState);
-	const signedUpBy = isLoggedIn ? makeSelectLoggedInUserId()(currentState) : null
 	const registeredDate = new Date().toString()
+
+	const temp: any = isLoggedIn
+		? makeSelectCurrentUserProperty(['signedUpBy'])(currentState)
+		: null
+
+	const currentUserSignedUpBy: any = temp
+		? temp.signedUpBy
+			? temp.signedUpBy
+			: makeSelectLoggedInUserId()(currentState)
+		: null
+
+
+	console.log('currentUserSignedUpBy: ', currentUserSignedUpBy);
+
+	console.log('data to create the user:', {
+		...userBase,
+		...newUser,
+		signedUpBy: currentUserSignedUpBy,
+		registeredDate
+	})
 
 	firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
 		.then((resp: any) => {
@@ -424,7 +453,7 @@ export const SignUpAction = (newUser: Partial<IUser>) => (dispatch, getState, {g
 			return firestore.collection('users').doc(resp.user.uid).set({
 				...userBase,
 				...newUser,
-				signedUpBy,
+				signedUpBy: currentUserSignedUpBy,
 				registeredDate
 			}).then( () => {
 				console.log('SIGN UP SUCCESS');

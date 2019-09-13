@@ -37,7 +37,12 @@ import {
 import {Link} from "react-router-dom";
 import {pick, USER_DETAILS} from "../../utils/constants";
 import {createStructuredSelector} from "reselect";
-import {makeSelectFirestoreOrderedData, makeSelectIsAdmin, makeSelectLoggedInUserId} from "../../store/selectors";
+import {
+  makeSelectCurrentUserProperty,
+  makeSelectFirestoreOrderedData,
+  makeSelectIsAdmin,
+  makeSelectLoggedInUserId
+} from "../../store/selectors";
 import AvatarButton from "../../components/AvatarButton/AvatarButton";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -77,6 +82,7 @@ interface IUserListPageComponentProps {
   users: any;
   isAdmin: boolean;
   loggedInUserId: string;
+  currentUserSignedUpBy: any;
   deleteUser(id: number): void
   logOut(): void
 }
@@ -142,8 +148,15 @@ class UserListPage extends React.Component<UserListPageType, {}> {
       classes,
       users,
       isAdmin,
+      currentUserSignedUpBy: currentUserSignedUpByObject,
       loggedInUserId
     } = this.props;
+
+    console.log('currentUserSignedUpByObject: ', currentUserSignedUpByObject)
+
+    const currentUserSignedUpBy = currentUserSignedUpByObject && currentUserSignedUpByObject.signedUpBy && currentUserSignedUpByObject.signedUpBy
+
+    console.log('currentUserSignedUpBy: ', currentUserSignedUpBy)
 
     const columns = isAdmin
       ? [
@@ -167,7 +180,11 @@ class UserListPage extends React.Component<UserListPageType, {}> {
 					<MaterialTable
 						title="All Users"
 						columns={columns}
-						data={users.filter( (user, index) => user.signedUpBy === loggedInUserId ).map( (user, index) => ({
+						data={users.filter( (user, index) =>
+              !currentUserSignedUpBy
+                ? user.signedUpBy === loggedInUserId || user.id === loggedInUserId
+                : user.signedUpBy === currentUserSignedUpBy || user.id === currentUserSignedUpBy
+            ).map( (user, index) => ({
               ...user,
               tableData: {id: index}
             }))}
@@ -183,7 +200,8 @@ const mapStateToProps = (state: any) => {
   return createStructuredSelector({
     loggedInUserId: makeSelectLoggedInUserId(),
     users: makeSelectFirestoreOrderedData('users'),
-    isAdmin: makeSelectIsAdmin()
+    isAdmin: makeSelectIsAdmin(),
+    currentUserSignedUpBy: makeSelectCurrentUserProperty(['signedUpBy'])
   })(state)
 }
 
